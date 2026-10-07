@@ -6,6 +6,7 @@ import { currentDoctor } from './data/mock'
 import type { Role } from './types'
 import { Layout } from './components/Layout'
 import { CatBot } from './components/CatBot'
+import { DesktopModeHint } from './components/DesktopModeHint'
 import { Login } from './pages/Login'
 import { Inicio } from './pages/paciente/Inicio'
 import { Semaforo } from './pages/paciente/Semaforo'
@@ -80,6 +81,7 @@ export function App() {
 
   return (
     <HashRouter>
+      <DesktopModeHint />
       <Routes>
         <Route path="/" element={session ? <Navigate to={`/${session.role}`} replace /> : <Login />} />
 

@@ -47,7 +47,7 @@ export function Inicio() {
   const hello = hour < 12 ? 'Buenos días' : hour < 20 ? 'Buenas tardes' : 'Buenas noches'
 
   return (
-    <div className="page stagger">
+    <div className="page page--home stagger">
       {party > 0 && <Celebrate key={party} />}
 
       <header className="hero">
@@ -76,7 +76,7 @@ export function Inicio() {
         </div>
       </header>
 
-      <Card className="checkin">
+      <Card className="checkin home-half">
         <p className="form__label">¿Cómo te sientes hoy?</p>
         <MoodPicker
           value={todayMood}
@@ -91,7 +91,7 @@ export function Inicio() {
         )}
       </Card>
 
-      <Card className={`home-card level-bg--${level}`} onClick={() => navigate('/paciente/semaforo')}>
+      <Card className={`home-card home-half level-bg--${level}`} onClick={() => navigate('/paciente/semaforo')}>
         <div>
           <small>Mi semáforo</small>
           <strong className={`level-text--${level}`}>{LEVEL_INFO[level].title}</strong>
@@ -108,7 +108,7 @@ export function Inicio() {
 
       {survey.last && !survey.available && survey.last.answers.animo === HIGH_WORRY && <SupportCard />}
 
-      <div className="duo">
+      <div className="duo home-half">
         <Card className="mini-card" onClick={() => navigate('/paciente/encuesta')}>
           {survey.available ? <ClipboardList size={26} className="accent" /> : <ClipboardCheck size={26} className="level-text--verde" />}
           <small>Encuesta semanal</small>
@@ -124,7 +124,7 @@ export function Inicio() {
         </Card>
       </div>
 
-      <Card className="home-card" onClick={() => navigate('/paciente/calendario')}>
+      <Card className="home-card home-half" onClick={() => navigate('/paciente/calendario')}>
         <div>
           <small>Recordatorios</small>
           {upcoming.length === 0 && <span>No tienes recordatorios próximos.</span>}

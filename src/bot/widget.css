@@ -1,0 +1,246 @@
+/* Copito · widget de chat (compartido por el sitio y la app) */
+
+.cb-root {
+  --cb-primary: #7a4b94;
+  --cb-primary-soft: #efe4f6;
+  --cb-navy: #16184d;
+  --cb-text: #2b2440;
+  --cb-bottom: 20px;
+  --cb-right: 20px;
+  --cb-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  position: fixed;
+  right: var(--cb-right);
+  bottom: var(--cb-bottom);
+  z-index: 70;
+  font-family: 'Nunito', system-ui, sans-serif;
+  color: var(--cb-text);
+}
+
+/* En la app: sobre la barra inferior y dentro del ancho del «teléfono». */
+.cb-root.cb-in-app {
+  --cb-bottom: calc(68px + 14px + env(safe-area-inset-bottom));
+  --cb-right: max(14px, calc(50vw - 230px + 14px));
+}
+.cb-root.cb-in-app.is-hidden { display: none; }
+
+/* ---------- Botón ---------- */
+
+.cb-launcher {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  border: 3px solid #3b2f4a;
+  background: linear-gradient(160deg, #fbe3f3, #efe4f6);
+  box-shadow: 0 6px 0 #3b2f4a, 0 12px 24px rgba(59, 47, 74, 0.25);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.2s var(--cb-ease), box-shadow 0.2s var(--cb-ease);
+  animation: cb-bob 3.2s ease-in-out infinite;
+}
+.cb-launcher:hover { transform: translateY(-3px) rotate(-3deg); }
+.cb-launcher:active { transform: translateY(4px); box-shadow: 0 2px 0 #3b2f4a, 0 6px 12px rgba(59, 47, 74, 0.2); }
+.cb-launcher:focus-visible { outline: 3px solid var(--cb-primary); outline-offset: 4px; }
+.cb-root.is-open .cb-launcher { animation: none; }
+@keyframes cb-bob { 50% { translate: 0 -5px; } }
+
+.cb-hint {
+  position: absolute;
+  right: 78px;
+  bottom: 18px;
+  white-space: nowrap;
+  background: #fff;
+  border: 3px solid #3b2f4a;
+  border-radius: 12px;
+  padding: 6px 10px;
+  font-weight: 800;
+  font-size: 13px;
+  box-shadow: 0 4px 0 #3b2f4a;
+  opacity: 0;
+  transform: translateX(8px) scale(0.9);
+  pointer-events: none;
+  transition: opacity 0.35s var(--cb-ease), transform 0.35s var(--cb-ease);
+}
+.cb-hint::after {
+  content: '';
+  position: absolute;
+  right: -9px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-right: 3px solid #3b2f4a;
+  border-top: 3px solid #3b2f4a;
+  transform: translateY(-50%) rotate(45deg);
+}
+.cb-root.show-hint:not(.is-open) .cb-hint { opacity: 1; transform: none; }
+
+/* ---------- Gato animado ---------- */
+
+.cb-cat { display: block; image-rendering: pixelated; overflow: visible; }
+.cb-cat .cb-eyes { transform-box: fill-box; transform-origin: center; animation: cb-blink 4.5s infinite; }
+.cb-cat .cb-tail { transform-box: view-box; transform-origin: 15px 13px; animation: cb-wag 1.6s ease-in-out infinite; }
+.cb-cat .cb-mouth { opacity: 0; }
+.is-talking .cb-cat .cb-mouth { animation: cb-talk 0.32s steps(1) infinite; }
+.is-talking .cb-cat { animation: cb-hop 0.6s ease-in-out infinite; }
+@keyframes cb-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+@keyframes cb-wag { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-12deg); } }
+@keyframes cb-talk { 0% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes cb-hop { 50% { transform: translateY(-2px); } }
+
+/* ---------- Panel ---------- */
+
+.cb-panel {
+  position: absolute;
+  right: 0;
+  bottom: 84px;
+  width: min(370px, calc(100vw - 24px));
+  height: min(560px, calc(100vh - var(--cb-bottom) - 110px));
+  display: flex;
+  flex-direction: column;
+  background: #fffafd;
+  border: 3px solid #3b2f4a;
+  border-radius: 22px;
+  box-shadow: 0 8px 0 #3b2f4a, 0 24px 48px rgba(59, 47, 74, 0.3);
+  overflow: hidden;
+  transform-origin: bottom right;
+  opacity: 0;
+  transform: translateY(14px) scale(0.92);
+  transition: opacity 0.22s ease, transform 0.3s var(--cb-ease);
+}
+.cb-root.is-open .cb-panel { opacity: 1; transform: none; }
+.cb-panel[hidden] { display: none; }
+
+.cb-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px 10px 14px;
+  background: linear-gradient(120deg, #7a4b94 0%, #c45ea8 60%, #f08aa8 100%);
+  color: #fff;
+  border-bottom: 3px solid #3b2f4a;
+}
+.cb-head__cat { background: #fff; border: 2px solid #3b2f4a; border-radius: 12px; padding: 3px 4px; display: grid; }
+.cb-head__text { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+.cb-head__text strong { font-size: 18px; font-weight: 900; letter-spacing: 0.02em; }
+.cb-head__text small { font-size: 11px; opacity: 0.92; }
+.cb-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 2px solid #fff;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cb-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(122, 75, 148, 0.08) 1px, transparent 0) 0 0 / 14px 14px,
+    #fffafd;
+}
+.cb-msg {
+  max-width: 86%;
+  padding: 10px 12px;
+  border-radius: 14px;
+  font-size: 14.5px;
+  line-height: 1.45;
+  animation: cb-pop 0.35s var(--cb-ease) backwards;
+  word-wrap: break-word;
+}
+@keyframes cb-pop { from { opacity: 0; transform: translateY(8px) scale(0.96); } }
+.cb-msg b { color: var(--cb-navy); }
+.cb-msg--bot { background: #fff; border: 2px solid #e6d8ee; border-bottom-left-radius: 4px; align-self: flex-start; }
+.cb-msg--me { background: var(--cb-primary); color: #fff; border-bottom-right-radius: 4px; align-self: flex-end; }
+.cb-msg--urgent { background: #fde0e0; border-color: #e2373b; }
+.cb-msg--urgent b { color: #a3171b; }
+
+.cb-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.cb-action {
+  display: inline-block;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--cb-primary);
+  background: var(--cb-primary-soft);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  padding: 5px 12px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s;
+}
+.cb-action:hover { border-color: var(--cb-primary); transform: translateY(-1px); }
+.cb-msg--urgent .cb-action { background: #e2373b; color: #fff; }
+
+.cb-typing { display: flex; gap: 4px; padding: 12px 14px; }
+.cb-typing span { width: 7px; height: 7px; background: var(--cb-primary); border-radius: 2px; animation: cb-dot 1s infinite; }
+.cb-typing span:nth-child(2) { animation-delay: 0.15s; }
+.cb-typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes cb-dot { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-5px); opacity: 1; } }
+
+.cb-chips { display: flex; gap: 6px; overflow-x: auto; padding: 8px 12px 2px; scrollbar-width: none; align-items: center; }
+.cb-chips:empty { display: none; }
+.cb-chips__label { font-size: 12px; font-weight: 800; color: #6b6380; white-space: nowrap; }
+.cb-chip {
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 2px solid #e6d8ee;
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 11px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.cb-chip:hover { border-color: var(--cb-primary); color: var(--cb-primary); }
+
+.cb-form { display: flex; gap: 8px; padding: 10px 12px 12px; }
+.cb-input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 16px;
+  padding: 10px 14px;
+  border: 2px solid #e6d8ee;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--cb-text);
+}
+.cb-input:focus { outline: none; border-color: var(--cb-primary); }
+.cb-send {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  border: 2px solid #3b2f4a;
+  background: var(--cb-primary);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #3b2f4a;
+}
+.cb-send:active { transform: translateY(2px); box-shadow: 0 1px 0 #3b2f4a; }
+
+@media (max-width: 480px) {
+  .cb-root:not(.cb-in-app) { --cb-right: 14px; --cb-bottom: 14px; }
+  .cb-launcher { width: 60px; height: 60px; }
+  .cb-panel { bottom: 76px; right: -2px; width: calc(100vw - 24px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cb-root *, .cb-root { animation: none !important; transition: none !important; }
+}
+:root[data-motion='calm'] .cb-root *, :root[data-motion='calm'] .cb-root { animation: none !important; transition: none !important; }

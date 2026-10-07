@@ -5,6 +5,15 @@ El repositorio contiene dos partes que se publican juntas:
 - **Sitio web del proyecto** (`index.html`, `site/`): cuenta el desafío, la propuesta, el prototipo, la validación, los aprendizajes, la propuesta para instituciones públicas y privadas, y los próximos pasos. Su contenido proviene de los informes y actividades del equipo (Hito 2, Tarea 5, Hito 1 y actividades 5–7) y no inventa resultados.
 - **App** (`app/`, `src/`): el prototipo interactivo, publicado en `/app/`.
 
+### Copito, el gatito que responde dudas 🐱
+
+Un chatbot con forma de gato blanco en pixel art, presente en el sitio y en la app (`src/bot/`).
+
+- Responde con una **base de conocimiento propia** (`src/bot/knowledge.ts`): síntomas, cuidados, VPH, controles, emociones, uso de la app y el proyecto. No usa servicios externos ni inventa respuestas.
+- **Detecta señales de alarma** (sangrado abundante, fiebre sobre 38 °C, dolor intenso, mal olor, desmayo) y deriva a urgencias / 131.
+- En la app muestra las **preguntas pendientes** de «Mis preguntas» para responderlas, y si no sabe algo ofrece **guardarlo para el control** o escribir al equipo.
+- El contenido es referencial y debe ser validado por profesionales antes de usarse con pacientes.
+
 Prototipo de app móvil para acompañar a pacientes con **lesiones precancerosas de cuello uterino (VPH)** después de su procedimiento (conización, biopsia), mejorando la comunicación médico–paciente.
 
 > Proyecto del curso Desafíos · Sección 10 – E6 · FCFM Universidad de Chile

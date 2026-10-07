@@ -5,6 +5,7 @@ import { useApp } from './context/AppContext'
 import { currentDoctor } from './data/mock'
 import type { Role } from './types'
 import { Layout } from './components/Layout'
+import { CatBot } from './components/CatBot'
 import { Login } from './pages/Login'
 import { Inicio } from './pages/paciente/Inicio'
 import { Semaforo } from './pages/paciente/Semaforo'
@@ -36,15 +37,18 @@ function PacienteLayout() {
   useReminderNotifications()
   // Mismo orden que la barra del prototipo: inicio, calendario, semáforo, chat, mi plan.
   return (
-    <Layout
-      nav={[
-        { to: '/paciente', label: 'Inicio', icon: Home, end: true },
-        { to: '/paciente/calendario', label: 'Calendario', icon: CalendarDays },
-        { to: '/paciente/semaforo', label: 'Semáforo', icon: Smile },
-        { to: '/paciente/chat', label: 'Chat', icon: MessageCircle, badge: unread },
-        { to: '/paciente/plan', label: 'Mi plan', icon: ClipboardList },
-      ]}
-    />
+    <>
+      <CatBot />
+      <Layout
+        nav={[
+          { to: '/paciente', label: 'Inicio', icon: Home, end: true },
+          { to: '/paciente/calendario', label: 'Calendario', icon: CalendarDays },
+          { to: '/paciente/semaforo', label: 'Semáforo', icon: Smile },
+          { to: '/paciente/chat', label: 'Chat', icon: MessageCircle, badge: unread },
+          { to: '/paciente/plan', label: 'Mi plan', icon: ClipboardList },
+        ]}
+      />
+    </>
   )
 }
 

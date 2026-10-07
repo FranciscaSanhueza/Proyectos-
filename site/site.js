@@ -1,4 +1,5 @@
 // Interactividad del sitio web de Cérvix-B (sin dependencias).
+import { mountCatBot } from '../src/bot/widget.ts'
 
 const $ = (s, el = document) => el.querySelector(s)
 const $$ = (s, el = document) => [...el.querySelectorAll(s)]
@@ -38,7 +39,30 @@ const sectionObserver = new IntersectionObserver(
 )
 $$('main section[id]').forEach((s) => sectionObserver.observe(s))
 
+/* ---------- Barra de progreso de lectura ---------- */
+
+const progress = document.createElement('div')
+progress.className = 'progress'
+progress.setAttribute('aria-hidden', 'true')
+document.body.prepend(progress)
+const updateProgress = () => {
+  const max = document.documentElement.scrollHeight - innerHeight
+  progress.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`
+}
+addEventListener('scroll', updateProgress, { passive: true })
+addEventListener('resize', updateProgress)
+updateProgress()
+
 /* ---------- Aparición al hacer scroll y contadores ---------- */
+
+// Las tarjetas de estas grillas aparecen una tras otra.
+const STAGGER = ['.stats', '.problems', '.quotes', '.needs__grid', '.pillars', '.decisions__grid', '.status-grid', '.learnings', '.actors', '.risks__grid', '.roadmap', '.team', '.evolution', '.journey', '.artifacts']
+STAGGER.forEach((sel) =>
+  $$(sel).forEach((grid) => {
+    grid.classList.add('stagger')
+    ;[...grid.children].forEach((child, i) => child.style.setProperty('--i', String(i)))
+  }),
+)
 
 const revealObserver = new IntersectionObserver(
   (entries) => {
@@ -50,7 +74,7 @@ const revealObserver = new IntersectionObserver(
   },
   { threshold: 0.12 },
 )
-$$('.reveal').forEach((el) => revealObserver.observe(el))
+$$('.reveal, .stagger').forEach((el) => revealObserver.observe(el))
 
 const fmt = new Intl.NumberFormat('es-CL')
 const countObserver = new IntersectionObserver(
@@ -77,6 +101,35 @@ const countObserver = new IntersectionObserver(
   { threshold: 0.6 },
 )
 $$('.count').forEach((el) => countObserver.observe(el))
+
+/* ---------- Parallax suave en el hero ---------- */
+
+if (!reduceMotion) {
+  const layers = [
+    [$('.blob--1'), 0.18],
+    [$('.blob--2'), -0.12],
+    [$('.hero__phones'), -0.08],
+  ]
+  let ticking = false
+  addEventListener(
+    'scroll',
+    () => {
+      if (ticking || scrollY > innerHeight * 1.2) return
+      ticking = true
+      requestAnimationFrame(() => {
+        layers.forEach(([el, k]) => el && (el.style.transform = `translate3d(0, ${scrollY * k}px, 0)`))
+        ticking = false
+      })
+    },
+    { passive: true },
+  )
+}
+
+/** Cambio de contenido con transición nativa del navegador cuando existe. */
+const smoothly = (update) => {
+  if (!reduceMotion && document.startViewTransition) document.startViewTransition(update)
+  else update()
+}
 
 /* ---------- Demo del semáforo ---------- */
 
@@ -184,15 +237,26 @@ const stageImg = $('#stage-img')
 const thumbs = $('#thumbs')
 const show = (i) => {
   const s = SCREENS[set][i]
-  stageImg.classList.add('is-swapping')
-  setTimeout(() => {
+  const swap = () => {
     stageImg.src = `./img/app-${s.img}.webp`
     stageImg.alt = `Pantalla de la app: ${s.t}`
     $('#stage-title').textContent = s.t
     $('#stage-text').textContent = s.d
-    stageImg.classList.remove('is-swapping')
-  }, reduceMotion ? 0 : 180)
-  $$('button', thumbs).forEach((b, j) => b.classList.toggle('is-active', i === j))
+    $$('button', thumbs).forEach((b, j) => b.classList.toggle('is-active', i === j))
+  }
+  smoothly(swap)
+}
+
+// Inclinación 3D suave del teléfono al mover el mouse.
+const stagePhone = $('.phone--stage')
+if (!reduceMotion && matchMedia('(hover: hover)').matches) {
+  stagePhone.addEventListener('mousemove', (e) => {
+    const r = stagePhone.getBoundingClientRect()
+    const x = (e.clientX - r.left) / r.width - 0.5
+    const y = (e.clientY - r.top) / r.height - 0.5
+    stagePhone.style.transform = `perspective(900px) rotateY(${x * 10}deg) rotateX(${-y * 8}deg)`
+  })
+  stagePhone.addEventListener('mouseleave', () => (stagePhone.style.transform = ''))
 }
 const renderThumbs = () => {
   thumbs.innerHTML = ''
@@ -221,17 +285,19 @@ renderThumbs()
 /* ---------- Público / privado ---------- */
 
 $$('.switch__btn').forEach((btn) =>
-  btn.addEventListener('click', () => {
-    $$('.switch__btn').forEach((b) => {
-      b.classList.toggle('is-active', b === btn)
-      b.setAttribute('aria-selected', String(b === btn))
-    })
-    $$('.inst').forEach((p) => {
-      const on = p.dataset.panel === btn.dataset.inst
-      p.hidden = !on
-      if (on) $$('.reveal', p).forEach((el) => el.classList.add('is-visible'))
-    })
-  }),
+  btn.addEventListener('click', () =>
+    smoothly(() => {
+      $$('.switch__btn').forEach((b) => {
+        b.classList.toggle('is-active', b === btn)
+        b.setAttribute('aria-selected', String(b === btn))
+      })
+      $$('.inst').forEach((p) => {
+        const on = p.dataset.panel === btn.dataset.inst
+        p.hidden = !on
+        if (on) $$('.reveal', p).forEach((el) => el.classList.add('is-visible'))
+      })
+    }),
+  ),
 )
 
 /* ---------- Equipo ---------- */
@@ -264,3 +330,7 @@ $$('[data-lightbox]').forEach((fig) => {
 const closeLb = () => (lb.hidden = true)
 lb.addEventListener('click', (e) => e.target !== $('img', lb) && closeLb())
 addEventListener('keydown', (e) => e.key === 'Escape' && closeLb())
+
+/* ---------- Copito, el gatito que responde dudas ---------- */
+
+mountCatBot({ audience: 'sitio' })

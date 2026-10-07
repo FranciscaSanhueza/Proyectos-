@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Bell, BookOpen, ClipboardCheck, ClipboardList, Flower2, MessageCircleQuestion, Route, Settings, ShieldCheck } from 'lucide-react'
-import { Card, SectionTitle } from '../../components/ui'
+import { Card, SectionTitle, SwitchProfileButton } from '../../components/ui'
 import { LevelFace } from '../../components/LevelFace'
 import { KIND_LABEL } from '../../components/CalendarMonth'
 import { SupportCard } from '../../components/Support'
@@ -57,9 +57,12 @@ export function Inicio() {
             <h1>{patient.name.split(' ')[0]} 🌷</h1>
             <p className="hero__sub">Semana {recoveryWeek(plan)} de tu recuperación</p>
           </div>
-          <button className="icon-btn icon-btn--glass" onClick={() => navigate('/paciente/ajustes')} aria-label="Ajustes">
-            <Settings size={20} />
-          </button>
+          <div className="hero__actions">
+            <SwitchProfileButton />
+            <button className="icon-btn icon-btn--glass" onClick={() => navigate('/paciente/ajustes')} aria-label="Ajustes">
+              <Settings size={20} />
+            </button>
+          </div>
         </div>
         <div className="hero__progress">
           <ProgressRing value={days / RECOVERY_DAYS}>

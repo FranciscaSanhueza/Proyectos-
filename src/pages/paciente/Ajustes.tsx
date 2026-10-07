@@ -160,7 +160,7 @@ export function Ajustes() {
       <SectionTitle>Cuenta</SectionTitle>
       <div className="stack">
         <button className="btn btn--ghost btn--block" onClick={() => { logout(); navigate('/') }}>
-          <LogOut size={18} /> Cerrar sesión
+          <LogOut size={18} /> Cerrar sesión / cambiar perfil
         </button>
         <button className="btn btn--ghost btn--block" onClick={resetDemo}>
           <RotateCcw size={18} /> Restablecer datos de ejemplo

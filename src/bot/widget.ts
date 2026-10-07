@@ -1,4 +1,4 @@
-// Widget de chat de Copito, sin frameworks: se usa igual en el sitio web
+// Widget de chat de Kitty, sin frameworks: se usa igual en el sitio web
 // (JavaScript simple) y en la app (montado desde React).
 import './widget.css'
 import { catSvg } from './cat'
@@ -27,15 +27,15 @@ export function mountCatBot(opts: CatBotOptions): () => void {
   const root = document.createElement('div')
   root.className = `cb-root ${opts.className ?? ''}`
   root.innerHTML = `
-    <button class="cb-launcher" type="button" aria-label="Abrir chat con Copito" aria-expanded="false">
+    <button class="cb-launcher" type="button" aria-label="Abrir chat con Kitty" aria-expanded="false">
       <span class="cb-launcher__cat">${catSvg(52)}</span>
       <span class="cb-hint">¿Dudas? ¡Miau! 🐾</span>
     </button>
-    <section class="cb-panel" role="dialog" aria-label="Chat con Copito" hidden>
+    <section class="cb-panel" role="dialog" aria-label="Chat con Kitty" hidden>
       <header class="cb-head">
         <span class="cb-head__cat">${catSvg(46)}</span>
         <div class="cb-head__text">
-          <strong>Copito</strong>
+          <strong>Kitty</strong>
           <small>Respuestas referenciales · no reemplaza a tu equipo</small>
         </div>
         <button class="cb-close" type="button" aria-label="Cerrar chat">×</button>
@@ -134,7 +134,7 @@ export function mountCatBot(opts: CatBotOptions): () => void {
     })
   }
 
-  /** Simula que Copito escribe (boca abierta + puntos) antes de responder. */
+  /** Simula que Kitty escribe (boca abierta + puntos) antes de responder. */
   function ask(q: string) {
     const text = q.trim()
     if (!text || busy) return
@@ -172,7 +172,7 @@ export function mountCatBot(opts: CatBotOptions): () => void {
     const pending = opts.pendingQuestions?.() ?? []
     addBot({
       text:
-        '¡Miau! Soy **Copito** 🐾, el gatito de Cérvix-B.\n\n' +
+        '¡Miau! Soy **Kitty** 🐾, el gatito de Cérvix-B.\n\n' +
         (opts.audience === 'app'
           ? 'Puedo responder dudas sobre tu recuperación, el VPH y cómo usar la app. Si notas algo grave, te diré que vayas a urgencias.'
           : 'Puedo contarte de qué se trata el proyecto, cómo funciona la app y resolver dudas frecuentes.'),

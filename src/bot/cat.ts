@@ -1,4 +1,4 @@
-// Copito: gatito blanco en pixel art (20 × 16), dibujado con rectángulos SVG.
+// Kitty: gatito blanco en pixel art (20 × 16), dibujado con rectángulos SVG.
 // Leyenda: o contorno · w blanco · s sombra · p rosado · e ojo · c collar · y cascabel
 
 const GRID = [
@@ -31,7 +31,7 @@ const COLORS: Record<string, string> = {
 }
 
 /** SVG del gato. Los ojos parpadean, la cola se mueve y la boca se abre al «hablar». */
-export function catSvg(size = 48, title = 'Copito, el gato de Cérvix-B'): string {
+export function catSvg(size = 48, title = 'Kitty, el gato de Cérvix-B'): string {
   const body: string[] = []
   const tail: string[] = []
   const eyes: string[] = []

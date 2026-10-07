@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router-dom'
-import { BellRing, Check, ClipboardCheck, LogOut, MessageCircle, ShieldAlert, UserPlus, Users } from 'lucide-react'
+import { BellRing, Check, ClipboardCheck, MessageCircle, ShieldAlert, UserPlus, Users } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { currentDoctor } from '../../data/mock'
-import { Card, SectionTitle } from '../../components/ui'
+import { Card, SectionTitle, SwitchProfileButton } from '../../components/ui'
 import { LevelFace } from '../../components/LevelFace'
 import type { Level } from '../../types'
 import { LEVEL_INFO, currentLevel, formatDateTime, surveyStatus } from '../../utils'
 
 export function Panel() {
-  const { patients, responses, messages, plans, alerts, reviewAlert, logout } = useApp()
+  const { patients, responses, messages, plans, alerts, reviewAlert } = useApp()
   const navigate = useNavigate()
 
   const active = patients.filter((p) => p.status === 'activa')
@@ -41,9 +41,7 @@ export function Panel() {
             <h1>{currentDoctor.name}</h1>
             <p className="hero__sub">{currentDoctor.role} · {active.length} pacientes en seguimiento</p>
           </div>
-          <button className="icon-btn icon-btn--glass" onClick={() => { logout(); navigate('/') }} aria-label="Cerrar sesión">
-            <LogOut size={20} />
-          </button>
+          <SwitchProfileButton />
         </div>
         <div className="stats">
           {(['rojo', 'amarillo', 'verde'] as Level[]).map((l) => (

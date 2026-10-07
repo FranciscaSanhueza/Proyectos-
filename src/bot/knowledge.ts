@@ -1,8 +1,8 @@
-// Base de conocimiento de Copito.
+// Base de conocimiento de Kitty.
 //
 // Contenido referencial, coherente con la app y los informes del equipo.
 // Debe ser revisado por profesionales de salud antes de usarse con pacientes
-// reales. Copito no diagnostica: orienta y deriva al equipo de salud.
+// reales. Kitty no diagnostica: orienta y deriva al equipo de salud.
 
 export type Audience = 'sitio' | 'app'
 
@@ -10,7 +10,7 @@ export interface BotAction {
   label: string
   /** Enlace (en la app, rutas tipo «#/paciente/semaforo»). */
   href?: string
-  /** Envía esta pregunta a Copito. */
+  /** Envía esta pregunta a Kitty. */
   ask?: string
   /** Guarda la pregunta en «Mis preguntas» (solo app). */
   save?: boolean
@@ -33,12 +33,12 @@ export const ENTRIES: Entry[] = [
   {
     id: 'hola',
     keys: ['hola', 'buenas', 'buenos dias', 'buenas tardes', 'holi', 'hey', 'alo'],
-    text: '¡Miau! 🐾 Hola, soy **Copito**. Pregúntame sobre tu recuperación, el VPH o cómo usar Cérvix-B.',
+    text: '¡Miau! 🐾 Hola, soy **Kitty**. Pregúntame sobre tu recuperación, el VPH o cómo usar Cérvix-B.',
   },
   {
     id: 'quien',
-    keys: ['quien eres', 'que eres', 'como te llamas', 'tu nombre', 'eres un bot', 'eres real', 'copito'],
-    text: 'Soy **Copito**, el gatito de Cérvix-B 🐱. Respondo dudas frecuentes con información referencial. No soy médico: ante cualquier duda sobre tu caso, tu equipo de salud tiene la última palabra.',
+    keys: ['quien eres', 'que eres', 'como te llamas', 'tu nombre', 'eres un bot', 'eres real', 'kitty'],
+    text: 'Soy **Kitty**, el gatito de Cérvix-B 🐱. Respondo dudas frecuentes con información referencial. No soy médico: ante cualquier duda sobre tu caso, tu equipo de salud tiene la última palabra.',
   },
   {
     id: 'gracias',
@@ -274,7 +274,12 @@ export const ENTRIES: Entry[] = [
   {
     id: 'codigo',
     keys: ['codigo', 'clave', 'contrasena', 'entrar', 'ingresar', 'login', 'acceso', 'rut'],
-    text: 'Para entrar usas tu **RUT** y el **código** que te entrega tu médico en la consulta. Si lo perdiste, pídeselo a tu equipo de salud. En el prototipo puedes usar «Usar paciente de prueba».',
+    text: 'Para entrar usas tu **RUT** y el **código** que te entrega tu médico en la consulta. Si lo perdiste, pídeselo a tu equipo de salud. En el prototipo puedes tocar «Paciente» o «Profesional» en la pantalla de inicio, y volver con **Cambiar perfil**.',
+  },
+  {
+    id: 'perfil',
+    keys: ['cambiar perfil', 'cambiar de perfil', 'vista medico', 'vista del medico', 'modo medico', 'profesional', 'cerrar sesion', 'volver al inicio'],
+    text: 'Para pasar de la vista de paciente a la del profesional (o al revés), toca **Cambiar perfil** arriba en la pantalla de Inicio. Vuelves a la pantalla de ingreso y eliges «Paciente» o «Profesional» 🔁.',
   },
   {
     id: 'privacidad',
@@ -309,7 +314,7 @@ export const ENTRIES: Entry[] = [
   {
     id: 'probar',
     keys: ['probar', 'prototipo', 'descargar', 'usar la app', 'donde esta la app', 'link'],
-    text: 'Puedes probar el prototipo en tu navegador: entra con «Usar paciente de prueba» o «Soy profesional de salud». Todos los datos son ficticios 📱.',
+    text: 'Puedes probar el prototipo en tu navegador: en la pantalla de inicio elige «Paciente» o «Profesional», y usa **Cambiar perfil** para pasar de una vista a otra. Todos los datos son ficticios 📱.',
     actions: { sitio: [{ label: 'Abrir la app', href: './app/' }] },
     only: 'sitio',
   },

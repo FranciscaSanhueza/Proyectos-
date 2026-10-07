@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, Repeat2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { initials } from '../utils'
+import { useApp } from '../context/AppContext'
 
 export function PageHeader({
   title,
@@ -73,4 +74,23 @@ export function SectionTitle({ children, action }: { children: ReactNode; action
 
 export function Empty({ children }: { children: ReactNode }) {
   return <p className="empty">{children}</p>
+}
+
+/** Vuelve a la pantalla de ingreso para entrar con otro perfil (paciente o médico). */
+export function SwitchProfileButton({ variant = 'glass' }: { variant?: 'glass' | 'ghost' }) {
+  const { logout } = useApp()
+  const navigate = useNavigate()
+  return (
+    <button
+      className={`switch-profile switch-profile--${variant}`}
+      onClick={() => {
+        logout()
+        navigate('/', { replace: true })
+      }}
+      title="Volver al inicio para entrar como paciente o como profesional"
+    >
+      <Repeat2 size={18} />
+      <span>Cambiar perfil</span>
+    </button>
+  )
 }

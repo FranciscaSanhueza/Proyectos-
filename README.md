@@ -5,7 +5,7 @@ El repositorio contiene dos partes que se publican juntas:
 - **Sitio web del proyecto** (`index.html`, `site/`): cuenta el desafío, la propuesta, el prototipo, la validación, los aprendizajes, la propuesta para instituciones públicas y privadas, y los próximos pasos. Su contenido proviene de los informes y actividades del equipo (Hito 2, Tarea 5, Hito 1 y actividades 5–7) y no inventa resultados.
 - **App** (`app/`, `src/`): el prototipo interactivo, publicado en `/app/`.
 
-### Copito, el gatito que responde dudas 🐱
+### Kitty, el gatito que responde dudas 🐱
 
 Un chatbot con forma de gato blanco en pixel art, presente en el sitio y en la app (`src/bot/`).
 
@@ -75,7 +75,7 @@ npm run dev       # sitio en http://localhost:5173 y app en http://localhost:517
 npm run build     # genera la versión de producción en dist/
 ```
 
-Para probar la vista paciente usa **«Usar paciente de prueba»** (RUT `12.345.678-9`, código `CERVIX1`). Para la vista médica, pulsa **«Soy profesional de salud»**.
+En la pantalla de ingreso, toca **«Paciente»** (María, datos de prueba) o **«Profesional»** (Dra. Camila Rojas). También puedes entrar con RUT `12.345.678-9` y código `CERVIX1`. El botón **«Cambiar perfil»**, arriba en el Inicio de cada vista, vuelve a la pantalla de ingreso para probar la otra.
 
 Los datos son de ejemplo y se guardan en el navegador (`localStorage`).
 

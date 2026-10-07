@@ -21,7 +21,7 @@ export const normalize = (s: string) =>
 const has = (text: string, words: string[]) => words.some((w) => text.includes(w))
 
 /**
- * Señales de alarma: ante la duda, Copito deriva a urgencias. Es preferible
+ * Señales de alarma: ante la duda, Kitty deriva a urgencias. Es preferible
  * una derivación de más que una de menos.
  */
 function isRedFlag(t: string): boolean {

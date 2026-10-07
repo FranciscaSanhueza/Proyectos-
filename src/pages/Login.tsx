@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Heart, Stethoscope } from 'lucide-react'
+import { Heart, Stethoscope, UserRound } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { normalizeRut } from '../utils'
 
@@ -24,10 +24,13 @@ export function Login() {
     navigate('/paciente')
   }
 
-  const demo = () => {
-    setRut(patients[0].rut)
-    setCode(patients[0].code)
-    setError('')
+  const enterAsDemoPatient = () => {
+    login({ role: 'paciente', patientId: patients[0].id })
+    navigate('/paciente')
+  }
+  const enterAsDoctor = () => {
+    login({ role: 'medico' })
+    navigate('/medico')
   }
 
   return (
@@ -39,6 +42,24 @@ export function Login() {
         <h1>¡Bienvenida!</h1>
         <p>Te acompañamos paso a paso durante tu recuperación.</p>
       </div>
+
+      <div className="quick-access">
+        <p className="quick-access__title">Probar el prototipo como…</p>
+        <div className="quick-access__grid">
+          <button className="quick-card" onClick={enterAsDemoPatient}>
+            <span className="quick-card__icon"><UserRound size={24} /></span>
+            <strong>Paciente</strong>
+            <small>María (datos de prueba)</small>
+          </button>
+          <button className="quick-card quick-card--doctor" onClick={enterAsDoctor}>
+            <span className="quick-card__icon"><Stethoscope size={24} /></span>
+            <strong>Profesional</strong>
+            <small>Dra. Camila Rojas</small>
+          </button>
+        </div>
+      </div>
+
+      <p className="login__or">o ingresa con tu código</p>
 
       <form className="login__form" onSubmit={submit}>
         <label htmlFor="rut">Ingresa tu RUT</label>
@@ -52,24 +73,7 @@ export function Login() {
         <button className="btn btn--primary btn--block" type="submit" disabled={!rut || !code}>
           Acceder
         </button>
-        <button type="button" className="link-btn" onClick={demo}>
-          Usar paciente de prueba
-        </button>
       </form>
-
-      <button
-        className="role-card"
-        onClick={() => {
-          login({ role: 'medico' })
-          navigate('/medico')
-        }}
-      >
-        <span className="role-card__icon"><Stethoscope size={22} /></span>
-        <span>
-          <strong>Soy profesional de salud</strong>
-          <small>Configura planes, revisa encuestas y responde dudas</small>
-        </span>
-      </button>
 
       <p className="login__foot">Prototipo académico · Cérvix B · FCFM Universidad de Chile</p>
     </div>

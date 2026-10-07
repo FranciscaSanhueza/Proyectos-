@@ -2,20 +2,562 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#7a4b94" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="Cérvix B" />
+    <title>Cérvix-B · Acompañamiento después del procedimiento</title>
+    <meta
+      name="description"
+      content="Cérvix-B es un prototipo para acompañar a mujeres tratadas por lesiones precancerosas de cuello uterino (NIE I–III) entre el alta y su control: plan personalizado, encuesta semanal, semáforo de síntomas y un canal seguro con su equipo de salud."
+    />
     <link rel="icon" type="image/svg+xml" href="./logo.svg" />
     <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
-    <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
-    <title>Cervix B · Comunicación médico–paciente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <script>
+      // Enlaces antiguos a la app (…/#/paciente) siguen funcionando: se redirigen a /app/.
+      if (location.hash.startsWith('#/')) location.replace('./app/' + location.hash)
+    </script>
+    <link rel="stylesheet" href="./site/site.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <a class="skip" href="#contenido">Saltar al contenido</a>
+
+    <!-- ============ Navegación ============ -->
+    <header class="nav" id="nav">
+      <div class="nav__inner">
+        <a class="brand" href="#inicio" aria-label="Cérvix-B, inicio">
+          <img src="./logo.svg" alt="" width="34" height="34" />
+          <span>Cérvix-B</span>
+        </a>
+        <nav class="nav__links" id="nav-links" aria-label="Secciones">
+          <a href="#desafio">Desafío</a>
+          <a href="#propuesta">Propuesta</a>
+          <a href="#prototipo">Prototipo</a>
+          <a href="#validacion">Validación</a>
+          <a href="#instituciones">Instituciones</a>
+          <a href="#proximos">Próximos pasos</a>
+          <a href="#equipo">Equipo</a>
+        </nav>
+        <a class="btn btn--primary btn--sm nav__cta" href="./app/">Probar la app</a>
+        <button class="nav__toggle" id="nav-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <main id="contenido">
+      <!-- ============ Hero ============ -->
+      <section class="hero" id="inicio">
+        <div class="blob blob--1" aria-hidden="true"></div>
+        <div class="blob blob--2" aria-hidden="true"></div>
+        <div class="container hero__grid">
+          <div class="hero__text reveal">
+            <p class="eyebrow">Pre-cáncer cervicouterino · ¿Qué pasa después del procedimiento?</p>
+            <h1>Una cirugía exitosa no garantiza una <span class="grad">recuperación exitosa</span>.</h1>
+            <p class="lead">
+              Cérvix-B acompaña a mujeres tratadas por lesiones precancerosas de cuello uterino (NIE I–III) desde el alta hasta su
+              control: un plan validado por su médico, una encuesta semanal de 5 minutos, un <b>semáforo de síntomas</b> y un canal
+              seguro con su equipo de salud.
+            </p>
+            <div class="hero__ctas">
+              <a class="btn btn--primary" href="./app/">Probar el prototipo</a>
+              <a class="btn btn--ghost" href="#desafio">Conocer el proyecto ↓</a>
+            </div>
+            <ul class="hero__pills">
+              <li><span class="dot dot--verde"></span> Síntomas esperados</li>
+              <li><span class="dot dot--amarillo"></span> Contacta a tu equipo</li>
+              <li><span class="dot dot--rojo"></span> Acude a urgencias</li>
+            </ul>
+          </div>
+          <div class="hero__phones reveal" aria-hidden="true">
+            <div class="phone phone--back"><img src="./img/app-semaforo.webp" alt="" loading="eager" /></div>
+            <div class="phone phone--front"><img src="./img/app-inicio.webp" alt="" loading="eager" /></div>
+            <div class="float-card float-card--1"><span class="face face--verde"></span> Verde · sigue tu plan</div>
+            <div class="float-card float-card--2">📋 Encuesta semanal · 5 min</div>
+          </div>
+        </div>
+        <p class="container hero__note">Prototipo académico en desarrollo · CD1201 Sección 10 · FCFM, Universidad de Chile</p>
+      </section>
+
+      <!-- ============ 1. Desafío ============ -->
+      <section class="section" id="desafio">
+        <div class="container">
+          <div class="section__head reveal">
+            <span class="step-tag">01 · El desafío</span>
+            <h2>El tratamiento termina en el hospital. <br />La recuperación, en casa y muchas veces sola.</h2>
+            <p>
+              Mujeres de 25 a 44 años tratadas por lesiones precancerosas asociadas al VPH reciben indicaciones generales al alta,
+              tienen poco tiempo para preguntar y enfrentan su recuperación con dudas, miedo y el estigma que rodea al virus.
+            </p>
+          </div>
+
+          <div class="stats reveal">
+            <div class="stat">
+              <strong><span class="count" data-to="15000" data-prefix="~">~15.000</span></strong>
+              <p>casos anuales de lesiones preinvasoras detectados por tamizaje en Chile</p>
+              <small>MINSAL, Guía Clínica AUGE Cáncer Cervicouterino</small>
+            </div>
+            <div class="stat">
+              <strong><span class="count" data-to="1200" data-prefix="~">~1.200</span></strong>
+              <p>casos nuevos de cáncer invasor al año: el pre-cáncer es la gran ventana de prevención</p>
+              <small>MINSAL, Guía Clínica AUGE Cáncer Cervicouterino</small>
+            </div>
+            <div class="stat">
+              <strong><span class="count" data-to="30" data-prefix="&gt;" data-suffix="%">&gt;30%</span></strong>
+              <p>de las lesiones detectadas corresponden a NIE III en todos los grupos de edad estudiados</p>
+              <small>Zúñiga et al., 2022</small>
+            </div>
+            <div class="stat">
+              <strong>15–20 <span class="unit">min</span></strong>
+              <p>dura una consulta en el sistema público, absorbida por procedimientos y fichas</p>
+              <small>Entrevista a matrona, Hito 2</small>
+            </div>
+          </div>
+
+          <div class="split">
+            <div class="reveal">
+              <h3 class="h3">Lo que encontramos</h3>
+              <div class="problems">
+                <article class="problem">
+                  <span class="problem__icon">🏥</span>
+                  <div>
+                    <h4>Abandono tras el alta</h4>
+                    <p>Indicaciones genéricas como «haga reposo» y ningún protocolo de seguimiento en el hogar.</p>
+                  </div>
+                </article>
+                <article class="problem">
+                  <span class="problem__icon">🤫</span>
+                  <div>
+                    <h4>Estigma y pudor</h4>
+                    <p>El tabú del VPH hace que muchas pacientes no pregunten sobre higiene, síntomas o sexualidad.</p>
+                  </div>
+                </article>
+                <article class="problem">
+                  <span class="problem__icon">📱</span>
+                  <div>
+                    <h4>Fuentes poco confiables</h4>
+                    <p>Ante el vacío de información, buscan respuestas en redes sociales como TikTok o grupos de WhatsApp.</p>
+                  </div>
+                </article>
+                <article class="problem">
+                  <span class="problem__icon">⚖️</span>
+                  <div>
+                    <h4>Brecha público–privado</h4>
+                    <p>
+                      El sistema privado ofrece más tiempo y claridad, pero incluso ahí la comunicación puede ocurrir por canales
+                      informales como WhatsApp, sin un canal oficial de la institución.
+                    </p>
+                  </div>
+                </article>
+              </div>
+            </div>
+            <div class="reveal">
+              <h3 class="h3">Voces de la investigación</h3>
+              <div class="quotes">
+                <blockquote class="quote">
+                  <p>Una paciente del sistema público con NIE III sufrió una hemorragia al retomar sus actividades por una indicación que no entendió.</p>
+                  <cite>Paciente, 37 años · sistema público</cite>
+                </blockquote>
+                <blockquote class="quote">
+                  <p>Un error de comunicación del equipo la llevó a creer que su diagnóstico correspondía a un cáncer avanzado.</p>
+                  <cite>Paciente, 55 años · pre-cáncer de útero</cite>
+                </blockquote>
+                <blockquote class="quote">
+                  <p>Con 15 a 20 minutos por consulta no alcanza para dar consejería de calidad.</p>
+                  <cite>Matrona · sistema público</cite>
+                </blockquote>
+              </div>
+              <p class="method">
+                <b>Cómo lo investigamos:</b> revisión bibliográfica, análisis PESTEL, mapas de empatía y entrevistas a 5 pacientes
+                (3 del sistema público y 2 del privado), 3 médicos oncólogos y 1 matrona. Los testimonios se presentan anonimizados.
+              </p>
+            </div>
+          </div>
+
+          <div class="needs reveal">
+            <h3 class="h3 center">Cuatro necesidades que guían el diseño</h3>
+            <div class="needs__grid">
+              <div class="need"><span>🧭</span><h4>Orientación clínica</h4><p>Qué es normal, qué restricciones seguir y cuándo es una alerta.</p></div>
+              <div class="need"><span>🤝</span><h4>Acompañamiento proactivo</h4><p>Que la orientación llegue sin depender de que ella pregunte.</p></div>
+              <div class="need"><span>🛡️</span><h4>Espacio seguro</h4><p>Un canal para dudas íntimas, sin juicio, desde su casa.</p></div>
+              <div class="need"><span>🔒</span><h4>Privacidad garantizada</h4><p>La confidencialidad es condición para que lo use.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 2. Propuesta ============ -->
+      <section class="section section--tint" id="propuesta">
+        <div class="container">
+          <div class="section__head reveal">
+            <span class="step-tag">02 · La propuesta</span>
+            <h2>No reemplaza al médico: <span class="grad">extiende su acompañamiento</span> más allá de la consulta.</h2>
+            <p>Cérvix-B se configura junto al profesional antes del alta y acompaña a la paciente en casa hasta su próximo control.</p>
+          </div>
+
+          <div class="pillars">
+            <article class="pillar reveal">
+              <span class="pillar__num">1</span>
+              <h3>Plan de recuperación personalizado</h3>
+              <p>El médico lo elabora según el procedimiento y las necesidades de cada paciente, y lo valida antes de que se retire de la consulta.</p>
+            </article>
+            <article class="pillar reveal">
+              <span class="pillar__num">2</span>
+              <h3>Encuesta semanal de 5 minutos</h3>
+              <p>Un chequeo breve para registrar síntomas y evolución. Pasamos de un monitoreo diario a uno semanal para no recargar a la paciente.</p>
+            </article>
+            <article class="pillar reveal">
+              <span class="pillar__num">3</span>
+              <h3>Semáforo de síntomas</h3>
+              <p>Verde: síntomas esperados, sigue tu plan. Amarillo: contacta a tu equipo. Rojo: acude a urgencias inmediatamente.</p>
+            </article>
+          </div>
+
+          <!-- Demo interactiva del semáforo -->
+          <div class="demo reveal" id="demo">
+            <div class="demo__text">
+              <h3 class="h3">Pruébalo: ¿tu síntoma es verde, amarillo o rojo?</h3>
+              <p>
+                En la app, la paciente puede consultar un síntoma y recibir una orientación clara. Toca un síntoma de ejemplo:
+                <small>Criterios referenciales, pendientes de validación clínica.</small>
+              </p>
+              <div class="demo__chips" role="group" aria-label="Síntomas de ejemplo"></div>
+            </div>
+            <div class="demo__result" aria-live="polite">
+              <div class="demo__light">
+                <span class="lamp lamp--rojo"></span>
+                <span class="lamp lamp--amarillo"></span>
+                <span class="lamp lamp--verde is-on"></span>
+              </div>
+              <div class="demo__msg">
+                <strong id="demo-title">Elige un síntoma</strong>
+                <p id="demo-advice">Verás qué color le corresponde y qué hacer.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cómo funciona -->
+          <h3 class="h3 center reveal">Cómo funciona</h3>
+          <ol class="journey">
+            <li class="reveal"><span class="journey__icon">🩺</span><h4>En la consulta</h4><p>El médico configura y valida el plan, y entrega un código único para activar la app.</p></li>
+            <li class="reveal"><span class="journey__icon">🏠</span><h4>En casa</h4><p>La paciente revisa su plan, marca sus cuidados y recibe recordatorios.</p></li>
+            <li class="reveal"><span class="journey__icon">📋</span><h4>Cada semana</h4><p>Responde una encuesta breve y su semáforo se actualiza.</p></li>
+            <li class="reveal"><span class="journey__icon">💬</span><h4>Si tiene dudas</h4><p>Consulta la guía de síntomas o escribe a su equipo por un canal seguro.</p></li>
+            <li class="reveal"><span class="journey__icon">📅</span><h4>En el control</h4><p>El equipo conoce su evolución entre el alta y la consulta.</p></li>
+          </ol>
+
+          <!-- Decisiones de diseño -->
+          <div class="decisions reveal">
+            <h3 class="h3">Cuatro decisiones de diseño</h3>
+            <div class="decisions__grid">
+              <div class="decision decision--elim"><b>Eliminar</b><p>El lenguaje técnico y la consulta presencial obligatoria.</p></div>
+              <div class="decision decision--red"><b>Reducir</b><p>La carga: el monitoreo pasa de diario a semanal.</p></div>
+              <div class="decision decision--inc"><b>Incrementar</b><p>La privacidad y la claridad del lenguaje.</p></div>
+              <div class="decision decision--cre"><b>Crear</b><p>El semáforo de síntomas.</p></div>
+            </div>
+          </div>
+
+          <!-- Ideación -->
+          <div class="ideas reveal">
+            <div>
+              <h3 class="h3">¿Por qué una app?</h3>
+              <p>
+                En la lluvia de ideas evaluamos siete alternativas según su factibilidad, impacto y orgullo del equipo (escala de 1 a
+                5). La app con semáforo fue la más completa; la página web y los SMS con preguntas cerradas quedaron como finalistas.
+              </p>
+              <p class="legend"><span class="sw sw--f"></span> Factibilidad <span class="sw sw--i"></span> Impacto</p>
+            </div>
+            <div class="ideas__chart" id="ideas-chart" role="table" aria-label="Evaluación de ideas"></div>
+          </div>
+
+          <!-- Soluciones existentes -->
+          <div class="matrix reveal">
+            <h3 class="h3">Lo que ya existe y lo que falta</h3>
+            <p>Comparamos soluciones disponibles con los atributos que exige el problema. Ninguna cubre la etapa preinvasora con claridad, seguimiento proactivo y confidencialidad a la vez.</p>
+            <div class="matrix__scroll">
+              <table class="matrix__table" id="matrix-table"></table>
+            </div>
+            <p class="legend">
+              <span class="cell-key cell--si"></span> Cumple <span class="cell-key cell--parcial"></span> Cumple parcialmente
+              <span class="cell-key cell--no"></span> No cumple
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 3. Prototipo ============ -->
+      <section class="section" id="prototipo">
+        <div class="container">
+          <div class="section__head reveal">
+            <span class="step-tag">03 · El prototipo</span>
+            <h2>De un bosquejo a una app que se puede usar.</h2>
+            <p>Iteramos desde un flujo en Canva hasta una aplicación web instalable con vista para la paciente y para el equipo de salud.</p>
+          </div>
+
+          <ol class="evolution reveal">
+            <li><b>Bosquejo y póster</b><span>Flujo de 7 pantallas en Canva y póster del Hito 3.</span></li>
+            <li><b>Prototipo web interactivo</b><span>Primera versión navegable para recorrer la experiencia.</span></li>
+            <li><b>App actual</b><span>Vista paciente y vista médica, semáforo, encuesta, plan, chat y actividades de apoyo.</span></li>
+          </ol>
+
+          <div class="gallery reveal">
+            <div class="gallery__tabs" role="tablist" aria-label="Vistas del prototipo">
+              <button role="tab" aria-selected="true" class="gtab is-active" data-set="paciente">👩 Paciente</button>
+              <button role="tab" aria-selected="false" class="gtab" data-set="medico">🩺 Equipo de salud</button>
+            </div>
+            <div class="gallery__stage">
+              <div class="phone phone--stage"><img id="stage-img" src="./img/app-inicio.webp" alt="" /></div>
+              <div class="gallery__info">
+                <h3 id="stage-title">Inicio</h3>
+                <p id="stage-text"></p>
+                <div class="gallery__thumbs" id="thumbs"></div>
+                <a class="btn btn--primary" href="./app/">Abrir la app ↗</a>
+                <p class="tiny">Entra con «Usar paciente de prueba» o «Soy profesional de salud». Todos los datos son ficticios.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="artifacts reveal">
+            <figure class="artifact" data-lightbox="./img/poster.webp">
+              <img src="./img/poster.webp" alt="Póster del proyecto: Pre-cáncer cervicouterino, ¿qué pasa después del procedimiento?" loading="lazy" />
+              <figcaption>Póster del Hito 3 (toca para ampliar)</figcaption>
+            </figure>
+            <figure class="artifact" data-lightbox="./img/wireframe.webp">
+              <img src="./img/wireframe.webp" alt="Bosquejo del flujo de pantallas en Canva" loading="lazy" />
+              <figcaption>Bosquejo del flujo en Canva</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 4. Validación, resultados y aprendizajes ============ -->
+      <section class="section section--tint" id="validacion">
+        <div class="container">
+          <div class="section__head reveal">
+            <span class="step-tag">04 · Validación y resultados</span>
+            <h2>Lo que sabemos, lo que aprendimos <br />y lo que aún falta probar.</h2>
+          </div>
+
+          <div class="status-grid">
+            <article class="status reveal">
+              <span class="badge badge--ok">✓ Validado</span>
+              <h3>El problema</h3>
+              <p>Entrevistas, mapas de empatía, análisis PESTEL y matriz del problema confirmaron la brecha de información y comunicación durante la recuperación en casa.</p>
+            </article>
+            <article class="status reveal">
+              <span class="badge badge--ok">✓ Retroalimentación</span>
+              <h3>La idea del semáforo</h3>
+              <p>
+                En entrevistas, 4 pacientes diagnosticadas con NIE apoyaron el semáforo porque calma la incertidumbre y evitaría viajes
+                innecesarios. Pidieron encuestas más cortas, más confianza en la app, contenido educativo (por ejemplo, alimentación) y un chat seguro.
+              </p>
+            </article>
+            <article class="status status--pending reveal">
+              <span class="badge badge--pending">⏳ Pendiente</span>
+              <h3>Comprensión y usabilidad</h3>
+              <p>Aún no probamos el prototipo con pacientes. El experimento está diseñado y sus metas se muestran abajo.</p>
+            </article>
+            <article class="status status--pending reveal">
+              <span class="badge badge--pending">⏳ Pendiente</span>
+              <h3>Criterios clínicos</h3>
+              <p>Los umbrales del semáforo deben ser revisados por matronas y gineco-oncólogos antes de usarse con pacientes.</p>
+            </article>
+          </div>
+
+          <div class="experiment reveal">
+            <div>
+              <h3 class="h3">El experimento que viene</h3>
+              <p><b>Hipótesis:</b> al usar Cérvix-B frente a distintos escenarios postoperatorios, las pacientes podrán identificar si un síntoma es esperable o una señal de alerta, y elegir la acción correcta sin ayuda externa.</p>
+              <ol class="steps">
+                <li>Mujeres de 25 a 44 años con el perfil de las pacientes usan el prototipo en su celular, sin explicación previa.</li>
+                <li>Resuelven cuatro situaciones ficticias de recuperación.</li>
+                <li>Registramos aciertos, solicitudes de ayuda y tiempo.</li>
+              </ol>
+            </div>
+            <div class="goals">
+              <p class="goals__title">Metas (no son resultados)</p>
+              <div class="goal"><div class="ring" style="--p: 80"><span>≥80%</span></div><p>identifica el síntoma y la acción correcta</p></div>
+              <div class="goal"><div class="ring" style="--p: 80"><span>≥80%</span></div><p>completa la tarea sin pedir ayuda</p></div>
+              <div class="goal"><div class="ring ring--time"><span>≤5 min</span></div><p>y máximo 3 pasos principales</p></div>
+            </div>
+          </div>
+
+          <div class="results reveal">
+            <div class="results__box">
+              <h3>Resultados</h3>
+              <p>Todavía no tenemos resultados de pruebas con usuarias. Lo publicaremos aquí cuando las realicemos, tal como resulten.</p>
+            </div>
+            <div>
+              <h3 class="h3">Aprendizajes</h3>
+              <ul class="learnings">
+                <li><b>El quiebre ocurre al alta.</b> La información puede entregarse, pero no queda disponible de forma tangible cuando la paciente la necesita.</li>
+                <li><b>Menos es más.</b> Las pacientes prefieren soluciones que no les quiten tiempo: por eso el chequeo es semanal y apuntamos a 3 pasos o menos.</li>
+                <li><b>Un canal oficial importa.</b> Incluso con buena atención, la comunicación por WhatsApp implica riesgos de privacidad para pacientes y profesionales.</li>
+                <li><b>Privacidad, claridad y revisión profesional</b> de los criterios clínicos son centrales, no complementos.</li>
+                <li><b>La contención emocional también es parte del cuidado:</b> incorporamos apoyo cuando la paciente reporta mucha preocupación.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 5. Instituciones ============ -->
+      <section class="section" id="instituciones">
+        <div class="container">
+          <div class="section__head reveal">
+            <span class="step-tag">05 · Para instituciones de salud</span>
+            <h2>Un puente entre el hospital y el hogar, <span class="grad">en el sistema público y en el privado</span>.</h2>
+            <p>Así podría integrarse Cérvix-B en el flujo de atención de cada tipo de institución. Es una propuesta: su implementación requiere validación clínica y un piloto.</p>
+          </div>
+
+          <div class="switch reveal" role="tablist" aria-label="Tipo de institución">
+            <button role="tab" aria-selected="true" class="switch__btn is-active" data-inst="publico">🏛️ Sistema público</button>
+            <button role="tab" aria-selected="false" class="switch__btn" data-inst="privado">🏢 Sistema privado</button>
+          </div>
+
+          <div class="inst" data-panel="publico">
+            <div class="inst__col reveal">
+              <h3>El contexto</h3>
+              <ul>
+                <li>Consultas de 15 a 20 minutos, sin espacio para consejería detallada.</li>
+                <li>Alta con indicaciones generales y sin protocolo de seguimiento domiciliario.</li>
+                <li>Un sistema reactivo: se registra el cáncer avanzado, pero no se aprovecha la etapa de lesiones preinvasoras.</li>
+              </ul>
+            </div>
+            <div class="inst__col reveal">
+              <h3>Cómo encaja</h3>
+              <ul>
+                <li>Se activa en el box, antes del alta, con un código entregado por el equipo de la Unidad de Patología Cervical.</li>
+                <li>El médico valida el plan; la paciente lo tiene siempre disponible en su celular.</li>
+                <li>El equipo ve alertas amarillas y rojas y la evolución entre el alta y el control.</li>
+              </ul>
+            </div>
+            <div class="inst__col inst__col--value reveal">
+              <h3>Valor que busca aportar</h3>
+              <ul>
+                <li>Pacientes que saben qué es normal y cuándo consultar.</li>
+                <li>Menos consultas por dudas que podrían resolverse con información clara.</li>
+                <li>Registro de la etapa NIE I–III para pasar de un modelo reactivo a uno proactivo.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="inst" data-panel="privado" hidden>
+            <div class="inst__col reveal">
+              <h3>El contexto</h3>
+              <ul>
+                <li>Más tiempo por consulta y seguimiento más fluido.</li>
+                <li>Aun así, la comunicación puede depender de WhatsApp u otros canales informales.</li>
+                <li>El pudor y el estigma del VPH siguen presentes.</li>
+              </ul>
+            </div>
+            <div class="inst__col reveal">
+              <h3>Cómo encaja</h3>
+              <ul>
+                <li>Un canal oficial, confidencial y trazable que reemplaza los mensajes informales.</li>
+                <li>Planes personalizados y recordatorios con la identidad de la institución.</li>
+                <li>Resumen de la evolución de cada paciente para el control.</li>
+              </ul>
+            </div>
+            <div class="inst__col inst__col--value reveal">
+              <h3>Valor que busca aportar</h3>
+              <ul>
+                <li>Protección para pacientes y profesionales frente a canales no oficiales.</li>
+                <li>Continuidad de la atención entre la consulta y el hogar.</li>
+                <li>Una experiencia de acompañamiento más cercana y ordenada.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="actors reveal">
+            <div class="actor"><span>👩</span><h4>Paciente</h4><p>Claridad, tranquilidad y un espacio seguro para preguntar, sin exponerse.</p></div>
+            <div class="actor"><span>🩺</span><h4>Equipo clínico</h4><p>Panel con alertas, perfiles personalizables, notas privadas y preguntas de la paciente antes del control.</p></div>
+            <div class="actor"><span>🏥</span><h4>Institución</h4><p>Seguimiento estandarizado y datos de la etapa preventiva.</p></div>
+          </div>
+
+          <div class="risks reveal">
+            <h3 class="h3">Riesgos que consideramos</h3>
+            <div class="risks__grid">
+              <div class="risk">
+                <b>Sobrecarga del personal o mal uso del chat</b>
+                <p>El profesional puede sumarse o retirarse del chat cuando la duda se resuelve o el tratamiento termina.</p>
+              </div>
+              <div class="risk">
+                <b>Que un registro formal cohíba a la paciente</b>
+                <p>Acceso con un código único entregado a mano por su médico, sin crear cuentas con datos innecesarios.</p>
+              </div>
+              <div class="risk">
+                <b>Datos de salud sensibles</b>
+                <p>Cumplimiento ético y legal de privacidad, y el software de apoyo clínico debe validarse ante la autoridad sanitaria (ISP).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 6. Próximos pasos ============ -->
+      <section class="section section--tint" id="proximos">
+        <div class="container">
+          <div class="section__head reveal">
+            <span class="step-tag">06 · Próximos pasos</span>
+            <h2>Lo que haremos a continuación</h2>
+          </div>
+          <ol class="roadmap">
+            <li class="reveal"><span class="roadmap__when">Corto plazo</span><h4>Validación clínica</h4><p>Revisar los criterios del semáforo con matronas y gineco-oncólogos de Unidades de Patología Cervical.</p></li>
+            <li class="reveal"><span class="roadmap__when">Corto plazo</span><h4>Pruebas con pacientes</h4><p>Medir comprensión y usabilidad con los cuatro escenarios, registrar lo que ocurra e iterar el prototipo.</p></li>
+            <li class="reveal"><span class="roadmap__when">Mediano plazo</span><h4>Plataforma segura</h4><p>Un servidor con inicio de sesión seguro para compartir datos entre paciente y equipo, y avisos con la app cerrada.</p></li>
+            <li class="reveal"><span class="roadmap__when">Largo plazo</span><h4>Plan piloto</h4><p>Buscar alianzas con fundaciones dedicadas al cáncer de cuello uterino en la Región Metropolitana para un piloto en un entorno clínico real.</p></li>
+          </ol>
+          <div class="cta-band reveal">
+            <div>
+              <h3>¿Trabajas en salud y quieres ayudarnos a validar?</h3>
+              <p>Prueba el prototipo y cuéntanos qué cambiarías. Tu mirada clínica es clave para el semáforo.</p>
+            </div>
+            <a class="btn btn--white" href="./app/">Probar Cérvix-B</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 7. Equipo ============ -->
+      <section class="section" id="equipo">
+        <div class="container">
+          <div class="section__head reveal">
+            <span class="step-tag">07 · Equipo</span>
+            <h2>Equipo Cérvix-B</h2>
+            <p>CD1201 · Sección 10 · Facultad de Ciencias Físicas y Matemáticas, Universidad de Chile</p>
+          </div>
+          <div class="team reveal" id="team"></div>
+          <p class="center closing reveal">«Buscamos que ninguna mujer enfrente sola un momento tan vulnerable.»</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__grid">
+        <div>
+          <a class="brand brand--light" href="#inicio"><img src="./logo.svg" alt="" width="30" height="30" /><span>Cérvix-B</span></a>
+          <p class="footer__disclaimer">
+            Prototipo académico. No reemplaza la evaluación médica ni es una herramienta clínica implementada. Los criterios del
+            semáforo son referenciales y están pendientes de validación por especialistas. Ante una urgencia, llama al 131.
+          </p>
+        </div>
+        <div>
+          <h4>Referencias</h4>
+          <ul class="refs">
+            <li>Ministerio de Salud de Chile (2015). Guías Clínicas AUGE: Cáncer Cérvico Uterino.</li>
+            <li>Zúñiga Saldivia, L. et al. (2022). Distribución etaria e incidencia de lesiones preinvasoras y cáncer cérvico uterino, 2009–2019. Revista Confluencia, 5(2).</li>
+            <li>Bruni, L. et al. (2023). Human papillomavirus and related diseases report: Chile. ICO/IARC HPV Information Centre.</li>
+            <li>Neumann, F. T. y Olea-Gangas, C. (2022). Cáncer cervicouterino y lesiones preinvasoras de cuello. Rev. Hosp. Clín. Univ. Chile, 33.</li>
+            <li>Organización Mundial de la Salud (2024). Papilomavirus humano y cáncer.</li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <button class="to-top" id="to-top" aria-label="Volver arriba">↑</button>
+    <div class="lightbox" id="lightbox" hidden><img alt="" /><button aria-label="Cerrar">×</button></div>
+
+    <script type="module" src="./site/site.js"></script>
   </body>
 </html>

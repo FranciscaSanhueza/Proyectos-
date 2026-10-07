@@ -1,5 +1,10 @@
 # Cérvix B · App de seguimiento post-procedimiento
 
+El repositorio contiene dos partes que se publican juntas:
+
+- **Sitio web del proyecto** (`index.html`, `site/`): cuenta el desafío, la propuesta, el prototipo, la validación, los aprendizajes, la propuesta para instituciones públicas y privadas, y los próximos pasos. Su contenido proviene de los informes y actividades del equipo (Hito 2, Tarea 5, Hito 1 y actividades 5–7) y no inventa resultados.
+- **App** (`app/`, `src/`): el prototipo interactivo, publicado en `/app/`.
+
 Prototipo de app móvil para acompañar a pacientes con **lesiones precancerosas de cuello uterino (VPH)** después de su procedimiento (conización, biopsia), mejorando la comunicación médico–paciente.
 
 > Proyecto del curso Desafíos · Sección 10 – E6 · FCFM Universidad de Chile
@@ -57,7 +62,7 @@ Requiere Node.js 20 o superior.
 
 ```bash
 npm install
-npm run dev       # abre http://localhost:5173
+npm run dev       # sitio en http://localhost:5173 y app en http://localhost:5173/app/
 npm run build     # genera la versión de producción en dist/
 ```
 
@@ -69,7 +74,7 @@ Los datos son de ejemplo y se guardan en el navegador (`localStorage`).
 
 1. En GitHub: **Settings → Pages → Build and deployment → Source: «GitHub Actions»**.
 2. Cada push publica la app automáticamente (pestaña **Actions**). Si el primer intento falló porque Pages no estaba activado, entra a **Actions → «Publicar en GitHub Pages» → Run workflow**.
-3. La app queda en `https://franciscasanhueza.github.io/Proyectos-/`. Ábrela en el celular y usa «Agregar a pantalla de inicio» para instalarla.
+3. El sitio queda en `https://franciscasanhueza.github.io/Proyectos-/` y la app en `https://franciscasanhueza.github.io/Proyectos-/app/`. Abre la app en el celular y usa «Agregar a pantalla de inicio» para instalarla. Los enlaces antiguos a la app (`…/Proyectos-/#/paciente`) redirigen solos a `/app/`.
 
 ## Pendientes
 

@@ -27,7 +27,23 @@ Prototipo de app móvil para acompañar a pacientes con **lesiones precancerosas
 - **App instalable (PWA)** con avisos de recordatorios y encuesta (se muestran al abrir la app; los avisos con la app cerrada requieren un servidor).
 - **Publicación automática** en GitHub Pages.
 
+### Mejoras (v3): experiencia más cálida e interactiva
+
+- **Diseño renovado** con transiciones suaves entre pantallas, tarjetas que aparecen en cascada y botones con respuesta táctil. Se pueden desactivar en Ajustes (y se respeta «reducir movimiento» del sistema).
+- **Temas de color** a elección: Lavanda, Rosa y Menta.
+- **Inicio renovado**: saludo según la hora, anillo con los días de recuperación y **check-in diario de ánimo** con mensajes de apoyo y celebración.
+- **Cuidados del día** que se marcan como hechos, con barra de progreso.
+- **Rincón de calma**: frases de ánimo, respiración guiada, ejercicio 5-4-3-2-1 y sonido de lluvia.
+- **Aprende**: juego «¿Mito o verdad?» y fichas sobre el VPH, las lesiones, la conización y los controles.
+- **Mis preguntas**: lista para llevar al control (el médico la ve en el perfil).
+- **Mi camino**: hitos de la recuperación y logros que se desbloquean.
+
 ### Vista profesional de salud
+
+- **Inicio**: alertas, conteo por semáforo y tareas del día (planes por validar, dudas, encuestas pendientes).
+- **Mis pacientes**: búsqueda por nombre, RUT, diagnóstico o etiqueta; filtros (rojo, amarillo, verde, prioridad alta, plan por validar, encuesta pendiente, dadas de alta) y orden.
+- **Nueva paciente**: crea la ficha y su plan inicial, y genera el código para activar la app.
+- **Perfil de cada paciente**: resumen (última encuesta, ánimo de la semana, cuidados cumplidos, evolución, preguntas para el control y notas privadas) y edición de datos, prioridad, etiquetas, notas y estado (alta).
 
 - Panel de pacientes ordenado por semáforo (primero las rojas, luego las amarillas).
 - Editor del **plan de recuperación** con botón *Validar plan*.

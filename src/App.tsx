@@ -1,5 +1,5 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { CalendarDays, ClipboardList, Home, LayoutDashboard, MessageCircle, Smile } from 'lucide-react'
+import { CalendarDays, ClipboardList, Home, LayoutDashboard, MessageCircle, Smile, Users } from 'lucide-react'
 import { useEffect, type ReactNode } from 'react'
 import { useApp } from './context/AppContext'
 import { currentDoctor } from './data/mock'
@@ -13,9 +13,15 @@ import { Calendario } from './pages/paciente/Calendario'
 import { ChatDudas, ChatHilo } from './pages/paciente/ChatDudas'
 import { MiPlan } from './pages/paciente/MiPlan'
 import { Ajustes } from './pages/paciente/Ajustes'
+import { Calma } from './pages/paciente/Calma'
+import { Aprende } from './pages/paciente/Aprende'
+import { Preguntas } from './pages/paciente/Preguntas'
+import { Camino } from './pages/paciente/Camino'
 import { useReminderNotifications } from './pages/paciente/useReminderNotifications'
 import { Panel } from './pages/medico/Panel'
 import { PacienteDetalle } from './pages/medico/PacienteDetalle'
+import { Pacientes } from './pages/medico/Pacientes'
+import { NuevaPaciente } from './pages/medico/NuevaPaciente'
 import { Mensajes } from './pages/medico/Mensajes'
 
 function RequireRole({ role, children }: { role: Role; children: ReactNode }) {
@@ -49,7 +55,8 @@ function MedicoLayout() {
   return (
     <Layout
       nav={[
-        { to: '/medico', label: 'Pacientes', icon: LayoutDashboard, end: true, badge: pendingAlerts },
+        { to: '/medico', label: 'Inicio', icon: LayoutDashboard, end: true, badge: pendingAlerts },
+        { to: '/medico/pacientes', label: 'Pacientes', icon: Users },
         { to: '/medico/mensajes', label: 'Dudas', icon: MessageCircle, badge: unread },
       ]}
     />
@@ -59,10 +66,13 @@ function MedicoLayout() {
 export function App() {
   const { session, prefs } = useApp()
 
-  // Tamaño de letra elegido en Ajustes (accesibilidad).
+  // Preferencias de Ajustes: tamaño de letra, tema de color y animaciones.
   useEffect(() => {
-    document.documentElement.dataset.text = prefs.textSize
-  }, [prefs.textSize])
+    const root = document.documentElement
+    root.dataset.text = prefs.textSize
+    root.dataset.theme = prefs.theme
+    root.dataset.motion = prefs.calmMotion ? 'calm' : 'full'
+  }, [prefs.textSize, prefs.theme, prefs.calmMotion])
 
   return (
     <HashRouter>
@@ -78,10 +88,16 @@ export function App() {
           <Route path="chat/:staffId" element={<ChatHilo />} />
           <Route path="plan" element={<MiPlan />} />
           <Route path="ajustes" element={<Ajustes />} />
+          <Route path="calma" element={<Calma />} />
+          <Route path="aprende" element={<Aprende />} />
+          <Route path="preguntas" element={<Preguntas />} />
+          <Route path="camino" element={<Camino />} />
         </Route>
 
         <Route path="/medico" element={<RequireRole role="medico"><MedicoLayout /></RequireRole>}>
           <Route index element={<Panel />} />
+          <Route path="pacientes" element={<Pacientes />} />
+          <Route path="pacientes/nueva" element={<NuevaPaciente />} />
           <Route path="pacientes/:id" element={<PacienteDetalle />} />
           <Route path="mensajes" element={<Mensajes />} />
         </Route>

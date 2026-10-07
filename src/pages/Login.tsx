@@ -2,11 +2,10 @@ import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Heart, Stethoscope } from 'lucide-react'
 import { useApp } from '../context/AppContext'
-import { patients } from '../data/mock'
 import { normalizeRut } from '../utils'
 
 export function Login() {
-  const { login } = useApp()
+  const { login, patients } = useApp()
   const navigate = useNavigate()
   const [rut, setRut] = useState('')
   const [code, setCode] = useState('')
@@ -15,7 +14,7 @@ export function Login() {
   const submit = (e: FormEvent) => {
     e.preventDefault()
     const patient = patients.find(
-      (p) => normalizeRut(p.rut) === normalizeRut(rut) && p.code.toUpperCase() === code.trim().toUpperCase(),
+      (p) => normalizeRut(p.rut) === normalizeRut(rut) && p.code.toUpperCase() === code.trim().toUpperCase() && p.status === 'activa',
     )
     if (!patient) {
       setError('RUT o código incorrecto. Revisa el código que te entregó tu médico.')

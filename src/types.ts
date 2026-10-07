@@ -11,6 +11,15 @@ export interface Patient {
   code: string
   age: number
   phone: string
+  email?: string
+  /** Etiquetas libres que define el médico (p. ej. «Primera conización»). */
+  tags: string[]
+  /** Notas privadas del equipo médico (la paciente no las ve). */
+  notes: string
+  /** En seguimiento o dada de alta. */
+  status: 'activa' | 'alta'
+  /** Prioridad de seguimiento que elige el médico. */
+  priority: 'normal' | 'alta'
 }
 
 export interface StaffMember {
@@ -98,9 +107,37 @@ export interface Alert {
 
 export type TextSize = 'normal' | 'grande' | 'muy-grande'
 
+export type Theme = 'lavanda' | 'rosa' | 'menta'
+
+/** Check-in diario de ánimo (1 = muy mal … 5 = muy bien). */
+export interface CheckIn {
+  patientId: string
+  date: string // YYYY-MM-DD
+  mood: 1 | 2 | 3 | 4 | 5
+}
+
+/** Cuidados del plan marcados como hechos en un día. */
+export interface CareLog {
+  patientId: string
+  date: string // YYYY-MM-DD
+  done: string[] // textos de los cuidados cumplidos
+}
+
+/** Pregunta que la paciente quiere hacer en su próximo control. */
+export interface PatientQuestion {
+  id: string
+  patientId: string
+  text: string
+  at: string // ISO
+  answered: boolean
+}
+
 /** Preferencias del dispositivo (accesibilidad y notificaciones). */
 export interface Prefs {
   textSize: TextSize
+  theme: Theme
+  /** Reduce animaciones (además de la preferencia del sistema). */
+  calmMotion: boolean
   notifications: boolean
   /** Claves de avisos ya mostrados, para no repetirlos. */
   notified: string[]

@@ -1,17 +1,20 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Navigate, useParams, useSearchParams } from 'react-router-dom'
-import { Phone, Plus, ShieldCheck, Trash2, X } from 'lucide-react'
+import { Flag, Phone, Plus, ShieldCheck, Trash2, X } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
-import { currentDoctor, patients, surveyQuestions } from '../../data/mock'
+import { currentDoctor, surveyQuestions } from '../../data/mock'
 import { Chat } from '../../components/Chat'
 import { KIND_LABEL } from '../../components/CalendarMonth'
 import { LevelFace } from '../../components/LevelFace'
 import { EvolutionChart } from '../../components/EvolutionChart'
-import { Card, Empty, PageHeader, SectionTitle } from '../../components/ui'
+import { Avatar, Card, Empty, PageHeader, SectionTitle } from '../../components/ui'
 import type { RecoveryPlan, ReminderKind } from '../../types'
 import { LEVEL_INFO, currentLevel, formatDateTime, formatShortDate, recoveryWeek } from '../../utils'
+import { PerfilEditor, Resumen } from './PerfilPaciente'
 
 const tabs = [
+  { id: 'resumen', label: 'Resumen' },
+  { id: 'perfil', label: 'Perfil' },
   { id: 'plan', label: 'Plan' },
   { id: 'encuestas', label: 'Encuestas' },
   { id: 'chat', label: 'Chat' },
@@ -22,21 +25,42 @@ type Tab = (typeof tabs)[number]['id']
 export function PacienteDetalle() {
   const { id } = useParams()
   const [params, setParams] = useSearchParams()
-  const { responses } = useApp()
+  const { responses, patients, plans } = useApp()
   const patient = patients.find((p) => p.id === id)
-  if (!patient) return <Navigate to="/medico" replace />
+  if (!patient) return <Navigate to="/medico/pacientes" replace />
 
-  const tab = (params.get('tab') as Tab) ?? 'plan'
+  const tab = (params.get('tab') as Tab) ?? 'resumen'
   const level = currentLevel(responses, patient.id)
+  const plan = plans.find((p) => p.patientId === patient.id)!
 
   return (
     <div className={`page${tab === 'chat' ? ' page--chat' : ''}`}>
-      <PageHeader
-        title={patient.name}
-        subtitle={`${patient.age} años · RUT ${patient.rut}`}
-        back
-        action={<LevelFace level={level} size={36} />}
-      />
+      <PageHeader title="Perfil de paciente" back />
+
+      {tab !== 'chat' && (
+        <div className={`profile-card level-bg--${level}`}>
+          <div className="profile-card__avatar">
+            <Avatar name={patient.name} size={64} />
+            <span className="patient-card__face"><LevelFace level={level} size={26} /></span>
+          </div>
+          <div className="grow">
+            <h2>
+              {patient.name}{' '}
+              {patient.priority === 'alta' && <Flag size={16} className="level-text--rojo" aria-label="Prioridad alta" />}
+            </h2>
+            <p>{patient.age} años · RUT {patient.rut}</p>
+            <p>{plan.procedure} · semana {recoveryWeek(plan)}</p>
+            {patient.status === 'alta' && <span className="tag">Dada de alta</span>}
+            {patient.tags.length > 0 && (
+              <span className="tag-list">{patient.tags.map((t) => <span key={t} className="tag">{t}</span>)}</span>
+            )}
+          </div>
+          <a className="icon-btn icon-btn--primary" href={`tel:${patient.phone.replace(/\s/g, '')}`} aria-label="Llamar">
+            <Phone size={18} />
+          </a>
+        </div>
+      )}
+
       <div className="tabs" role="tablist">
         {tabs.map((t) => (
           <button
@@ -51,10 +75,14 @@ export function PacienteDetalle() {
         ))}
       </div>
 
-      {tab === 'plan' && <PlanEditor patientId={patient.id} phone={patient.phone} code={patient.code} />}
-      {tab === 'encuestas' && <SurveyHistory patientId={patient.id} />}
-      {tab === 'chat' && <Chat patientId={patient.id} staffId={currentDoctor.id} me="medico" />}
-      {tab === 'recordatorios' && <PatientReminders patientId={patient.id} />}
+      <div key={tab} className="tab-panel">
+        {tab === 'resumen' && <Resumen patientId={patient.id} onGo={(t) => setParams({ tab: t }, { replace: true })} />}
+        {tab === 'perfil' && <PerfilEditor patientId={patient.id} />}
+        {tab === 'plan' && <PlanEditor patientId={patient.id} phone={patient.phone} code={patient.code} />}
+        {tab === 'encuestas' && <SurveyHistory patientId={patient.id} />}
+        {tab === 'chat' && <Chat patientId={patient.id} staffId={currentDoctor.id} me="medico" />}
+        {tab === 'recordatorios' && <PatientReminders patientId={patient.id} />}
+      </div>
     </div>
   )
 }

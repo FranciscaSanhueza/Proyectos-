@@ -69,3 +69,7 @@ export const currentLevel = (responses: SurveyResponse[], patientId: string): Le
 /** Semana de recuperación (1, 2, …) contada desde el procedimiento. */
 export const recoveryWeek = (plan: RecoveryPlan) =>
   Math.max(1, Math.floor((Date.now() - new Date(plan.procedureDate).getTime()) / WEEK_MS) + 1)
+
+/** Días completos transcurridos desde una fecha ISO. */
+export const daysSince = (iso: string) =>
+  Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / (24 * 60 * 60 * 1000)))

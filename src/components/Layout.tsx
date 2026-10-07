@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import type { LucideIcon } from 'lucide-react'
 
 export interface NavItem {
@@ -11,9 +11,11 @@ export interface NavItem {
 }
 
 export function Layout({ nav }: { nav: NavItem[] }) {
+  const { pathname } = useLocation()
   return (
     <div className="app-shell">
-      <main className="app-content">
+      {/* La key reinicia la animación de entrada en cada cambio de pantalla. */}
+      <main className="app-content page-enter" key={pathname}>
         <Outlet />
       </main>
       <nav className="bottom-nav" aria-label="Navegación principal">

@@ -1,61 +1,60 @@
 import { useNavigate } from 'react-router-dom'
-import { BellRing, Check, LogOut } from 'lucide-react'
+import { BellRing, Check, ClipboardCheck, LogOut, MessageCircle, ShieldAlert, UserPlus, Users } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
-import { currentDoctor, patients } from '../../data/mock'
-import { Badge, Card, SectionTitle } from '../../components/ui'
+import { currentDoctor } from '../../data/mock'
+import { Card, SectionTitle } from '../../components/ui'
 import { LevelFace } from '../../components/LevelFace'
 import type { Level } from '../../types'
-import { LEVEL_INFO, currentLevel, formatDateTime, formatShortDate, latestResponse, recoveryWeek, surveyStatus } from '../../utils'
-
-const RANK: Record<Level, number> = { rojo: 0, amarillo: 1, verde: 2 }
+import { LEVEL_INFO, currentLevel, formatDateTime, surveyStatus } from '../../utils'
 
 export function Panel() {
-  const { responses, messages, plans, alerts, reviewAlert, logout } = useApp()
+  const { patients, responses, messages, plans, alerts, reviewAlert, logout } = useApp()
   const navigate = useNavigate()
 
-  const rows = patients
-    .map((p) => {
-      const plan = plans.find((x) => x.patientId === p.id)!
-      return {
-        p,
-        plan,
-        level: currentLevel(responses, p.id),
-        last: latestResponse(responses, p.id),
-        surveyDue: surveyStatus(responses, p.id).available,
-        unread: messages.filter((m) => m.patientId === p.id && m.staffId === currentDoctor.id && m.from === 'paciente' && !m.read).length,
-      }
-    })
-    .sort((a, b) => RANK[a.level] - RANK[b.level])
+  const active = patients.filter((p) => p.status === 'activa')
+  const levelOf = (id: string) => currentLevel(responses, id)
+  const count = (l: Level) => active.filter((p) => levelOf(p.id) === l).length
+  const nameOf = (id: string) => patients.find((p) => p.id === id)?.name ?? ''
 
-  const count = (l: Level) => rows.filter((r) => r.level === l).length
-  const pendingPlans = rows.filter((r) => !r.plan.validated).length
   const newAlerts = alerts
     .filter((a) => !a.reviewed)
     .sort((a, b) => (a.level === b.level ? b.at.localeCompare(a.at) : a.level === 'rojo' ? -1 : 1))
-  const nameOf = (id: string) => patients.find((p) => p.id === id)?.name ?? ''
+  const unread = messages.filter((m) => m.staffId === currentDoctor.id && m.from === 'paciente' && !m.read).length
+  const toValidate = active.filter((p) => !plans.find((x) => x.patientId === p.id)?.validated)
+  const surveyDue = active.filter((p) => surveyStatus(responses, p.id).available)
+
+  const tasks = [
+    { icon: ShieldAlert, n: toValidate.length, label: 'planes por validar', to: '/medico/pacientes?filtro=validar' },
+    { icon: MessageCircle, n: unread, label: 'dudas sin responder', to: '/medico/mensajes' },
+    { icon: ClipboardCheck, n: surveyDue.length, label: 'encuestas pendientes', to: '/medico/pacientes?filtro=encuesta' },
+  ]
+
+  const hour = new Date().getHours()
+  const hello = hour < 12 ? 'Buenos días' : hour < 20 ? 'Buenas tardes' : 'Buenas noches'
 
   return (
     <div className="page">
-      <header className="greeting">
-        <div>
-          <p className="greeting__hello">Panel de seguimiento</p>
-          <h1>{currentDoctor.name}</h1>
-          <p className="muted">{currentDoctor.role}</p>
+      <header className="hero hero--doctor">
+        <div className="hero__top">
+          <div>
+            <p className="hero__eyebrow">{hello}</p>
+            <h1>{currentDoctor.name}</h1>
+            <p className="hero__sub">{currentDoctor.role} · {active.length} pacientes en seguimiento</p>
+          </div>
+          <button className="icon-btn icon-btn--glass" onClick={() => { logout(); navigate('/') }} aria-label="Cerrar sesión">
+            <LogOut size={20} />
+          </button>
         </div>
-        <button className="icon-btn" onClick={() => { logout(); navigate('/') }} aria-label="Cerrar sesión">
-          <LogOut size={20} />
-        </button>
+        <div className="stats">
+          {(['rojo', 'amarillo', 'verde'] as Level[]).map((l) => (
+            <button key={l} className={`stat level-bg--${l}`} onClick={() => navigate(`/medico/pacientes?filtro=${l}`)}>
+              <LevelFace level={l} size={26} />
+              <strong>{count(l)}</strong>
+              <small>{LEVEL_INFO[l].title}</small>
+            </button>
+          ))}
+        </div>
       </header>
-
-      <div className="stats">
-        {(['rojo', 'amarillo', 'verde'] as Level[]).map((l) => (
-          <Card key={l} className={`level-bg--${l}`}>
-            <LevelFace level={l} size={28} />
-            <strong>{count(l)}</strong>
-            <small>{LEVEL_INFO[l].title}</small>
-          </Card>
-        ))}
-      </div>
 
       {newAlerts.length > 0 && (
         <>
@@ -79,26 +78,24 @@ export function Panel() {
         </>
       )}
 
-      {pendingPlans > 0 && (
-        <p className="notice">{pendingPlans} plan(es) de recuperación pendiente(s) de validar.</p>
-      )}
-
-      <SectionTitle>Pacientes en seguimiento</SectionTitle>
+      <SectionTitle>Para hoy</SectionTitle>
       <div className="stack">
-        {rows.map(({ p, plan, level, last, surveyDue, unread }) => (
-          <Card key={p.id} className={`list-row level-border--${level}`} onClick={() => navigate(`/medico/pacientes/${p.id}`)}>
-            <LevelFace level={level} size={40} />
-            <div className="list-row__text">
-              <strong>{p.name}</strong>
-              <small>{plan.procedure} · semana {recoveryWeek(plan)}</small>
-              <small>{last ? `Última encuesta: ${formatShortDate(last.at)}` : 'Sin encuestas'}{surveyDue ? ' · pendiente' : ''}</small>
-            </div>
-            <div className="list-row__end">
-              {!plan.validated && <Badge tone="warning">Validar plan</Badge>}
-              {unread > 0 && <Badge tone="primary">{unread} msj</Badge>}
-            </div>
+        {tasks.map(({ icon: Icon, n, label, to }) => (
+          <Card key={label} className={`task-row${n === 0 ? ' is-done' : ''}`} onClick={() => navigate(to)}>
+            <span className="task-row__icon"><Icon size={20} /></span>
+            <span className="grow"><b>{n}</b> {label}</span>
+            {n === 0 && <Check size={18} className="level-text--verde" />}
           </Card>
         ))}
+      </div>
+
+      <div className="quick-actions">
+        <button className="btn btn--primary" onClick={() => navigate('/medico/pacientes')}>
+          <Users size={18} /> Ver pacientes
+        </button>
+        <button className="btn btn--ghost" onClick={() => navigate('/medico/pacientes/nueva')}>
+          <UserPlus size={18} /> Nueva paciente
+        </button>
       </div>
     </div>
   )

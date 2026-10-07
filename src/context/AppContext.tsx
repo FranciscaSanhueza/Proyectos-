@@ -1,6 +1,16 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import type { Alert, Message, Prefs, RecoveryPlan, Reminder, Role, SurveyResponse } from '../types'
-import { initialAlerts, initialMessages, initialPlans, initialReminders, initialResponses } from '../data/mock'
+import type { Alert, CareLog, CheckIn, Message, Patient, PatientQuestion, Prefs, RecoveryPlan, Reminder, Role, SurveyResponse } from '../types'
+import {
+  initialAlerts,
+  initialCheckIns,
+  initialMessages,
+  initialPatients,
+  newPlan,
+  initialPlans,
+  initialQuestions,
+  initialReminders,
+  initialResponses,
+} from '../data/mock'
 
 // Estado global de la app. Por ahora vive en el navegador (localStorage);
 // cuando exista un backend, estas funciones pasan a llamar a la API.
@@ -13,11 +23,15 @@ interface Session {
 
 interface State {
   session: Session | null
+  patients: Patient[]
   messages: Message[]
   plans: RecoveryPlan[]
   responses: SurveyResponse[]
   reminders: Reminder[]
   alerts: Alert[]
+  checkIns: CheckIn[]
+  careLogs: CareLog[]
+  questions: PatientQuestion[]
   prefs: Prefs
 }
 
@@ -33,25 +47,42 @@ interface AppContextValue extends State {
   reviewAlert: (id: string) => void
   setPrefs: (p: Partial<Prefs>) => void
   markNotified: (keys: string[]) => void
+  addPatient: (
+    data: Omit<Patient, 'id' | 'code' | 'status' | 'tags' | 'notes' | 'priority'>,
+    plan: { procedure: string; diagnosis: string; procedureDate: string },
+  ) => Patient
+  updatePatient: (id: string, changes: Partial<Patient>) => void
+  checkIn: (patientId: string, date: string, mood: CheckIn['mood']) => void
+  toggleCare: (patientId: string, date: string, care: string) => void
+  addQuestion: (patientId: string, text: string) => void
+  toggleQuestion: (id: string) => void
+  removeQuestion: (id: string) => void
   resetDemo: () => void
 }
 
-const STORAGE_KEY = 'cervixb-state-v3'
+const STORAGE_KEY = 'cervixb-state-v4'
 
 const initialState: State = {
   session: null,
+  patients: initialPatients,
   messages: initialMessages,
   plans: initialPlans,
   responses: initialResponses,
   reminders: initialReminders,
   alerts: initialAlerts,
-  prefs: { textSize: 'normal', notifications: false, notified: [] },
+  checkIns: initialCheckIns,
+  careLogs: [],
+  questions: initialQuestions,
+  prefs: { textSize: 'normal', theme: 'lavanda', calmMotion: false, notifications: false, notified: [] },
 }
 
 function loadState(): State {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return { ...initialState, ...JSON.parse(raw) }
+    if (raw) {
+      const saved = JSON.parse(raw)
+      return { ...initialState, ...saved, prefs: { ...initialState.prefs, ...saved.prefs } }
+    }
   } catch {
     // Almacenamiento no disponible: se usan los datos de ejemplo.
   }
@@ -116,6 +147,40 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setPrefs: (p) => setState((s) => ({ ...s, prefs: { ...s.prefs, ...p } })),
     markNotified: (keys) =>
       setState((s) => ({ ...s, prefs: { ...s.prefs, notified: [...s.prefs.notified, ...keys].slice(-200) } })),
+    addPatient: (data, plan) => {
+      const id = uid()
+      // Código de activación que el médico entrega en la consulta.
+      const code = 'CX' + Math.random().toString(36).slice(2, 7).toUpperCase()
+      const patient: Patient = { ...data, id, code, status: 'activa', tags: [], notes: '', priority: 'normal' }
+      setState((s) => ({
+        ...s,
+        patients: [...s.patients, patient],
+        plans: [...s.plans, newPlan(id, plan.procedure, plan.diagnosis, plan.procedureDate)],
+      }))
+      return patient
+    },
+    updatePatient: (id, changes) =>
+      setState((s) => ({ ...s, patients: s.patients.map((p) => (p.id === id ? { ...p, ...changes } : p)) })),
+    checkIn: (patientId, date, mood) =>
+      setState((s) => ({
+        ...s,
+        checkIns: [...s.checkIns.filter((c) => !(c.patientId === patientId && c.date === date)), { patientId, date, mood }],
+      })),
+    toggleCare: (patientId, date, care) =>
+      setState((s) => {
+        const log = s.careLogs.find((l) => l.patientId === patientId && l.date === date) ?? { patientId, date, done: [] }
+        const done = log.done.includes(care) ? log.done.filter((c) => c !== care) : [...log.done, care]
+        const others = s.careLogs.filter((l) => !(l.patientId === patientId && l.date === date))
+        return { ...s, careLogs: [...others, { ...log, done }] }
+      }),
+    addQuestion: (patientId, text) =>
+      setState((s) => ({
+        ...s,
+        questions: [...s.questions, { id: uid(), patientId, text, at: new Date().toISOString(), answered: false }],
+      })),
+    toggleQuestion: (id) =>
+      setState((s) => ({ ...s, questions: s.questions.map((q) => (q.id === id ? { ...q, answered: !q.answered } : q)) })),
+    removeQuestion: (id) => setState((s) => ({ ...s, questions: s.questions.filter((q) => q.id !== id) })),
     resetDemo: () => setState({ ...initialState, session: state.session, prefs: state.prefs }),
   }
 

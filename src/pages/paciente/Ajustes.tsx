@@ -1,15 +1,21 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Bell, Download, LogOut, RotateCcw, Type } from 'lucide-react'
+import { Bell, Download, LogOut, Palette, RotateCcw, Sparkles, Type } from 'lucide-react'
 import { Card, PageHeader, SectionTitle } from '../../components/ui'
 import { notificationsSupported, requestNotificationPermission, showNotification } from '../../notifications'
-import type { TextSize } from '../../types'
+import type { TextSize, Theme } from '../../types'
 import { usePatient } from './usePatient'
 
 const SIZES: { id: TextSize; label: string }[] = [
   { id: 'normal', label: 'Normal' },
   { id: 'grande', label: 'Grande' },
   { id: 'muy-grande', label: 'Muy grande' },
+]
+
+const THEMES: { id: Theme; label: string; colors: [string, string] }[] = [
+  { id: 'lavanda', label: 'Lavanda', colors: ['#7a4b94', '#fbe3f3'] },
+  { id: 'rosa', label: 'Rosa', colors: ['#c2457f', '#ffe4ef'] },
+  { id: 'menta', label: 'Menta', colors: ['#2a8a7e', '#dff5ef'] },
 ]
 
 // Evento de Chrome/Android para ofrecer "Instalar app".
@@ -52,8 +58,43 @@ export function Ajustes() {
   }
 
   return (
-    <div className="page">
+    <div className="page stagger">
       <PageHeader title="Ajustes" subtitle={patient.name} back />
+
+      <SectionTitle><Palette size={18} className="accent" /> Colores de la app</SectionTitle>
+      <Card>
+        <div className="themes" role="radiogroup" aria-label="Tema de color">
+          {THEMES.map((t) => (
+            <button
+              key={t.id}
+              role="radio"
+              aria-checked={prefs.theme === t.id}
+              className={`theme-opt${prefs.theme === t.id ? ' is-active' : ''}`}
+              onClick={() => setPrefs({ theme: t.id })}
+            >
+              <span className="theme-opt__swatch" style={{ background: `linear-gradient(135deg, ${t.colors[0]} 50%, ${t.colors[1]} 50%)` }} />
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </Card>
+
+      <Card className="setting-row">
+        <Sparkles size={22} className="accent" />
+        <div className="grow">
+          <strong>Animaciones suaves</strong>
+          <small className="muted">Desactívalas si te marean o prefieres una app más quieta.</small>
+        </div>
+        <button
+          role="switch"
+          aria-checked={!prefs.calmMotion}
+          aria-label="Animaciones"
+          className={`switch${!prefs.calmMotion ? ' is-on' : ''}`}
+          onClick={() => setPrefs({ calmMotion: !prefs.calmMotion })}
+        >
+          <span />
+        </button>
+      </Card>
 
       <SectionTitle>Tamaño de la letra</SectionTitle>
       <Card>

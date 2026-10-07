@@ -1,14 +1,15 @@
-import { AlertTriangle, CheckCircle2, ShieldCheck } from 'lucide-react'
+import { AlertTriangle, ShieldCheck } from 'lucide-react'
 import { Card, PageHeader, SectionTitle } from '../../components/ui'
 import { ReadAloud } from '../../components/ReadAloud'
+import { CareChecklist } from '../../components/CareChecklist'
 import { formatShortDate, recoveryWeek } from '../../utils'
 import { usePatient } from './usePatient'
 
 export function MiPlan() {
-  const { plan } = usePatient()
+  const { plan, patientId } = usePatient()
 
   return (
-    <div className="page">
+    <div className="page stagger">
       <PageHeader title="Mi plan" subtitle={`Actualización: ${formatShortDate(plan.updatedAt)}`} />
 
       <ReadAloud
@@ -38,11 +39,7 @@ export function MiPlan() {
 
       <SectionTitle>Cuidados de hoy</SectionTitle>
       <Card>
-        <ul className="plan-list">
-          {plan.cares.map((c) => (
-            <li key={c}><CheckCircle2 size={18} className="accent" /> {c}</li>
-          ))}
-        </ul>
+        <CareChecklist patientId={patientId} cares={plan.cares} />
       </Card>
 
       <SectionTitle>Consulta si aparece</SectionTitle>

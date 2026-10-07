@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../../context/AppContext'
-import { currentDoctor, patients } from '../../data/mock'
+import { currentDoctor } from '../../data/mock'
 import { Avatar, Badge, Card, Empty, PageHeader } from '../../components/ui'
 import { formatDate } from '../../utils'
 
 export function Mensajes() {
-  const { messages } = useApp()
+  const { messages, patients } = useApp()
   const navigate = useNavigate()
 
   const threads = patients

@@ -6,6 +6,8 @@ import type {
   StaffMember,
   SurveyQuestion,
   Alert,
+  CheckIn,
+  PatientQuestion,
   SurveyResponse,
   SymptomGuide,
 } from '../types'
@@ -31,10 +33,10 @@ export const staff: StaffMember[] = [
 /** Profesional que usa la vista médico en el prototipo. */
 export const currentDoctor = staff[0]
 
-export const patients: Patient[] = [
-  { id: 'p1', name: 'María González', rut: '12.345.678-9', code: 'CERVIX1', age: 34, phone: '+56 9 1234 5678' },
-  { id: 'p2', name: 'Javiera Muñoz', rut: '15.432.198-K', code: 'CERVIX2', age: 41, phone: '+56 9 8765 4321' },
-  { id: 'p3', name: 'Daniela Soto', rut: '19.876.543-2', code: 'CERVIX3', age: 28, phone: '+56 9 5555 1212' },
+export const initialPatients: Patient[] = [
+  { id: 'p1', name: 'María González', rut: '12.345.678-9', code: 'CERVIX1', age: 34, phone: '+56 9 1234 5678', email: 'maria.gonzalez@correo.cl', tags: ['Primera conización'], notes: 'Muy ansiosa con el resultado de la biopsia. Reforzar contención en el control.', status: 'activa', priority: 'normal' },
+  { id: 'p2', name: 'Javiera Muñoz', rut: '15.432.198-K', code: 'CERVIX2', age: 41, phone: '+56 9 8765 4321', tags: ['Sangrado aumentado'], notes: '', status: 'activa', priority: 'alta' },
+  { id: 'p3', name: 'Daniela Soto', rut: '19.876.543-2', code: 'CERVIX3', age: 28, phone: '+56 9 5555 1212', tags: ['Biopsia en estudio'], notes: 'Desea embarazo a futuro: conversar en control.', status: 'activa', priority: 'normal' },
 ]
 
 const defaultCares = [
@@ -242,3 +244,118 @@ export const initialReminders: Reminder[] = [
 export const initialAlerts: Alert[] = [
   { id: 'al1', patientId: 'p2', level: 'amarillo', at: daysFromNow(-1, 20), reviewed: false },
 ]
+
+export const initialCheckIns: CheckIn[] = [
+  { patientId: 'p1', date: dayKey(-3), mood: 3 },
+  { patientId: 'p1', date: dayKey(-2), mood: 4 },
+  { patientId: 'p1', date: dayKey(-1), mood: 4 },
+]
+
+export const initialQuestions: PatientQuestion[] = [
+  { id: 'q1', patientId: 'p1', text: '¿Cuándo puedo volver a hacer ejercicio?', at: daysFromNow(-3), answered: false },
+  { id: 'q2', patientId: 'p1', text: '¿Cuándo tendré el resultado de la biopsia?', at: daysFromNow(-2), answered: false },
+]
+
+/** Hitos típicos de la recuperación (días desde el procedimiento). Referenciales: cada plan lo ajusta el médico. */
+export const recoveryMilestones = [
+  { day: 0, title: 'Procedimiento', detail: 'Hoy diste un paso importante para cuidar tu salud.' },
+  { day: 1, title: 'Primeros días de reposo', detail: 'Descanso relativo. Es normal un poco de dolor tipo cólico y flujo café.' },
+  { day: 7, title: 'Primera semana', detail: 'El flujo café o con restos es esperable. Responde tu primera encuesta.' },
+  { day: 12, title: 'Cicatrización', detail: 'Cerca del día 10–14 puede aumentar un poco el sangrado al desprenderse la costra. Si es abundante, es rojo.' },
+  { day: 28, title: 'Cuatro semanas', detail: 'Según indique tu médico, podrás retomar relaciones sexuales, tampones y piscina.' },
+  { day: 42, title: 'Control y resultado', detail: 'Revisarán el resultado de la biopsia y tu evolución.' },
+  { day: 180, title: 'Control a los 6 meses', detail: 'Seguimiento con PAP y/o test de VPH para confirmar que todo va bien.' },
+]
+
+export const learnCards = [
+  {
+    id: 'vph',
+    emoji: '🦠',
+    title: '¿Qué es el VPH?',
+    body: 'El virus papiloma humano es muy común: la mayoría de las personas lo tendrá alguna vez. Casi siempre el cuerpo lo elimina solo en 1–2 años. Algunos tipos, si persisten, pueden causar cambios en el cuello del útero.',
+  },
+  {
+    id: 'nie',
+    emoji: '🔬',
+    title: '¿Qué es una lesión precancerosa?',
+    body: 'Son cambios en las células del cuello del útero (también llamados NIE o CIN). No son cáncer: se tratan justamente para evitar que algún día lo sean.',
+  },
+  {
+    id: 'cono',
+    emoji: '🩺',
+    title: '¿Qué es la conización?',
+    body: 'Es un procedimiento breve en que se retira la zona del cuello del útero con células alteradas. Esa muestra se analiza (biopsia) para confirmar que se sacó toda la lesión.',
+  },
+  {
+    id: 'recup',
+    emoji: '🌱',
+    title: '¿Qué es normal en la recuperación?',
+    body: 'Flujo café o con restos, sangrado leve y un poco de dolor tipo cólico durante algunas semanas. Revisa tu semáforo si algo te preocupa.',
+  },
+  {
+    id: 'control',
+    emoji: '📅',
+    title: '¿Por qué son importantes los controles?',
+    body: 'Los controles con PAP y test de VPH confirman que la lesión no vuelve. Asistir a ellos es la mejor forma de cuidarte.',
+  },
+]
+
+export const mythQuiz = [
+  {
+    statement: 'Tener VPH significa que tendré cáncer.',
+    truth: false,
+    explain: 'La mayoría de las infecciones por VPH se eliminan solas. Las lesiones se tratan para prevenir el cáncer.',
+  },
+  {
+    statement: 'Es normal tener flujo café algunas semanas después de la conización.',
+    truth: true,
+    explain: 'Es parte de la cicatrización. Si tiene mal olor o hay fiebre, consulta.',
+  },
+  {
+    statement: 'Después de una conización no podré tener hijos.',
+    truth: false,
+    explain: 'La mayoría de las mujeres puede embarazarse después. Si lo estás planeando, conversa con tu médico sobre los cuidados.',
+  },
+  {
+    statement: 'Solo las personas con muchas parejas sexuales tienen VPH.',
+    truth: false,
+    explain: 'El VPH es muy común y puede transmitirse incluso con una sola pareja. No es motivo de culpa.',
+  },
+  {
+    statement: 'Debo seguir yendo a mis controles aunque me sienta bien.',
+    truth: true,
+    explain: 'Los controles detectan a tiempo si la lesión vuelve, aunque no haya síntomas.',
+  },
+  {
+    statement: 'El condón protege 100% contra el VPH.',
+    truth: false,
+    explain: 'Reduce mucho el riesgo, pero no lo elimina porque el virus está en la piel de la zona genital.',
+  },
+]
+
+export const affirmations = [
+  'Mi cuerpo está sanando, un día a la vez.',
+  'Pedir ayuda también es cuidarme.',
+  'Hice lo correcto al tratarme a tiempo.',
+  'Está bien sentir miedo; no estoy sola.',
+  'Cada control es un acto de amor propio.',
+  'Respiro, me suelto y confío en mi proceso.',
+]
+
+/** Plan inicial para una paciente nueva (el médico lo ajusta y valida). */
+export const newPlan = (patientId: string, procedure: string, diagnosis: string, procedureDate: string): RecoveryPlan => {
+  const control = new Date(procedureDate)
+  control.setDate(control.getDate() + 42)
+  return {
+    patientId,
+    procedure,
+    diagnosis,
+    procedureDate,
+    nextControl: control.toISOString(),
+    cares: defaultCares,
+    warnings: defaultWarnings,
+    validated: false,
+    validatedBy: '',
+    updatedAt: new Date().toISOString(),
+  }
+}

@@ -1,13 +1,15 @@
 import { useNavigate } from 'react-router-dom'
-import { Bell, ClipboardCheck, ClipboardList, LogOut, ShieldCheck } from 'lucide-react'
+import { Bell, ClipboardCheck, ClipboardList, Settings, ShieldCheck } from 'lucide-react'
 import { Card } from '../../components/ui'
 import { LevelFace } from '../../components/LevelFace'
 import { KIND_LABEL } from '../../components/CalendarMonth'
+import { SupportCard } from '../../components/Support'
+import { HIGH_WORRY } from '../../data/mock'
 import { LEVEL_INFO, currentLevel, formatShortDate, recoveryWeek, surveyStatus, toDayKey } from '../../utils'
 import { usePatient } from './usePatient'
 
 export function Inicio() {
-  const { patient, patientId, plan, responses, reminders, logout } = usePatient()
+  const { patient, patientId, plan, responses, reminders } = usePatient()
   const navigate = useNavigate()
 
   const level = currentLevel(responses, patientId)
@@ -26,8 +28,8 @@ export function Inicio() {
           <h1>Hola, {patient.name.split(' ')[0]}</h1>
           <p className="muted">Semana {recoveryWeek(plan)} de recuperación</p>
         </div>
-        <button className="icon-btn" onClick={() => { logout(); navigate('/') }} aria-label="Cerrar sesión">
-          <LogOut size={20} />
+        <button className="icon-btn" onClick={() => navigate('/paciente/ajustes')} aria-label="Ajustes">
+          <Settings size={20} />
         </button>
       </header>
 
@@ -39,6 +41,14 @@ export function Inicio() {
         </div>
         <LevelFace level={level} size={56} />
       </Card>
+
+      {level === 'rojo' && (
+        <button className="btn btn--danger btn--block" onClick={() => navigate('/paciente/semaforo')}>
+          Tu semáforo está en rojo: ver qué hacer
+        </button>
+      )}
+
+      {survey.last && !survey.available && survey.last.answers.animo === HIGH_WORRY && <SupportCard />}
 
       <Card className="home-card" onClick={() => navigate('/paciente/encuesta')}>
         <div>

@@ -1,5 +1,6 @@
 import { AlertTriangle, CheckCircle2, ShieldCheck } from 'lucide-react'
 import { Card, PageHeader, SectionTitle } from '../../components/ui'
+import { ReadAloud } from '../../components/ReadAloud'
 import { formatShortDate, recoveryWeek } from '../../utils'
 import { usePatient } from './usePatient'
 
@@ -9,6 +10,11 @@ export function MiPlan() {
   return (
     <div className="page">
       <PageHeader title="Mi plan" subtitle={`Actualización: ${formatShortDate(plan.updatedAt)}`} />
+
+      <ReadAloud
+        label="Escuchar mi plan"
+        text={`Tu plan. Procedimiento: ${plan.procedure}. Diagnóstico: ${plan.diagnosis}. Estás en la semana ${recoveryWeek(plan)} de recuperación. Tu próximo control es el ${formatShortDate(plan.nextControl)}. Cuidados de hoy: ${plan.cares.join('. ')}. Consulta si aparece: ${plan.warnings.join('. ')}.`}
+      />
 
       {plan.validated ? (
         <p className="trust trust--box"><ShieldCheck size={18} /> Plan revisado y validado por {plan.validatedBy}</p>

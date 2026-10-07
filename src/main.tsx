@@ -11,3 +11,10 @@ createRoot(document.getElementById('root')!).render(
     </AppProvider>
   </StrictMode>,
 )
+
+// Service worker solo en producción (instalación como app y modo sin conexión).
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {})
+  })
+}

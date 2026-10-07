@@ -6,6 +6,7 @@ import { currentDoctor, patients, surveyQuestions } from '../../data/mock'
 import { Chat } from '../../components/Chat'
 import { KIND_LABEL } from '../../components/CalendarMonth'
 import { LevelFace } from '../../components/LevelFace'
+import { EvolutionChart } from '../../components/EvolutionChart'
 import { Card, Empty, PageHeader, SectionTitle } from '../../components/ui'
 import type { RecoveryPlan, ReminderKind } from '../../types'
 import { LEVEL_INFO, currentLevel, formatDateTime, formatShortDate, recoveryWeek } from '../../utils'
@@ -156,11 +157,15 @@ function PlanEditor({ patientId, phone, code }: { patientId: string; phone: stri
 }
 
 function SurveyHistory({ patientId }: { patientId: string }) {
-  const { responses } = useApp()
+  const { responses, plans } = useApp()
   const list = responses.filter((r) => r.patientId === patientId).sort((a, b) => b.at.localeCompare(a.at))
+  const plan = plans.find((p) => p.patientId === patientId)!
   if (list.length === 0) return <Empty>La paciente aún no responde encuestas.</Empty>
   return (
     <div className="stack">
+      <Card>
+        <EvolutionChart responses={list} plan={plan} />
+      </Card>
       {list.map((r) => (
         <Card key={r.id} className={`level-border--${r.level}`}>
           <div className="appt__head">

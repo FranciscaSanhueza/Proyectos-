@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import { ClipboardCheck, ClipboardList, Clock } from 'lucide-react'
 import { Card, PageHeader } from '../../components/ui'
 import { LevelFace } from '../../components/LevelFace'
-import { surveyQuestions } from '../../data/mock'
+import { IntensityScale, QUESTION_ICON } from '../../components/IntensityScale'
+import { ReadAloud } from '../../components/ReadAloud'
+import { SupportCard, UrgentAlert, YellowNotice } from '../../components/Support'
+import { HIGH_WORRY, surveyQuestions } from '../../data/mock'
 import type { Level } from '../../types'
 import { LEVEL_INFO, formatShortDate, levelFromAnswers, surveyStatus } from '../../utils'
 import { usePatient } from './usePatient'
@@ -19,6 +22,7 @@ export function Encuesta() {
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [comment, setComment] = useState('')
   const [result, setResult] = useState<Level | null>(null)
+  const [showUrgent, setShowUrgent] = useState(false)
 
   // Una página de preguntas por pantalla, con la última para comentarios.
   const total = surveyQuestions.length + 1
@@ -28,13 +32,20 @@ export function Encuesta() {
     const level = levelFromAnswers(surveyQuestions, answers)
     submitSurvey({ patientId, answers, comment: comment.trim(), level })
     setResult(level)
+    setShowUrgent(level === 'rojo')
     setStep('done')
   }
 
   if (step === 'done' && result) {
     const next = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+    const worried = answers.animo === HIGH_WORRY
     return (
       <div className="page">
+        {showUrgent && (
+          <div className="overlay">
+            <UrgentAlert onClose={() => setShowUrgent(false)} />
+          </div>
+        )}
         <PageHeader title="Encuesta semanal" />
         <Card className="survey-state">
           <ClipboardCheck size={64} className="accent" />
@@ -47,6 +58,13 @@ export function Encuesta() {
             </div>
             <LevelFace level={result} size={48} />
           </div>
+          {result === 'amarillo' && <YellowNotice />}
+          {result === 'rojo' && (
+            <button className="btn btn--danger btn--block" onClick={() => setShowUrgent(true)}>
+              Ver qué hacer ahora
+            </button>
+          )}
+          {worried && <SupportCard />}
           <p className="muted">Próxima encuesta: <b>{formatShortDate(next)}</b></p>
           <button className="btn btn--primary btn--block" onClick={() => navigate('/paciente/semaforo')}>Ver mi semáforo</button>
         </Card>
@@ -86,6 +104,7 @@ export function Encuesta() {
 
   const isComment = index === surveyQuestions.length
   const answered = isComment || answers[question.id] !== undefined
+  const QuestionIcon = QUESTION_ICON[question?.id ?? 'animo']
 
   return (
     <div className="page">
@@ -100,8 +119,12 @@ export function Encuesta() {
           </>
         ) : (
           <>
-            <p className="form__label">{question.text}</p>
+            <div className="question-head">
+              <span className="question-head__icon"><QuestionIcon size={22} /></span>
+              <p className="form__label grow">{question.text}</p>
+            </div>
             {question.help && <small className="muted">{question.help}</small>}
+            <ReadAloud text={`${question.text} ${question.options.map((o, i) => `Opción ${i + 1}: ${o.label}.`).join(' ')}`} label="Escuchar pregunta" />
             <div className="options">
               {question.options.map((o, i) => (
                 <label key={o.label} className={`option${answers[question.id] === i ? ' is-active' : ''}`}>
@@ -111,7 +134,8 @@ export function Encuesta() {
                     checked={answers[question.id] === i}
                     onChange={() => setAnswers({ ...answers, [question.id]: i })}
                   />
-                  {o.label}
+                  <span className="grow">{o.label}</span>
+                  {question.id !== 'plan' && question.id !== 'animo' && <IntensityScale icon={question.id} intensity={o.intensity} />}
                 </label>
               ))}
             </div>

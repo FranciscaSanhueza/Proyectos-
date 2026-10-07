@@ -5,6 +5,7 @@ import type {
   Reminder,
   StaffMember,
   SurveyQuestion,
+  Alert,
   SurveyResponse,
   SymptomGuide,
 } from '../types'
@@ -57,13 +58,13 @@ export const initialPlans: RecoveryPlan[] = [
     patientId: 'p1',
     procedure: 'Conización cervical (LEEP)',
     diagnosis: 'Lesión precancerosa · NIE III',
-    procedureDate: daysFromNow(-6),
+    procedureDate: daysFromNow(-20),
     nextControl: daysFromNow(24, 9, 30),
     cares: defaultCares,
     warnings: defaultWarnings,
     validated: true,
     validatedBy: 'Dra. Camila Rojas',
-    updatedAt: daysFromNow(-6),
+    updatedAt: daysFromNow(-20),
   },
   {
     patientId: 'p2',
@@ -95,21 +96,22 @@ export const surveyQuestions: SurveyQuestion[] = [
   {
     id: 'sangrado',
     text: '¿Has tenido sangrado vaginal esta semana?',
+    help: 'Piensa en cuántas toallas higiénicas has necesitado.',
     options: [
-      { label: 'No', level: 'verde' },
-      { label: 'Leve o manchado', level: 'verde' },
-      { label: 'Moderado, como una regla', level: 'amarillo' },
-      { label: 'Abundante (empapo más de una toalla por hora)', level: 'rojo' },
+      { label: 'No', level: 'verde', intensity: 0 },
+      { label: 'Leve o manchado (manchas la toalla)', level: 'verde', intensity: 1 },
+      { label: 'Moderado, como una regla', level: 'amarillo', intensity: 2 },
+      { label: 'Abundante (empapo más de una toalla por hora)', level: 'rojo', intensity: 3 },
     ],
   },
   {
     id: 'dolor',
     text: '¿Has sentido dolor en la parte baja del abdomen?',
     options: [
-      { label: 'No', level: 'verde' },
-      { label: 'Leve, se pasa con analgésico', level: 'verde' },
-      { label: 'Moderado y persistente', level: 'amarillo' },
-      { label: 'Intenso, no se pasa con analgésico', level: 'rojo' },
+      { label: 'No', level: 'verde', intensity: 0 },
+      { label: 'Leve, se pasa con analgésico', level: 'verde', intensity: 1 },
+      { label: 'Moderado y persistente', level: 'amarillo', intensity: 2 },
+      { label: 'Intenso, no se pasa con analgésico', level: 'rojo', intensity: 3 },
     ],
   },
   {
@@ -117,33 +119,68 @@ export const surveyQuestions: SurveyQuestion[] = [
     text: '¿Has tenido fiebre?',
     help: 'Si puedes, mide tu temperatura con un termómetro.',
     options: [
-      { label: 'No', level: 'verde' },
-      { label: 'Entre 37,5 °C y 38 °C', level: 'amarillo' },
-      { label: 'Sobre 38 °C', level: 'rojo' },
+      { label: 'No (menos de 37,5 °C)', level: 'verde', intensity: 0 },
+      { label: 'Entre 37,5 °C y 38 °C', level: 'amarillo', intensity: 2 },
+      { label: 'Sobre 38 °C', level: 'rojo', intensity: 3 },
     ],
   },
   {
     id: 'flujo',
     text: '¿Cómo ha sido tu flujo vaginal?',
     options: [
-      { label: 'Normal o café oscuro (es esperable)', level: 'verde' },
-      { label: 'Amarillento o más abundante de lo normal', level: 'amarillo' },
-      { label: 'Con mal olor', level: 'rojo' },
+      { label: 'Normal o café oscuro (es esperable)', level: 'verde', intensity: 0 },
+      { label: 'Amarillento o más abundante de lo normal', level: 'amarillo', intensity: 2 },
+      { label: 'Con mal olor', level: 'rojo', intensity: 3 },
     ],
   },
   {
     id: 'plan',
     text: '¿Has podido seguir los cuidados de tu plan?',
-    options: [{ label: 'Sí, todos' }, { label: 'Algunos' }, { label: 'No he podido' }],
+    options: [
+      { label: 'Sí, todos', intensity: 0 },
+      { label: 'Algunos', intensity: 1 },
+      { label: 'No he podido', intensity: 3 },
+    ],
   },
   {
     id: 'animo',
     text: '¿Cómo te has sentido emocionalmente?',
-    options: [{ label: 'Tranquila' }, { label: 'Algo preocupada' }, { label: 'Muy preocupada o angustiada' }],
+    options: [
+      { label: 'Tranquila', intensity: 0 },
+      { label: 'Algo preocupada', intensity: 1 },
+      { label: 'Muy preocupada o angustiada', intensity: 3 },
+    ],
   },
 ]
 
+/** Índice de la opción "Muy preocupada" en la pregunta de ánimo. */
+export const HIGH_WORRY = 2
+
 export const initialResponses: SurveyResponse[] = [
+  {
+    id: 'sp1',
+    patientId: 'p1',
+    at: daysFromNow(-15, 21),
+    answers: { sangrado: 2, dolor: 1, fiebre: 0, flujo: 0, plan: 1, animo: 2 },
+    comment: 'Estoy nerviosa por el resultado de la biopsia.',
+    level: 'amarillo',
+  },
+  {
+    id: 'sp2',
+    patientId: 'p1',
+    at: daysFromNow(-8, 20),
+    answers: { sangrado: 1, dolor: 1, fiebre: 0, flujo: 0, plan: 0, animo: 1 },
+    comment: '',
+    level: 'verde',
+  },
+  {
+    id: 'sr0',
+    patientId: 'p2',
+    at: daysFromNow(-15, 18),
+    answers: { sangrado: 1, dolor: 2, fiebre: 0, flujo: 0, plan: 0, animo: 2 },
+    comment: 'Me preocupa no saber si es normal.',
+    level: 'amarillo',
+  },
   {
     id: 'sr1',
     patientId: 'p2',
@@ -184,10 +221,10 @@ export const symptomGuide: SymptomGuide[] = [
 ]
 
 export const initialMessages: Message[] = [
-  { id: 'm1', patientId: 'p1', staffId: 'd1', from: 'medico', text: 'Hola María, el procedimiento salió muy bien. Tu plan de recuperación ya está en la app.', at: daysFromNow(-6, 13), read: true },
+  { id: 'm1', patientId: 'p1', staffId: 'd1', from: 'medico', text: 'Hola María, el procedimiento salió muy bien. Tu plan de recuperación ya está en la app.', at: daysFromNow(-20, 13), read: true },
   { id: 'm2', patientId: 'p1', staffId: 'd1', from: 'paciente', text: 'Gracias doctora. Tengo sangrado leve, ¿este síntoma es verde, amarillo o rojo?', at: daysFromNow(-2, 11, 40), read: true },
   { id: 'm3', patientId: 'p1', staffId: 'd1', from: 'medico', text: 'Es verde 💚: un sangrado leve es esperable las primeras semanas. Si aumenta a más que una regla, pasa a rojo y debes ir a urgencias.', at: daysFromNow(-1, 8, 5), read: false },
-  { id: 'm4', patientId: 'p1', staffId: 'd2', from: 'medico', text: 'Hola María, soy Fernanda, la matrona. Cualquier duda sobre tus cuidados puedes escribirme aquí.', at: daysFromNow(-5, 10), read: true },
+  { id: 'm4', patientId: 'p1', staffId: 'd2', from: 'medico', text: 'Hola María, soy Fernanda, la matrona. Cualquier duda sobre tus cuidados puedes escribirme aquí.', at: daysFromNow(-19, 10), read: true },
   { id: 'm5', patientId: 'p2', staffId: 'd1', from: 'paciente', text: 'Doctora, el sangrado aumentó un poco, ¿debo preocuparme?', at: daysFromNow(0, 7, 50), read: false },
   { id: 'm6', patientId: 'p3', staffId: 'd1', from: 'paciente', text: '¿Cuándo estará el resultado de la biopsia?', at: daysFromNow(-1, 19, 20), read: false },
 ]
@@ -200,4 +237,8 @@ export const initialReminders: Reminder[] = [
   { id: 'r5', patientId: 'p1', date: dayKey(24), time: '09:30', title: 'Control post conización', kind: 'control', createdBy: 'medico' },
   { id: 'r6', patientId: 'p2', date: dayKey(12), time: '11:00', title: 'Control post conización', kind: 'control', createdBy: 'medico' },
   { id: 'r7', patientId: 'p3', date: dayKey(20), time: '10:00', title: 'Entrega resultado biopsia', kind: 'control', createdBy: 'medico' },
+]
+
+export const initialAlerts: Alert[] = [
+  { id: 'al1', patientId: 'p2', level: 'amarillo', at: daysFromNow(-1, 20), reviewed: false },
 ]

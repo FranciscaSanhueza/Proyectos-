@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import type { Message, RecoveryPlan, Reminder, Role, SurveyResponse } from '../types'
-import { initialMessages, initialPlans, initialReminders, initialResponses } from '../data/mock'
+import type { Alert, Message, Prefs, RecoveryPlan, Reminder, Role, SurveyResponse } from '../types'
+import { initialAlerts, initialMessages, initialPlans, initialReminders, initialResponses } from '../data/mock'
 
 // Estado global de la app. Por ahora vive en el navegador (localStorage);
 // cuando exista un backend, estas funciones pasan a llamar a la API.
@@ -17,6 +17,8 @@ interface State {
   plans: RecoveryPlan[]
   responses: SurveyResponse[]
   reminders: Reminder[]
+  alerts: Alert[]
+  prefs: Prefs
 }
 
 interface AppContextValue extends State {
@@ -28,10 +30,13 @@ interface AppContextValue extends State {
   addReminder: (r: Omit<Reminder, 'id'>) => void
   removeReminder: (id: string) => void
   savePlan: (plan: RecoveryPlan) => void
+  reviewAlert: (id: string) => void
+  setPrefs: (p: Partial<Prefs>) => void
+  markNotified: (keys: string[]) => void
   resetDemo: () => void
 }
 
-const STORAGE_KEY = 'cervixb-state-v2'
+const STORAGE_KEY = 'cervixb-state-v3'
 
 const initialState: State = {
   session: null,
@@ -39,6 +44,8 @@ const initialState: State = {
   plans: initialPlans,
   responses: initialResponses,
   reminders: initialReminders,
+  alerts: initialAlerts,
+  prefs: { textSize: 'normal', notifications: false, notified: [] },
 }
 
 function loadState(): State {
@@ -89,10 +96,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
       }),
     submitSurvey: (r) =>
-      setState((s) => ({
-        ...s,
-        responses: [{ ...r, id: uid(), at: new Date().toISOString() }, ...s.responses],
-      })),
+      setState((s) => {
+        const at = new Date().toISOString()
+        const { level } = r
+        // Amarillo o rojo: se avisa al equipo médico en su panel.
+        const alerts =
+          level === 'verde' ? s.alerts : [{ id: uid(), patientId: r.patientId, level, at, reviewed: false }, ...s.alerts]
+        return { ...s, alerts, responses: [{ ...r, id: uid(), at }, ...s.responses] }
+      }),
     addReminder: (r) => setState((s) => ({ ...s, reminders: [...s.reminders, { ...r, id: uid() }] })),
     removeReminder: (id) => setState((s) => ({ ...s, reminders: s.reminders.filter((r) => r.id !== id) })),
     savePlan: (plan) =>
@@ -100,7 +111,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         ...s,
         plans: s.plans.map((p) => (p.patientId === plan.patientId ? plan : p)),
       })),
-    resetDemo: () => setState({ ...initialState, session: state.session }),
+    reviewAlert: (id) =>
+      setState((s) => ({ ...s, alerts: s.alerts.map((a) => (a.id === id ? { ...a, reviewed: true } : a)) })),
+    setPrefs: (p) => setState((s) => ({ ...s, prefs: { ...s.prefs, ...p } })),
+    markNotified: (keys) =>
+      setState((s) => ({ ...s, prefs: { ...s.prefs, notified: [...s.prefs.notified, ...keys].slice(-200) } })),
+    resetDemo: () => setState({ ...initialState, session: state.session, prefs: state.prefs }),
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

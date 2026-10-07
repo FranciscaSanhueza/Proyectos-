@@ -17,6 +17,16 @@ Prototipo de app móvil para acompañar a pacientes con **lesiones precancerosas
 6. **Chat de dudas** con la médica tratante y la matrona, con preguntas rápidas como «¿este síntoma es verde, amarillo o rojo?».
 7. **Mi plan**: plan de recuperación personalizado (procedimiento, diagnóstico, semana de recuperación, próximo control, cuidados de hoy y señales de alarma), validado por el médico.
 
+### Mejoras (v2)
+
+- **Alerta roja inmediata**: si la encuesta da rojo, aparece una pantalla de urgencia (llamar al 131, ver urgencias cercanas) y el equipo médico recibe una alerta en su panel. En amarillo se avisa al equipo y se ofrece escribirle.
+- **Mi evolución**: gráfico semana a semana con el semáforo y la intensidad de sangrado, dolor y preocupación (vista paciente y vista médica).
+- **Encuesta visual**: cada opción muestra una escala de intensidad (gotas, termómetro, etc.) y un botón «Escuchar pregunta».
+- **Apoyo emocional**: si la paciente está muy preocupada, se ofrecen respiración guiada, chat con la matrona y Salud Responde.
+- **Accesibilidad**: tamaño de letra (normal, grande, muy grande) y lectura en voz alta del plan y del semáforo.
+- **App instalable (PWA)** con avisos de recordatorios y encuesta (se muestran al abrir la app; los avisos con la app cerrada requieren un servidor).
+- **Publicación automática** en GitHub Pages.
+
 ### Vista profesional de salud
 
 - Panel de pacientes ordenado por semáforo (primero las rojas, luego las amarillas).
@@ -38,6 +48,12 @@ npm run build     # genera la versión de producción en dist/
 Para probar la vista paciente usa **«Usar paciente de prueba»** (RUT `12.345.678-9`, código `CERVIX1`). Para la vista médica, pulsa **«Soy profesional de salud»**.
 
 Los datos son de ejemplo y se guardan en el navegador (`localStorage`).
+
+## Publicarla en internet (GitHub Pages)
+
+1. En GitHub: **Settings → Pages → Build and deployment → Source: «GitHub Actions»**.
+2. Cada push publica la app automáticamente (pestaña **Actions**). Si el primer intento falló porque Pages no estaba activado, entra a **Actions → «Publicar en GitHub Pages» → Run workflow**.
+3. La app queda en `https://franciscasanhueza.github.io/Proyectos-/`. Ábrela en el celular y usa «Agregar a pantalla de inicio» para instalarla.
 
 ## Estructura
 

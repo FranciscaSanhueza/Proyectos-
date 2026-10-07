@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom'
-import { LogOut } from 'lucide-react'
+import { BellRing, Check, LogOut } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { currentDoctor, patients } from '../../data/mock'
 import { Badge, Card, SectionTitle } from '../../components/ui'
 import { LevelFace } from '../../components/LevelFace'
 import type { Level } from '../../types'
-import { LEVEL_INFO, currentLevel, formatShortDate, latestResponse, recoveryWeek, surveyStatus } from '../../utils'
+import { LEVEL_INFO, currentLevel, formatDateTime, formatShortDate, latestResponse, recoveryWeek, surveyStatus } from '../../utils'
 
 const RANK: Record<Level, number> = { rojo: 0, amarillo: 1, verde: 2 }
 
 export function Panel() {
-  const { responses, messages, plans, logout } = useApp()
+  const { responses, messages, plans, alerts, reviewAlert, logout } = useApp()
   const navigate = useNavigate()
 
   const rows = patients
@@ -29,6 +29,10 @@ export function Panel() {
 
   const count = (l: Level) => rows.filter((r) => r.level === l).length
   const pendingPlans = rows.filter((r) => !r.plan.validated).length
+  const newAlerts = alerts
+    .filter((a) => !a.reviewed)
+    .sort((a, b) => (a.level === b.level ? b.at.localeCompare(a.at) : a.level === 'rojo' ? -1 : 1))
+  const nameOf = (id: string) => patients.find((p) => p.id === id)?.name ?? ''
 
   return (
     <div className="page">
@@ -52,6 +56,28 @@ export function Panel() {
           </Card>
         ))}
       </div>
+
+      {newAlerts.length > 0 && (
+        <>
+          <SectionTitle>
+            <BellRing size={18} className="accent" /> Alertas de encuestas
+          </SectionTitle>
+          <div className="stack">
+            {newAlerts.map((a) => (
+              <div key={a.id} className={`card alert-row level-bg--${a.level}`}>
+                <LevelFace level={a.level} size={36} />
+                <button className="alert-row__text" onClick={() => navigate(`/medico/pacientes/${a.patientId}?tab=encuestas`)}>
+                  <strong>{nameOf(a.patientId)} · {LEVEL_INFO[a.level].title}</strong>
+                  <small>{formatDateTime(a.at)} · ver encuesta</small>
+                </button>
+                <button className="icon-btn" onClick={() => reviewAlert(a.id)} aria-label="Marcar como revisada" title="Marcar como revisada">
+                  <Check size={18} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       {pendingPlans > 0 && (
         <p className="notice">{pendingPlans} plan(es) de recuperación pendiente(s) de validar.</p>

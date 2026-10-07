@@ -1,6 +1,6 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { CalendarDays, ClipboardList, Home, LayoutDashboard, MessageCircle, Smile } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { useApp } from './context/AppContext'
 import { currentDoctor } from './data/mock'
 import type { Role } from './types'
@@ -12,6 +12,8 @@ import { Encuesta } from './pages/paciente/Encuesta'
 import { Calendario } from './pages/paciente/Calendario'
 import { ChatDudas, ChatHilo } from './pages/paciente/ChatDudas'
 import { MiPlan } from './pages/paciente/MiPlan'
+import { Ajustes } from './pages/paciente/Ajustes'
+import { useReminderNotifications } from './pages/paciente/useReminderNotifications'
 import { Panel } from './pages/medico/Panel'
 import { PacienteDetalle } from './pages/medico/PacienteDetalle'
 import { Mensajes } from './pages/medico/Mensajes'
@@ -25,6 +27,7 @@ function RequireRole({ role, children }: { role: Role; children: ReactNode }) {
 function PacienteLayout() {
   const { session, messages } = useApp()
   const unread = messages.filter((m) => m.patientId === session?.patientId && m.from === 'medico' && !m.read).length
+  useReminderNotifications()
   // Mismo orden que la barra del prototipo: inicio, calendario, semáforo, chat, mi plan.
   return (
     <Layout
@@ -40,12 +43,13 @@ function PacienteLayout() {
 }
 
 function MedicoLayout() {
-  const { messages } = useApp()
+  const { messages, alerts } = useApp()
   const unread = messages.filter((m) => m.staffId === currentDoctor.id && m.from === 'paciente' && !m.read).length
+  const pendingAlerts = alerts.filter((a) => !a.reviewed).length
   return (
     <Layout
       nav={[
-        { to: '/medico', label: 'Pacientes', icon: LayoutDashboard, end: true },
+        { to: '/medico', label: 'Pacientes', icon: LayoutDashboard, end: true, badge: pendingAlerts },
         { to: '/medico/mensajes', label: 'Dudas', icon: MessageCircle, badge: unread },
       ]}
     />
@@ -53,7 +57,13 @@ function MedicoLayout() {
 }
 
 export function App() {
-  const { session } = useApp()
+  const { session, prefs } = useApp()
+
+  // Tamaño de letra elegido en Ajustes (accesibilidad).
+  useEffect(() => {
+    document.documentElement.dataset.text = prefs.textSize
+  }, [prefs.textSize])
+
   return (
     <HashRouter>
       <Routes>
@@ -67,6 +77,7 @@ export function App() {
           <Route path="chat" element={<ChatDudas />} />
           <Route path="chat/:staffId" element={<ChatHilo />} />
           <Route path="plan" element={<MiPlan />} />
+          <Route path="ajustes" element={<Ajustes />} />
         </Route>
 
         <Route path="/medico" element={<RequireRole role="medico"><MedicoLayout /></RequireRole>}>

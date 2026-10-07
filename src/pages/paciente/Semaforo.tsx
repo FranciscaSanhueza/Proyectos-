@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Phone, Search } from 'lucide-react'
 import { LevelFace } from '../../components/LevelFace'
-import { PageHeader, SectionTitle } from '../../components/ui'
+import { EvolutionChart } from '../../components/EvolutionChart'
+import { ReadAloud } from '../../components/ReadAloud'
+import { YellowNotice } from '../../components/Support'
+import { Card, PageHeader, SectionTitle } from '../../components/ui'
 import { symptomGuide } from '../../data/mock'
 import type { Level } from '../../types'
 import { LEVEL_INFO, currentLevel, formatShortDate, latestResponse } from '../../utils'
@@ -11,7 +14,7 @@ import { usePatient } from './usePatient'
 const LEVELS: Level[] = ['verde', 'amarillo', 'rojo']
 
 export function Semaforo() {
-  const { patientId, responses } = usePatient()
+  const { patientId, plan, responses } = usePatient()
   const navigate = useNavigate()
   const [q, setQ] = useState('')
   const level = currentLevel(responses, patientId)
@@ -26,6 +29,8 @@ export function Semaforo() {
         subtitle={last ? `Según tu encuesta del ${formatShortDate(last.at)}` : 'Aún no respondes tu primera encuesta'}
       />
 
+      <ReadAloud text={`Tu semáforo está en ${LEVEL_INFO[level].title}. ${LEVEL_INFO[level].message}`} label="Escuchar mi estado" />
+
       <div className="stack">
         {LEVELS.map((l) => (
           <div key={l} className={`level-card level-bg--${l}${l === level ? ' is-current' : ''}`}>
@@ -39,16 +44,17 @@ export function Semaforo() {
         ))}
       </div>
 
-      {level === 'amarillo' && (
-        <button className="btn btn--primary btn--block" onClick={() => navigate('/paciente/chat')}>
-          Escribir a mi equipo de salud
-        </button>
-      )}
+      {level === 'amarillo' && <YellowNotice />}
       {level === 'rojo' && (
         <a className="btn btn--danger btn--block" href="tel:131">
           <Phone size={18} /> Llamar al SAMU (131)
         </a>
       )}
+
+      <SectionTitle>Mi evolución</SectionTitle>
+      <Card>
+        <EvolutionChart responses={responses.filter((r) => r.patientId === patientId)} plan={plan} />
+      </Card>
 
       <SectionTitle>¿Tu síntoma es verde, amarillo o rojo?</SectionTitle>
       <label className="search">

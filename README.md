@@ -55,6 +55,12 @@ Los datos son de ejemplo y se guardan en el navegador (`localStorage`).
 2. Cada push publica la app automáticamente (pestaña **Actions**). Si el primer intento falló porque Pages no estaba activado, entra a **Actions → «Publicar en GitHub Pages» → Run workflow**.
 3. La app queda en `https://franciscasanhueza.github.io/Proyectos-/`. Ábrela en el celular y usa «Agregar a pantalla de inicio» para instalarla.
 
+## Pendientes
+
+- [ ] **Backend real** (por ejemplo, Firebase o Supabase) con inicio de sesión seguro, para que médico y paciente compartan los mismos datos entre dispositivos.
+- [ ] **Notificaciones push** que lleguen con la app cerrada (requieren el servidor anterior).
+- [ ] **Validación clínica** de las preguntas, umbrales del semáforo y guía de síntomas por médicos especialistas.
+
 ## Estructura
 
 ```

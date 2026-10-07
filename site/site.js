@@ -264,7 +264,7 @@ const renderThumbs = () => {
     const b = document.createElement('button')
     b.type = 'button'
     b.className = 'thumb'
-    b.textContent = s.t
+    b.innerHTML = `<img src="./img/app-${s.img}.webp" alt="" loading="lazy" /><span>${s.t}</span>`
     b.addEventListener('click', () => show(i))
     thumbs.append(b)
   })

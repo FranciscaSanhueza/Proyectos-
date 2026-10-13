@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import type { Alert, CareLog, CheckIn, Message, Patient, PatientQuestion, Prefs, RecoveryPlan, Reminder, Role, SurveyResponse } from '../types'
 import {
   initialAlerts,
+  initialCareLogs,
   initialCheckIns,
   initialMessages,
   initialPatients,
@@ -58,9 +59,11 @@ interface AppContextValue extends State {
   toggleQuestion: (id: string) => void
   removeQuestion: (id: string) => void
   resetDemo: () => void
+  /** Modo presentación: deja la demo como nueva (datos, sesión y preferencias). */
+  resetAll: () => void
 }
 
-const STORAGE_KEY = 'cervixb-state-v4'
+const STORAGE_KEY = 'cervixb-state-v5'
 
 const initialState: State = {
   session: null,
@@ -71,7 +74,7 @@ const initialState: State = {
   reminders: initialReminders,
   alerts: initialAlerts,
   checkIns: initialCheckIns,
-  careLogs: [],
+  careLogs: initialCareLogs,
   questions: initialQuestions,
   prefs: { textSize: 'normal', theme: 'lavanda', calmMotion: false, notifications: false, notified: [] },
 }
@@ -143,7 +146,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         plans: s.plans.map((p) => (p.patientId === plan.patientId ? plan : p)),
       })),
     reviewAlert: (id) =>
-      setState((s) => ({ ...s, alerts: s.alerts.map((a) => (a.id === id ? { ...a, reviewed: true } : a)) })),
+      setState((s) => ({ ...s, alerts: s.alerts.map((a) => (a.id === id ? { ...a, reviewed: true, reviewedAt: new Date().toISOString() } : a)) })),
     setPrefs: (p) => setState((s) => ({ ...s, prefs: { ...s.prefs, ...p } })),
     markNotified: (keys) =>
       setState((s) => ({ ...s, prefs: { ...s.prefs, notified: [...s.prefs.notified, ...keys].slice(-200) } })),
@@ -182,6 +185,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setState((s) => ({ ...s, questions: s.questions.map((q) => (q.id === id ? { ...q, answered: !q.answered } : q)) })),
     removeQuestion: (id) => setState((s) => ({ ...s, questions: s.questions.filter((q) => q.id !== id) })),
     resetDemo: () => setState({ ...initialState, session: state.session, prefs: state.prefs }),
+    resetAll: () => setState({ ...initialState, prefs: { ...initialState.prefs, notified: state.prefs.notified } }),
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

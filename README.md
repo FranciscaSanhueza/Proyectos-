@@ -52,6 +52,14 @@ Prototipo de app móvil para acompañar a pacientes con **lesiones precancerosas
 - **Mis preguntas**: lista para llevar al control (el médico la ve en el perfil).
 - **Mi camino**: hitos de la recuperación y logros que se desbloquean.
 
+### Mejoras (v4): instituciones, demo y accesibilidad
+
+- **Métricas para la institución** (vista profesional → Métricas): adherencia a la encuesta semanal, tiempo medio en revisar alertas y en responder dudas, cuidados cumplidos, ánimo promedio y planes validados, con metas de referencia. Se descargan en **CSV** para reportes de calidad.
+- **Resumen en PDF** de cada paciente (plan, ánimo y cuidados de 7 días, encuestas, preguntas para el control; las notas privadas solo en la vista profesional). Se abre desde *Mi plan*, *Mis preguntas* o el perfil de la paciente y se guarda con «Imprimir → Guardar como PDF».
+- **Probar demo** desde la web: `app/#/demo/paciente` y `app/#/demo/medico` abren la app directo en esa vista (`?reiniciar=1` deja los datos como nuevos).
+- **Modo presentación**: botón «Reiniciar demo» en la pantalla de ingreso.
+- **Accesibilidad**: tema de **alto contraste**, botones «Escuchar» en Inicio, semáforo, calendario y chat, y página **Otros idiomas** (`app/#/idiomas`) con el semáforo, las señales de alarma y los cuidados en **inglés y criollo haitiano**, con audio. Las traducciones son referenciales y deben revisarlas facilitadores interculturales; los videos en Lengua de Señas Chilena quedan pendientes.
+
 ### Vista profesional de salud
 
 - **Inicio**: alertas, conteo por semáforo y tareas del día (planes por validar, dudas, encuestas pendientes).
@@ -90,6 +98,8 @@ Los datos son de ejemplo y se guardan en el navegador (`localStorage`).
 - [ ] **Backend real** (por ejemplo, Firebase o Supabase) con inicio de sesión seguro, para que médico y paciente compartan los mismos datos entre dispositivos.
 - [ ] **Notificaciones push** que lleguen con la app cerrada (requieren el servidor anterior).
 - [ ] **Validación clínica** de las preguntas, umbrales del semáforo y guía de síntomas por médicos especialistas.
+- [ ] **Revisión de traducciones** (inglés y criollo haitiano) por facilitadores interculturales y **videos en Lengua de Señas Chilena**.
+- [ ] **Pruebas de usabilidad** con pacientes para completar la sección de resultados de la web.
 
 ## Estructura
 

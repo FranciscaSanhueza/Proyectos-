@@ -1,4 +1,5 @@
-import { AlertTriangle, ShieldCheck } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { AlertTriangle, FileDown, ShieldCheck } from 'lucide-react'
 import { Card, PageHeader, SectionTitle } from '../../components/ui'
 import { ReadAloud } from '../../components/ReadAloud'
 import { CareChecklist } from '../../components/CareChecklist'
@@ -7,10 +8,19 @@ import { usePatient } from './usePatient'
 
 export function MiPlan() {
   const { plan, patientId } = usePatient()
+  const navigate = useNavigate()
 
   return (
     <div className="page stagger">
-      <PageHeader title="Mi plan" subtitle={`Actualización: ${formatShortDate(plan.updatedAt)}`} />
+      <PageHeader
+        title="Mi plan"
+        subtitle={`Actualización: ${formatShortDate(plan.updatedAt)}`}
+        action={
+          <button className="icon-btn icon-btn--primary" onClick={() => navigate(`/resumen/${patientId}`)} aria-label="Descargar resumen en PDF" title="Resumen en PDF">
+            <FileDown size={18} />
+          </button>
+        }
+      />
 
       <ReadAloud
         label="Escuchar mi plan"

@@ -4,6 +4,7 @@ import { CalendarMonth, KIND_LABEL } from '../../components/CalendarMonth'
 import { Card, Empty, PageHeader, SectionTitle } from '../../components/ui'
 import type { ReminderKind } from '../../types'
 import { formatDate, toDayKey } from '../../utils'
+import { ReadAloud } from '../../components/ReadAloud'
 import { usePatient } from './usePatient'
 
 export function Calendario() {
@@ -64,6 +65,12 @@ export function Calendario() {
       )}
 
       {ofDay.length === 0 && !adding && <Empty>Sin recordatorios este día.</Empty>}
+      {ofDay.length > 0 && (
+        <ReadAloud
+          label="Escuchar recordatorios del día"
+          text={ofDay.map((r) => `${r.time ? `A las ${r.time}: ` : ''}${r.title}. ${KIND_LABEL[r.kind]}.`).join(' ')}
+        />
+      )}
       <div className="stack">
         {ofDay.map((r) => (
           <Card key={r.id} className="reminder">

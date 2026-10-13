@@ -6,6 +6,7 @@ import type {
   StaffMember,
   SurveyQuestion,
   Alert,
+  CareLog,
   CheckIn,
   PatientQuestion,
   SurveyResponse,
@@ -243,6 +244,17 @@ export const initialReminders: Reminder[] = [
 
 export const initialAlerts: Alert[] = [
   { id: 'al1', patientId: 'p2', level: 'amarillo', at: daysFromNow(-1, 20), reviewed: false },
+  { id: 'al0', patientId: 'p1', level: 'amarillo', at: daysFromNow(-15, 21), reviewed: true, reviewedAt: daysFromNow(-14, 8, 30) },
+  { id: 'al00', patientId: 'p2', level: 'amarillo', at: daysFromNow(-15, 18), reviewed: true, reviewedAt: daysFromNow(-15, 19, 10) },
+]
+
+/** Cuidados marcados en días anteriores (para el seguimiento y las métricas). */
+export const initialCareLogs: CareLog[] = [
+  { patientId: 'p1', date: dayKey(-3), done: defaultCares.slice(0, 5) },
+  { patientId: 'p1', date: dayKey(-2), done: defaultCares.slice(0, 6) },
+  { patientId: 'p1', date: dayKey(-1), done: defaultCares.slice(0, 4) },
+  { patientId: 'p2', date: dayKey(-2), done: defaultCares.slice(0, 3) },
+  { patientId: 'p2', date: dayKey(-1), done: defaultCares.slice(0, 4) },
 ]
 
 export const initialCheckIns: CheckIn[] = [

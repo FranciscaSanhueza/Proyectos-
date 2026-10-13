@@ -1,15 +1,16 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Heart, Stethoscope, UserRound } from 'lucide-react'
+import { Heart, Languages, RotateCcw, Stethoscope, UserRound } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { normalizeRut } from '../utils'
 
 export function Login() {
-  const { login, patients } = useApp()
+  const { login, patients, resetAll } = useApp()
   const navigate = useNavigate()
   const [rut, setRut] = useState('')
   const [code, setCode] = useState('')
   const [error, setError] = useState('')
+  const [resetDone, setResetDone] = useState(false)
 
   const submit = (e: FormEvent) => {
     e.preventDefault()
@@ -27,6 +28,15 @@ export function Login() {
   const enterAsDemoPatient = () => {
     login({ role: 'paciente', patientId: patients[0].id })
     navigate('/paciente')
+  }
+  // Modo presentación: deja los datos de prueba como al inicio antes de cada demo.
+  const resetForDemo = () => {
+    if (!window.confirm('¿Reiniciar la demo? Se borran los cambios hechos en este dispositivo y vuelven los datos de prueba.')) return
+    resetAll()
+    setRut('')
+    setCode('')
+    setError('')
+    setResetDone(true)
   }
   const enterAsDoctor = () => {
     login({ role: 'medico' })
@@ -74,6 +84,16 @@ export function Login() {
           Acceder
         </button>
       </form>
+
+      <div className="login__demo">
+        <button className="link-btn" onClick={() => navigate('/idiomas')}>
+          <Languages size={15} /> English · Kreyòl ayisyen
+        </button>
+        <button className="link-btn" onClick={resetForDemo}>
+          <RotateCcw size={15} /> Reiniciar demo (modo presentación)
+        </button>
+        {resetDone && <small className="pop-in">Listo: la demo quedó como nueva ✨</small>}
+      </div>
 
       <p className="login__foot">Prototipo académico · Cérvix B · FCFM Universidad de Chile</p>
     </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Navigate, useParams, useSearchParams } from 'react-router-dom'
-import { Flag, Phone, Plus, ShieldCheck, Trash2, X } from 'lucide-react'
+import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { FileDown, Flag, Phone, Plus, ShieldCheck, Trash2, X } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { currentDoctor, surveyQuestions } from '../../data/mock'
 import { Chat } from '../../components/Chat'
@@ -25,6 +25,7 @@ type Tab = (typeof tabs)[number]['id']
 export function PacienteDetalle() {
   const { id } = useParams()
   const [params, setParams] = useSearchParams()
+  const navigate = useNavigate()
   const { responses, patients, plans } = useApp()
   const patient = patients.find((p) => p.id === id)
   if (!patient) return <Navigate to="/medico/pacientes" replace />
@@ -55,6 +56,9 @@ export function PacienteDetalle() {
               <span className="tag-list">{patient.tags.map((t) => <span key={t} className="tag">{t}</span>)}</span>
             )}
           </div>
+          <button className="icon-btn icon-btn--primary" onClick={() => navigate(`/resumen/${patient.id}`)} aria-label="Resumen en PDF" title="Resumen en PDF">
+            <FileDown size={18} />
+          </button>
           <a className="icon-btn icon-btn--primary" href={`tel:${patient.phone.replace(/\s/g, '')}`} aria-label="Llamar">
             <Phone size={18} />
           </a>

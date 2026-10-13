@@ -3,6 +3,7 @@ import { Chat } from '../../components/Chat'
 import { Avatar, Badge, Card, PageHeader } from '../../components/ui'
 import { staff } from '../../data/mock'
 import { formatDate } from '../../utils'
+import { ReadAloud } from '../../components/ReadAloud'
 import { usePatient } from './usePatient'
 
 export function ChatDudas() {
@@ -39,11 +40,19 @@ export function ChatDudas() {
 
 export function ChatHilo() {
   const { staffId } = useParams()
-  const { patientId } = usePatient()
+  const { patientId, messages } = usePatient()
   const member = staff.find((s) => s.id === staffId) ?? staff[0]
+  const last = messages
+    .filter((m) => m.patientId === patientId && m.staffId === member.id && m.from === 'medico')
+    .sort((a, b) => b.at.localeCompare(a.at))[0]
   return (
     <div className="page page--chat">
-      <PageHeader title={member.name} subtitle={member.role} back />
+      <PageHeader
+        title={member.name}
+        subtitle={member.role}
+        back
+        action={last && <ReadAloud label="Escuchar" text={`Último mensaje de ${member.name}: ${last.text}`} />}
+      />
       <Chat patientId={patientId} staffId={member.id} me="paciente" />
     </div>
   )

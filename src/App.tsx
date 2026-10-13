@@ -1,5 +1,5 @@
-import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { CalendarDays, ClipboardList, Home, LayoutDashboard, MessageCircle, Smile, Users } from 'lucide-react'
+import { HashRouter, Navigate, Route, Routes, useParams, useSearchParams } from 'react-router-dom'
+import { BarChart3, CalendarDays, ClipboardList, Home, LayoutDashboard, MessageCircle, Smile, Users } from 'lucide-react'
 import { useEffect, type ReactNode } from 'react'
 import { useApp } from './context/AppContext'
 import { currentDoctor } from './data/mock'
@@ -8,6 +8,8 @@ import { Layout } from './components/Layout'
 import { CatBot } from './components/CatBot'
 import { DesktopModeHint } from './components/DesktopModeHint'
 import { Login } from './pages/Login'
+import { Resumen } from './pages/Resumen'
+import { Idiomas } from './pages/Idiomas'
 import { Inicio } from './pages/paciente/Inicio'
 import { Semaforo } from './pages/paciente/Semaforo'
 import { Encuesta } from './pages/paciente/Encuesta'
@@ -25,11 +27,28 @@ import { PacienteDetalle } from './pages/medico/PacienteDetalle'
 import { Pacientes } from './pages/medico/Pacientes'
 import { NuevaPaciente } from './pages/medico/NuevaPaciente'
 import { Mensajes } from './pages/medico/Mensajes'
+import { Metricas } from './pages/medico/Metricas'
 
 function RequireRole({ role, children }: { role: Role; children: ReactNode }) {
   const { session } = useApp()
   if (session?.role !== role) return <Navigate to="/" replace />
   return children
+}
+
+/** Acceso directo desde la página web: #/demo/paciente o #/demo/medico (?reiniciar=1 deja la demo como nueva). */
+function DemoEntry() {
+  const { role } = useParams()
+  const [params] = useSearchParams()
+  const { login, resetAll, patients } = useApp()
+  const target: Role | null = role === 'paciente' || role === 'medico' ? role : null
+  useEffect(() => {
+    if (!target) return
+    if (params.has('reiniciar')) resetAll()
+    login(target === 'paciente' ? { role: 'paciente', patientId: patients[0].id } : { role: 'medico' })
+    // Solo al entrar por el enlace.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  return <Navigate to={target ? `/${target}` : '/'} replace />
 }
 
 function PacienteLayout() {
@@ -63,6 +82,7 @@ function MedicoLayout() {
         { to: '/medico', label: 'Inicio', icon: LayoutDashboard, end: true, badge: pendingAlerts },
         { to: '/medico/pacientes', label: 'Pacientes', icon: Users },
         { to: '/medico/mensajes', label: 'Dudas', icon: MessageCircle, badge: unread },
+        { to: '/medico/metricas', label: 'Métricas', icon: BarChart3 },
       ]}
     />
   )
@@ -85,6 +105,10 @@ export function App() {
       <Routes>
         <Route path="/" element={session ? <Navigate to={`/${session.role}`} replace /> : <Login />} />
 
+        <Route path="/demo/:role" element={<DemoEntry />} />
+        <Route path="/resumen/:id" element={<Resumen />} />
+        <Route path="/idiomas" element={<Idiomas />} />
+
         <Route path="/paciente" element={<RequireRole role="paciente"><PacienteLayout /></RequireRole>}>
           <Route index element={<Inicio />} />
           <Route path="calendario" element={<Calendario />} />
@@ -106,6 +130,7 @@ export function App() {
           <Route path="pacientes/nueva" element={<NuevaPaciente />} />
           <Route path="pacientes/:id" element={<PacienteDetalle />} />
           <Route path="mensajes" element={<Mensajes />} />
+          <Route path="metricas" element={<Metricas />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

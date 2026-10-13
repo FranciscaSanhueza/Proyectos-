@@ -8,6 +8,7 @@ import { SupportCard } from '../../components/Support'
 import { MOODS, MoodPicker } from '../../components/MoodPicker'
 import { ProgressRing } from '../../components/ProgressRing'
 import { Celebrate } from '../../components/Celebrate'
+import { ReadAloud } from '../../components/ReadAloud'
 import { HIGH_WORRY } from '../../data/mock'
 import { LEVEL_INFO, currentLevel, daysSince, formatShortDate, recoveryWeek, surveyStatus, toDayKey } from '../../utils'
 import { usePatient } from './usePatient'
@@ -71,6 +72,10 @@ export function Inicio() {
           </ProgressRing>
           <div>
             <strong>{HERO_MESSAGE[level]}</strong>
+            <ReadAloud
+              label="Escuchar mi día"
+              text={`${hello}, ${patient.name.split(' ')[0]}. Estás en la semana ${recoveryWeek(plan)} de tu recuperación. Tu semáforo está en ${LEVEL_INFO[level].title}: ${LEVEL_INFO[level].message} ${survey.available ? 'Tienes la encuesta semanal disponible.' : ''} Llevas ${careDone} de ${plan.cares.length} cuidados de hoy. ${upcoming.length ? `Próximo recordatorio: ${upcoming[0].title}.` : ''} Tu próximo control es el ${formatShortDate(plan.nextControl)}.`}
+            />
             <p>{days === 0 ? 'Hoy comienza tu recuperación' : `Llevas ${days} ${days === 1 ? 'día' : 'días'} de recuperación`}. Próximo control: {formatShortDate(plan.nextControl)}.</p>
           </div>
         </div>

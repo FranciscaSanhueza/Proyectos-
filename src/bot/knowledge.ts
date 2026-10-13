@@ -267,8 +267,8 @@ export const ENTRIES: Entry[] = [
   },
   {
     id: 'ajustes',
-    keys: ['letra', 'tamano de letra', 'letra grande', 'color de la app', 'cambiar color', 'notificacion', 'aviso', 'instalar'],
-    text: 'En **Ajustes** (el engranaje en Inicio) puedes agrandar la letra, cambiar los colores (Lavanda, Rosa o Menta), activar avisos e instalar la app en tu celular ⚙️.',
+    keys: ['letra', 'tamano de letra', 'letra grande', 'color de la app', 'cambiar color', 'notificacion', 'aviso', 'instalar', 'descargar la app', 'bajar la app'],
+    text: 'En **Ajustes** (el engranaje en Inicio) puedes agrandar la letra, cambiar los colores (Lavanda, Rosa, Menta o Alto contraste), activar avisos e instalar la app en tu celular ⚙️.',
     actions: { app: [{ label: 'Abrir Ajustes', href: APP('ajustes') }] },
   },
   {
@@ -280,6 +280,24 @@ export const ENTRIES: Entry[] = [
     id: 'perfil',
     keys: ['cambiar perfil', 'cambiar de perfil', 'vista medico', 'vista del medico', 'modo medico', 'profesional', 'cerrar sesion', 'volver al inicio'],
     text: 'Para pasar de la vista de paciente a la del profesional (o al revés), toca **Cambiar perfil** arriba en la pantalla de Inicio. Vuelves a la pantalla de ingreso y eliges «Paciente» o «Profesional» 🔁.',
+  },
+  {
+    id: 'idiomas',
+    keys: ['idioma', 'ingles', 'english', 'kreyol', 'creole', 'criollo', 'haitiano', 'otro idioma', 'traduc', 'lengua de senas', 'contraste', 'accesib'],
+    text: 'Cérvix-B tiene **información esencial en inglés y criollo haitiano** (semáforo, señales de alarma y cuidados) con audio. En Ajustes también puedes agrandar la letra y elegir el tema de **alto contraste**. Los videos en Lengua de Señas Chilena están en preparación 🌎.',
+    actions: { app: [{ label: 'Otros idiomas', href: '#/idiomas' }], sitio: [{ label: 'Ver otros idiomas', href: './app/#/idiomas' }] },
+  },
+  {
+    id: 'pdf',
+    keys: ['pdf', 'resumen', 'imprimir', 'descargar', 'llevar al control', 'ficha clinica'],
+    text: 'Puedes generar un **resumen en PDF** con tu plan, ánimo, cuidados, encuestas y preguntas para llevarlo a tu control. Está en **Mi plan** (ícono de descarga) y en **Mis preguntas** 📄.',
+    actions: { app: [{ label: 'Ir a Mis preguntas', href: APP('preguntas') }] },
+  },
+  {
+    id: 'metricas',
+    keys: ['metrica', 'indicador', 'estadistica', 'adherencia', 'reporte', 'csv', 'tiempo de respuesta'],
+    text: 'El equipo de salud tiene un panel de **métricas**: adherencia a la encuesta, tiempo en revisar alertas y en responder dudas, cuidados cumplidos y ánimo promedio. Se puede descargar en CSV para reportes de calidad 📊.',
+    actions: { sitio: [{ label: 'Ver métricas (demo)', href: './app/#/demo/medico' }] },
   },
   {
     id: 'privacidad',
@@ -313,9 +331,14 @@ export const ENTRIES: Entry[] = [
   },
   {
     id: 'probar',
-    keys: ['probar', 'prototipo', 'descargar', 'usar la app', 'donde esta la app', 'link'],
-    text: 'Puedes probar el prototipo en tu navegador: en la pantalla de inicio elige «Paciente» o «Profesional», y usa **Cambiar perfil** para pasar de una vista a otra. Todos los datos son ficticios 📱.',
-    actions: { sitio: [{ label: 'Abrir la app', href: './app/' }] },
+    keys: ['probar', 'prototipo', 'demo', 'usar la app', 'donde esta la app', 'link'],
+    text: 'Puedes probar el prototipo en tu navegador, directo en la vista que quieras. Usa **Cambiar perfil** para pasar de una a otra y **Reiniciar demo** (en el inicio de sesión) para dejar los datos como nuevos. Todo es ficticio 📱.',
+    actions: {
+      sitio: [
+        { label: 'Probar como paciente', href: './app/#/demo/paciente' },
+        { label: 'Probar como médico', href: './app/#/demo/medico' },
+      ],
+    },
     only: 'sitio',
   },
   {

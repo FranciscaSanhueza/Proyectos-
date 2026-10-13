@@ -61,6 +61,12 @@ export function Semaforo() {
         <Search size={18} />
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Ej: sangrado, fiebre, dolor…" />
       </label>
+      {matches.length > 0 && (
+        <ReadAloud
+          label="Escuchar la guía"
+          text={matches.map((s) => `${s.symptom}: ${LEVEL_INFO[s.level].title}. ${s.advice}`).join(' ')}
+        />
+      )}
       <div className="stack">
         {matches.map((s) => (
           <div key={s.symptom} className={`guide-row level-border--${s.level}`}>

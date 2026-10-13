@@ -70,6 +70,32 @@
   --shadow: 0 2px 10px rgba(42, 138, 126, 0.1);
 }
 
+/* Alto contraste: texto negro, bordes marcados y colores fuertes (accesibilidad). */
+:root[data-theme='contraste'] {
+  --primary: #3d0f5c;
+  --primary-dark: #22033a;
+  --primary-soft: #efe6f7;
+  --pink: #ffffff;
+  --pink-strong: #d9c7ea;
+  --navy: #000000;
+  --text: #000000;
+  --muted: #2b2b2b;
+  --bg: #ffffff;
+  --border: #3d0f5c;
+  --verde: #1b7a24;
+  --amarillo: #8a6d00;
+  --rojo: #b3000a;
+  --kind-control: #3d0f5c;
+  --kind-medicamento: #005f5f;
+  --kind-cuidado: #9c1f63;
+  --kind-encuesta: #1d4fb3;
+  --hero-from: #2a0745;
+  --hero-to: #5b2384;
+  --shadow: 0 0 0 1.5px #3d0f5c;
+}
+:root[data-theme='contraste'] a, :root[data-theme='contraste'] .link-btn { text-decoration: underline; }
+:root[data-theme='contraste'] :focus-visible { outline: 3px solid #000; outline-offset: 2px; }
+
 * { box-sizing: border-box; }
 
 html, body, #root { height: 100%; }
@@ -582,6 +608,9 @@ textarea { resize: vertical; }
 .login__form { display: flex; flex-direction: column; gap: 8px; background: #fff; border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
 .login__form label { font-weight: 700; font-size: 14px; color: var(--navy); }
 .login__form .btn { margin-top: 8px; }
+.login__demo { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 4px; }
+.login__demo .link-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; }
+.login__demo small { color: var(--muted); }
 .login__foot { text-align: center; font-size: 12px; color: var(--muted); margin-top: auto; }
 
 .role-card {
@@ -1153,7 +1182,8 @@ body, .app-shell, .login { transition: background-color 0.4s ease; }
 
 /* ---------- Ajustes: temas ---------- */
 
-.themes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.themes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 380px) { .themes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .theme-opt {
   display: flex;
   flex-direction: column;
@@ -1428,3 +1458,82 @@ body, .app-shell, .login { transition: background-color 0.4s ease; }
   place-items: center;
   flex-shrink: 0;
 }
+
+/* ---------- Métricas (vista institución) ---------- */
+.metrics__note { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--muted); background: var(--primary-soft); border-radius: var(--radius-sm); padding: 10px 12px; margin: 0; }
+.metrics__note svg { flex: none; margin-top: 2px; color: var(--primary); }
+.kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.kpi { display: flex; flex-direction: column; gap: 4px; padding: 14px; }
+.kpi__icon { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: var(--primary-soft); color: var(--primary); }
+.kpi strong { font-size: 24px; font-weight: 800; color: var(--navy); line-height: 1.1; margin-top: 4px; }
+.kpi span:not(.kpi__icon) { font-size: 13px; font-weight: 700; color: var(--text); }
+.kpi small { font-size: 12px; font-weight: 700; }
+.kpi--ok small { color: #2f8a38; }
+.kpi--warn small { color: #a07c00; }
+.metrics__grid { display: grid; gap: 12px; }
+.bars { display: flex; align-items: flex-end; gap: 12px; height: 150px; padding-top: 8px; }
+.bars__col { flex: 1; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; }
+.bars__bar { width: 100%; max-width: 54px; min-height: 4px; border-radius: 10px 10px 4px 4px; background: linear-gradient(180deg, var(--hero-to), var(--primary)); transition: height 0.8s var(--ease); }
+.bars__col b { color: var(--navy); }
+.bars__col small { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.level-split { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.level-split__row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 4px 10px; border: none; border-radius: var(--radius-sm); padding: 8px 12px; font: inherit; font-weight: 700; color: var(--text); text-align: left; cursor: pointer; }
+.level-split__track { grid-column: 1 / -1; height: 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.7); overflow: hidden; }
+.level-split__track span { display: block; height: 100%; background: currentColor; opacity: 0.45; border-radius: 6px; }
+.metrics__value ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; }
+@media (min-width: 900px) {
+  .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .metrics__grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ---------- Resumen para el control (PDF) ---------- */
+.summary { max-width: 900px; margin: 0 auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.summary__bar { display: flex; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
+.summary__tip { margin: 0; font-size: 13px; color: var(--muted); text-align: center; }
+.summary__sheet { background: #fff; color: #1f1a2e; border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; display: flex; flex-direction: column; gap: 18px; font-size: 14px; }
+.summary__head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 2px solid var(--primary-soft); padding-bottom: 14px; flex-wrap: wrap; }
+.summary__head h1 { margin: 2px 0; font-size: 24px; color: var(--navy); }
+.summary__head p { margin: 0; color: var(--muted); }
+.summary__brand { color: var(--primary) !important; font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+.summary__level { border-radius: var(--radius-sm); padding: 10px 16px; display: flex; flex-direction: column; min-width: 140px; }
+.summary__level strong { font-size: 20px; }
+.summary h2 { font-size: 16px; color: var(--primary-dark); margin: 0 0 8px; }
+.summary h3 { font-size: 14px; margin: 8px 0 4px; }
+.summary ul, .summary ol { margin: 0; padding-left: 18px; display: grid; gap: 2px; }
+.summary__facts { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; }
+.summary__facts dt { font-weight: 800; color: var(--muted); }
+.summary__facts dd { margin: 0; }
+.summary__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.summary section { overflow-x: auto; }
+.summary__table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.summary__table th, .summary__table td { border: 1px solid var(--border); padding: 6px; text-align: center; }
+.summary__table th { background: var(--primary-soft); font-weight: 800; }
+.summary__table tbody th { text-align: left; }
+.summary__table--wide td, .summary__table--wide th { font-size: 12px; }
+.summary__comment { margin: 6px 0 0; font-style: italic; }
+.summary__foot { font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 10px; }
+@media (max-width: 600px) {
+  .summary { padding: 12px; }
+  .summary__sheet { padding: 16px; }
+  .summary__cols { grid-template-columns: 1fr; }
+}
+@media print {
+  @page { margin: 14mm; }
+  html, body { background: #fff !important; }
+  .no-print, .desktop-hint, .cb-root, .cb-in-app { display: none !important; }
+  .summary { padding: 0; max-width: none; }
+  .summary__sheet { box-shadow: none; padding: 0; border-radius: 0; }
+  .summary section { overflow: visible; break-inside: avoid; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* ---------- Idiomas ---------- */
+.languages h2 { margin: 0 0 4px; font-size: 20px; color: var(--navy); }
+.languages h3 { margin: 0 0 10px; font-size: 16px; color: var(--primary-dark); }
+.languages__intro p { margin: 0 0 10px; }
+.languages__level { display: flex; align-items: center; gap: 12px; border-radius: var(--radius-sm); padding: 10px 12px; font-weight: 700; }
+.languages__list { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.languages__list--alarm li::marker { color: var(--rojo); }
+.languages__sign { display: flex; gap: 12px; align-items: flex-start; }
+.languages__sign p { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
+.languages__note { font-size: 12px; text-align: center; margin: 0; }

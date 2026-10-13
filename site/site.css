@@ -79,6 +79,7 @@ button { font: inherit; cursor: pointer; color: inherit; }
 .btn--ghost { background: var(--primary-soft); color: var(--primary-dark); }
 .btn--white { background: #fff; color: var(--primary-dark); }
 .btn--sm { padding: 9px 18px; font-size: 14px; }
+.btn--link { background: none; color: var(--primary-dark); padding-left: 6px; padding-right: 6px; text-decoration: underline; text-underline-offset: 4px; }
 
 /* ---------- Navegación ---------- */
 

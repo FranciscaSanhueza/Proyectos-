@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { BellRing, Check, ClipboardCheck, MessageCircle, ShieldAlert, UserPlus, Users } from 'lucide-react'
+import { BarChart3, BellRing, Check, ClipboardCheck, MessageCircle, ShieldAlert, UserPlus, Users } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { currentDoctor } from '../../data/mock'
 import { Card, SectionTitle, SwitchProfileButton } from '../../components/ui'
@@ -93,6 +93,9 @@ export function Panel() {
         </button>
         <button className="btn btn--ghost" onClick={() => navigate('/medico/pacientes/nueva')}>
           <UserPlus size={18} /> Nueva paciente
+        </button>
+        <button className="btn btn--ghost" onClick={() => navigate('/medico/metricas')}>
+          <BarChart3 size={18} /> Métricas
         </button>
       </div>
     </div>

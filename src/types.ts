@@ -103,11 +103,13 @@ export interface Alert {
   level: Exclude<Level, 'verde'>
   at: string // ISO
   reviewed: boolean
+  /** Cuándo el equipo la marcó como revisada (para medir tiempos de respuesta). */
+  reviewedAt?: string
 }
 
 export type TextSize = 'normal' | 'grande' | 'muy-grande'
 
-export type Theme = 'lavanda' | 'rosa' | 'menta'
+export type Theme = 'lavanda' | 'rosa' | 'menta' | 'contraste'
 
 /** Check-in diario de ánimo (1 = muy mal … 5 = muy bien). */
 export interface CheckIn {

@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
-import { CalendarDays, Check, Lightbulb, Plus, Trash2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { CalendarDays, Check, FileDown, Lightbulb, Plus, Trash2 } from 'lucide-react'
 import { Card, Empty, PageHeader, SectionTitle } from '../../components/ui'
 import { formatShortDate } from '../../utils'
 import { usePatient } from './usePatient'
@@ -17,6 +18,7 @@ const IDEAS = [
 export function Preguntas() {
   const { patientId, plan, questions, addQuestion, toggleQuestion, removeQuestion } = usePatient()
   const [text, setText] = useState('')
+  const navigate = useNavigate()
   const mine = questions.filter((q) => q.patientId === patientId)
   const pending = mine.filter((q) => !q.answered)
   const done = mine.filter((q) => q.answered)
@@ -35,6 +37,9 @@ export function Preguntas() {
       <Card className="info-row">
         <span className="meta"><CalendarDays size={16} /> Próximo control: <b>{formatShortDate(plan.nextControl)}</b></span>
         <small className="muted">Tu médica podrá verlas antes de la consulta.</small>
+        <button className="btn btn--ghost btn--block small-gap" onClick={() => navigate(`/resumen/${patientId}`)}>
+          <FileDown size={18} /> Resumen para mi control (PDF)
+        </button>
       </Card>
 
       <form className="row" onSubmit={submit}>

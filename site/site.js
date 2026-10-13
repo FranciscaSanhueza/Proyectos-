@@ -224,12 +224,15 @@ const SCREENS = {
     { img: 'calma', t: 'Rincón de calma', d: 'Frases de ánimo, respiración guiada, ejercicio 5-4-3-2-1 y sonido relajante.' },
     { img: 'aprende', t: 'Aprende', d: 'Juego «¿Mito o verdad?» y fichas sobre VPH, lesiones, conización y controles.' },
     { img: 'camino', t: 'Mi camino', d: 'Hitos de la recuperación y logros que se desbloquean para motivar la constancia.' },
+    { img: 'idiomas', t: 'Otros idiomas', d: 'Semáforo, señales de alarma y cuidados en inglés y criollo haitiano, con audio. Además: tema de alto contraste y botones «Escuchar».' },
+    { img: 'resumen', t: 'Resumen en PDF', d: 'Resumen de la recuperación (plan, ánimo, cuidados, encuestas y preguntas) para llevar al control o adjuntar a la ficha.' },
   ],
   medico: [
     { img: 'medico-inicio', t: 'Inicio del equipo', d: 'Pacientes por color del semáforo, alertas de encuestas y tareas del día.' },
     { img: 'medico-pacientes', t: 'Mis pacientes', d: 'Lista con búsqueda, filtros (rojo, prioridad, plan por validar…) y orden.' },
     { img: 'medico-perfil', t: 'Perfil de la paciente', d: 'Resumen con ánimo de la semana, cuidados cumplidos, evolución, preguntas para el control y notas privadas.' },
     { img: 'medico-plan', t: 'Plan personalizado', d: 'El médico ajusta procedimiento, cuidados y señales de alarma, y valida el plan antes del alta.' },
+    { img: 'medico-metricas', t: 'Métricas para la institución', d: 'Adherencia a la encuesta, tiempo de revisión de alertas y de respuesta a dudas, cuidados cumplidos y ánimo. Descargables en CSV.' },
   ],
 }
 let set = 'paciente'
@@ -277,6 +280,7 @@ $$('.gtab').forEach((tab) =>
       t.classList.toggle('is-active', t === tab)
       t.setAttribute('aria-selected', String(t === tab))
     })
+    $('#stage-cta').href = `./app/#/demo/${set}`
     renderThumbs()
   }),
 )

@@ -71,7 +71,7 @@ export function Inicio() {
           </ProgressRing>
           <div>
             <strong>{HERO_MESSAGE[level]}</strong>
-            <p>Llevas {days} días de recuperación. Próximo control: {formatShortDate(plan.nextControl)}.</p>
+            <p>{days === 0 ? 'Hoy comienza tu recuperación' : `Llevas ${days} ${days === 1 ? 'día' : 'días'} de recuperación`}. Próximo control: {formatShortDate(plan.nextControl)}.</p>
           </div>
         </div>
       </header>

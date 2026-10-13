@@ -24,9 +24,9 @@ export function Panel() {
   const surveyDue = active.filter((p) => surveyStatus(responses, p.id).available)
 
   const tasks = [
-    { icon: ShieldAlert, n: toValidate.length, label: 'planes por validar', to: '/medico/pacientes?filtro=validar' },
-    { icon: MessageCircle, n: unread, label: 'dudas sin responder', to: '/medico/mensajes' },
-    { icon: ClipboardCheck, n: surveyDue.length, label: 'encuestas pendientes', to: '/medico/pacientes?filtro=encuesta' },
+    { icon: ShieldAlert, n: toValidate.length, label: toValidate.length === 1 ? 'plan por validar' : 'planes por validar', to: '/medico/pacientes?filtro=validar' },
+    { icon: MessageCircle, n: unread, label: unread === 1 ? 'duda sin responder' : 'dudas sin responder', to: '/medico/mensajes' },
+    { icon: ClipboardCheck, n: surveyDue.length, label: surveyDue.length === 1 ? 'encuesta pendiente' : 'encuestas pendientes', to: '/medico/pacientes?filtro=encuesta' },
   ]
 
   const hour = new Date().getHours()
@@ -39,7 +39,7 @@ export function Panel() {
           <div>
             <p className="hero__eyebrow">{hello}</p>
             <h1>{currentDoctor.name}</h1>
-            <p className="hero__sub">{currentDoctor.role} · {active.length} pacientes en seguimiento</p>
+            <p className="hero__sub">{currentDoctor.role} · {active.length} {active.length === 1 ? 'paciente' : 'pacientes'} en seguimiento</p>
           </div>
           <SwitchProfileButton />
         </div>

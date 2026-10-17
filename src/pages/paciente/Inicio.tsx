@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Bell, BookOpen, ClipboardCheck, ClipboardList, Flower2, MessageCircleQuestion, Route, Settings, ShieldCheck } from 'lucide-react'
+import { AlertTriangle, Bell, BookOpen, CalendarClock, ChevronRight, ClipboardCheck, ClipboardList, Flame, Flower2, HeartPulse, MessageCircle, MessageCircleQuestion, Route, Settings, ShieldCheck, Sparkles, type LucideIcon } from 'lucide-react'
 import { Card, SectionTitle, SwitchProfileButton } from '../../components/ui'
 import { LevelFace } from '../../components/LevelFace'
 import { KIND_LABEL } from '../../components/CalendarMonth'
@@ -9,8 +9,8 @@ import { MOODS, MoodPicker } from '../../components/MoodPicker'
 import { ProgressRing } from '../../components/ProgressRing'
 import { Celebrate } from '../../components/Celebrate'
 import { ReadAloud } from '../../components/ReadAloud'
-import { HIGH_WORRY } from '../../data/mock'
-import { LEVEL_INFO, currentLevel, daysSince, formatShortDate, recoveryWeek, surveyStatus, toDayKey } from '../../utils'
+import { HIGH_WORRY, affirmations, staff } from '../../data/mock'
+import { LEVEL_INFO, checkInStreak, currentLevel, daysSince, formatShortDate, haptic, recoveryWeek, surveyStatus, toDayKey } from '../../utils'
 import { usePatient } from './usePatient'
 
 const RECOVERY_DAYS = 42 // ~6 semanas hasta el control
@@ -28,8 +28,20 @@ const EXPLORE = [
   { to: '/paciente/camino', icon: Route, title: 'Mi camino', text: 'Hitos y logros', tone: 'peach' },
 ] as const
 
+interface Step {
+  icon: LucideIcon
+  tone: 'danger' | 'primary' | 'calm' | 'done'
+  eyebrow: string
+  title: string
+  text: string
+  to?: string
+  cta?: string
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000
+
 export function Inicio() {
-  const { patient, patientId, plan, responses, reminders, checkIns, careLogs, checkIn } = usePatient()
+  const { patient, patientId, plan, responses, reminders, checkIns, careLogs, messages, questions, checkIn } = usePatient()
   const navigate = useNavigate()
   const [party, setParty] = useState(0)
 
@@ -44,6 +56,28 @@ export function Inicio() {
     .sort((a, b) => (a.date + (a.time ?? '')).localeCompare(b.date + (b.time ?? '')))
     .slice(0, 3)
 
+  const streak = checkInStreak(checkIns.filter((c) => c.patientId === patientId).map((c) => c.date))
+  const controlIn = Math.ceil((new Date(plan.nextControl).getTime() - Date.now()) / DAY_MS)
+  const unreadFrom = staff.find((m) =>
+    messages.some((x) => x.patientId === patientId && x.staffId === m.id && x.from === 'medico' && !x.read),
+  )
+  const pendingQuestions = questions.filter((q) => q.patientId === patientId && !q.answered).length
+
+  // «Tu siguiente paso»: una sola acción, la más importante para hoy.
+  const step: Step =
+    level === 'rojo'
+      ? { icon: AlertTriangle, tone: 'danger', eyebrow: 'Importante', title: 'Tu semáforo está en rojo', text: 'Revisa qué hacer ahora. Si tienes sangrado abundante, fiebre o dolor intenso, acude a urgencias.', to: '/paciente/semaforo', cta: 'Ver qué hacer' }
+      : unreadFrom
+        ? { icon: MessageCircle, tone: 'primary', eyebrow: 'Nuevo mensaje', title: `${unreadFrom.name} te respondió`, text: 'Lee la respuesta de tu equipo de salud.', to: `/paciente/chat/${unreadFrom.id}`, cta: 'Leer mensaje' }
+        : survey.available
+          ? { icon: ClipboardList, tone: 'primary', eyebrow: 'Esta semana', title: 'Responde tu encuesta', text: 'Son 5 minutos. Así actualizamos tu semáforo y tu médica sigue tu evolución.', to: '/paciente/encuesta', cta: 'Responder ahora' }
+          : controlIn >= 0 && controlIn <= 7
+            ? { icon: CalendarClock, tone: 'calm', eyebrow: 'Se acerca tu control', title: controlIn === 0 ? 'Tu control es hoy' : `Tu control es en ${controlIn} ${controlIn === 1 ? 'día' : 'días'}`, text: pendingQuestions ? `Tienes ${pendingQuestions} ${pendingQuestions === 1 ? 'pregunta anotada' : 'preguntas anotadas'}. Llévalas junto a tu resumen.` : 'Anota tus dudas para no olvidarlas en la consulta.', to: '/paciente/preguntas', cta: 'Preparar mi control' }
+            : careDone < plan.cares.length
+              ? { icon: HeartPulse, tone: 'calm', eyebrow: 'Cuidados de hoy', title: `Te ${plan.cares.length - careDone === 1 ? 'falta 1 cuidado' : `faltan ${plan.cares.length - careDone} cuidados`}`, text: 'Márcalos a medida que los cumples. ¡Cada uno suma a tu recuperación!', to: '/paciente/plan', cta: 'Ver mis cuidados' }
+              : { icon: Sparkles, tone: 'done', eyebrow: '¡Todo al día! 🌸', title: affirmations[new Date().getDate() % affirmations.length], text: 'Completaste lo de hoy. Descansa y date un respiro.', to: '/paciente/calma', cta: 'Ir al Rincón de calma' }
+  const StepIcon = step.icon
+
   const hour = new Date().getHours()
   const hello = hour < 12 ? 'Buenos días' : hour < 20 ? 'Buenas tardes' : 'Buenas noches'
 
@@ -57,6 +91,11 @@ export function Inicio() {
             <p className="hero__eyebrow">{hello}</p>
             <h1>{patient.name.split(' ')[0]} 🌷</h1>
             <p className="hero__sub">Semana {recoveryWeek(plan)} de tu recuperación</p>
+            {streak >= 2 && (
+              <span className="hero__streak pop-in" title="Días seguidos registrando tu ánimo">
+                <Flame size={14} /> {streak} días seguidos
+              </span>
+            )}
           </div>
           <div className="hero__actions">
             <SwitchProfileButton />
@@ -76,10 +115,30 @@ export function Inicio() {
               label="Escuchar mi día"
               text={`${hello}, ${patient.name.split(' ')[0]}. Estás en la semana ${recoveryWeek(plan)} de tu recuperación. Tu semáforo está en ${LEVEL_INFO[level].title}: ${LEVEL_INFO[level].message} ${survey.available ? 'Tienes la encuesta semanal disponible.' : ''} Llevas ${careDone} de ${plan.cares.length} cuidados de hoy. ${upcoming.length ? `Próximo recordatorio: ${upcoming[0].title}.` : ''} Tu próximo control es el ${formatShortDate(plan.nextControl)}.`}
             />
-            <p>{days === 0 ? 'Hoy comienza tu recuperación' : `Llevas ${days} ${days === 1 ? 'día' : 'días'} de recuperación`}. Próximo control: {formatShortDate(plan.nextControl)}.</p>
+            <p>{days === 0 ? 'Hoy comienza tu recuperación' : `Llevas ${days} ${days === 1 ? 'día' : 'días'} de recuperación`}. {controlIn > 0 ? `Tu control es en ${controlIn} ${controlIn === 1 ? 'día' : 'días'} (${formatShortDate(plan.nextControl)}).` : `Próximo control: ${formatShortDate(plan.nextControl)}.`}</p>
           </div>
         </div>
       </header>
+
+      <button
+        className={`next-step next-step--${step.tone}`}
+        onClick={() => {
+          haptic()
+          if (step.to) navigate(step.to)
+        }}
+      >
+        <span className="next-step__icon"><StepIcon size={24} /></span>
+        <span className="next-step__body">
+          <small>Tu siguiente paso · {step.eyebrow}</small>
+          <strong>{step.title}</strong>
+          <span>{step.text}</span>
+        </span>
+        {step.cta && (
+          <span className="next-step__cta">
+            <span>{step.cta}</span> <ChevronRight size={18} />
+          </span>
+        )}
+      </button>
 
       <Card className="checkin home-half">
         <p className="form__label">¿Cómo te sientes hoy?</p>
@@ -104,12 +163,6 @@ export function Inicio() {
         </div>
         <LevelFace level={level} size={56} />
       </Card>
-
-      {level === 'rojo' && (
-        <button className="btn btn--danger btn--block" onClick={() => navigate('/paciente/semaforo')}>
-          Tu semáforo está en rojo: ver qué hacer
-        </button>
-      )}
 
       {survey.last && !survey.available && survey.last.answers.animo === HIGH_WORRY && <SupportCard />}
 

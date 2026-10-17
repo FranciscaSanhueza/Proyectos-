@@ -1,4 +1,5 @@
 import type { CheckIn } from '../types'
+import { haptic } from '../utils'
 
 export const MOODS = [
   { emoji: '😣', label: 'Muy mal', reply: 'Siento que estés pasando un mal día. Tu equipo está para ti: escríbeles si algo te preocupa 💜' },
@@ -21,7 +22,10 @@ export function MoodPicker({ value, onPick }: { value?: CheckIn['mood']; onPick:
             aria-checked={value === mood}
             aria-label={m.label}
             className={`mood-picker__opt${value === mood ? ' is-active' : ''}${value && value !== mood ? ' is-dim' : ''}`}
-            onClick={() => onPick(mood)}
+            onClick={() => {
+              haptic()
+              onPick(mood)
+            }}
           >
             <span className="mood-picker__emoji">{m.emoji}</span>
             <small>{m.label}</small>

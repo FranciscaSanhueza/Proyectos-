@@ -73,3 +73,26 @@ export const recoveryWeek = (plan: RecoveryPlan) =>
 /** Días completos transcurridos desde una fecha ISO. */
 export const daysSince = (iso: string) =>
   Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / (24 * 60 * 60 * 1000)))
+
+/** Vibración breve al tocar (si el celular lo permite y no se pidió una app más quieta). */
+export const haptic = (pattern: number | number[] = 12) => {
+  try {
+    if (document.documentElement.dataset.motion === 'calm') return
+    navigator.vibrate?.(pattern)
+  } catch {
+    // Sin vibración disponible: no pasa nada.
+  }
+}
+
+/** Días seguidos con registro de ánimo, contando hasta hoy (o ayer, si hoy aún no registra). */
+export const checkInStreak = (dates: string[]) => {
+  const set = new Set(dates)
+  const day = new Date()
+  if (!set.has(toDayKey(day))) day.setDate(day.getDate() - 1)
+  let n = 0
+  while (set.has(toDayKey(day))) {
+    n++
+    day.setDate(day.getDate() - 1)
+  }
+  return n
+}

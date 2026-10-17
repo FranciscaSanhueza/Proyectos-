@@ -8,7 +8,7 @@ import { ReadAloud } from '../../components/ReadAloud'
 import { SupportCard, UrgentAlert, YellowNotice } from '../../components/Support'
 import { HIGH_WORRY, surveyQuestions } from '../../data/mock'
 import type { Level } from '../../types'
-import { LEVEL_INFO, formatShortDate, levelFromAnswers, surveyStatus } from '../../utils'
+import { LEVEL_INFO, formatShortDate, haptic, levelFromAnswers, surveyStatus } from '../../utils'
 import { usePatient } from './usePatient'
 
 type Step = 'intro' | 'questions' | 'done'
@@ -132,7 +132,10 @@ export function Encuesta() {
                     type="radio"
                     name={question.id}
                     checked={answers[question.id] === i}
-                    onChange={() => setAnswers({ ...answers, [question.id]: i })}
+                    onChange={() => {
+                      haptic()
+                      setAnswers({ ...answers, [question.id]: i })
+                    }}
                   />
                   <span className="grow">{o.label}</span>
                   {question.id !== 'plan' && question.id !== 'animo' && <IntensityScale icon={question.id} intensity={o.intensity} />}

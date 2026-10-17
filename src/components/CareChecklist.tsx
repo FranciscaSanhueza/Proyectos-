@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Check } from 'lucide-react'
 import { useApp } from '../context/AppContext'
-import { toDayKey } from '../utils'
+import { haptic, toDayKey } from '../utils'
 import { Celebrate } from './Celebrate'
 
 /** Cuidados del plan para marcar cada día; celebra al completarlos todos. */
@@ -30,7 +30,10 @@ export function CareChecklist({ patientId, cares }: { patientId: string; cares: 
       {cares.map((c) => {
         const on = done.includes(c)
         return (
-          <button key={c} className={`care-item${on ? ' is-done' : ''}`} onClick={() => toggle(c)} aria-pressed={on}>
+          <button key={c} className={`care-item${on ? ' is-done' : ''}`} onClick={() => {
+            haptic(on ? 8 : [10, 40, 18])
+            toggle(c)
+          }} aria-pressed={on}>
             <span className="care-item__box">{on && <Check size={16} strokeWidth={3} />}</span>
             <span className="grow">{c}</span>
           </button>

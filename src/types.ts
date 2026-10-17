@@ -109,7 +109,7 @@ export interface Alert {
 
 export type TextSize = 'normal' | 'grande' | 'muy-grande'
 
-export type Theme = 'lavanda' | 'rosa' | 'menta' | 'contraste'
+export type Theme = 'lavanda' | 'rosa' | 'menta' | 'noche' | 'contraste'
 
 /** Check-in diario de ánimo (1 = muy mal … 5 = muy bien). */
 export interface CheckIn {

@@ -371,3 +371,46 @@ export const newPlan = (patientId: string, procedure: string, diagnosis: string,
     updatedAt: new Date().toISOString(),
   }
 }
+
+/**
+ * Plantillas de plan por procedimiento, para que el médico parta de una base y
+ * la ajuste a cada paciente. Contenido referencial: debe validarlo el equipo clínico.
+ */
+export const planTemplates: { id: string; label: string; procedure: string; controlDays: number; cares: string[]; warnings: string[] }[] = [
+  {
+    id: 'leep',
+    label: 'Conización (LEEP)',
+    procedure: 'Conización cervical (LEEP)',
+    controlDays: 42,
+    cares: defaultCares,
+    warnings: defaultWarnings,
+  },
+  {
+    id: 'crio',
+    label: 'Crioterapia',
+    procedure: 'Crioterapia cervical',
+    controlDays: 42,
+    cares: [
+      'Es esperable un flujo acuoso abundante por 2 a 4 semanas',
+      'Usar toalla higiénica; no usar tampones',
+      'No tener relaciones sexuales por 4 semanas',
+      'Ducha diaria; evitar tina y piscina',
+      'Registrar síntomas en la encuesta semanal',
+    ],
+    warnings: defaultWarnings,
+  },
+  {
+    id: 'biopsia',
+    label: 'Colposcopía con biopsia',
+    procedure: 'Colposcopía con biopsia',
+    controlDays: 21,
+    cares: [
+      'Puede haber sangrado leve o flujo oscuro por 2 a 3 días',
+      'No usar tampones ni tener relaciones sexuales por 1 semana',
+      'Ducha diaria; evitar tina y piscina por 1 semana',
+      'Paracetamol si hay molestias, según indicación médica',
+      'Registrar síntomas en la encuesta semanal',
+    ],
+    warnings: defaultWarnings,
+  },
+]

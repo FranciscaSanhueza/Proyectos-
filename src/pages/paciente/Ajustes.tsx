@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Bell, ChevronRight, Download, Languages, LogOut, Palette, RotateCcw, Sparkles, Type } from 'lucide-react'
+import { Bell, ChevronRight, Download, Languages, PlayCircle, LogOut, Palette, RotateCcw, Sparkles, Type } from 'lucide-react'
 import { Card, PageHeader, SectionTitle } from '../../components/ui'
 import { notificationsSupported, requestNotificationPermission, showNotification } from '../../notifications'
 import type { TextSize, Theme } from '../../types'
@@ -16,6 +16,7 @@ const THEMES: { id: Theme; label: string; colors: [string, string] }[] = [
   { id: 'lavanda', label: 'Lavanda', colors: ['#7a4b94', '#fbe3f3'] },
   { id: 'rosa', label: 'Rosa', colors: ['#c2457f', '#ffe4ef'] },
   { id: 'menta', label: 'Menta', colors: ['#2a8a7e', '#dff5ef'] },
+  { id: 'noche', label: 'Noche', colors: ['#c39be3', '#141019'] },
   { id: 'contraste', label: 'Alto contraste', colors: ['#000000', '#ffffff'] },
 ]
 
@@ -120,6 +121,15 @@ export function Ajustes() {
         <div className="grow">
           <strong>Otros idiomas</strong>
           <small className="muted">Información esencial en inglés y criollo haitiano, con audio.</small>
+        </div>
+        <ChevronRight size={20} className="muted" />
+      </Card>
+
+      <Card className="setting-row" onClick={() => navigate('/bienvenida')}>
+        <PlayCircle size={22} className="accent" />
+        <div className="grow">
+          <strong>Ver la bienvenida otra vez</strong>
+          <small className="muted">Un recorrido corto por el semáforo, la encuesta, tu plan y el chat.</small>
         </div>
         <ChevronRight size={20} className="muted" />
       </Card>

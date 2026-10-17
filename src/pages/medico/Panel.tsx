@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { BarChart3, BellRing, Check, ClipboardCheck, MessageCircle, ShieldAlert, UserPlus, Users } from 'lucide-react'
+import { BarChart3, BellRing, Check, Moon, Sun, ClipboardCheck, MessageCircle, ShieldAlert, UserPlus, Users } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { currentDoctor } from '../../data/mock'
 import { Card, SectionTitle, SwitchProfileButton } from '../../components/ui'
@@ -8,7 +8,7 @@ import type { Level } from '../../types'
 import { LEVEL_INFO, currentLevel, formatDateTime, surveyStatus } from '../../utils'
 
 export function Panel() {
-  const { patients, responses, messages, plans, alerts, reviewAlert } = useApp()
+  const { patients, responses, messages, plans, alerts, reviewAlert, prefs, setPrefs } = useApp()
   const navigate = useNavigate()
 
   const active = patients.filter((p) => p.status === 'activa')
@@ -41,7 +41,17 @@ export function Panel() {
             <h1>{currentDoctor.name}</h1>
             <p className="hero__sub">{currentDoctor.role} · {active.length} {active.length === 1 ? 'paciente' : 'pacientes'} en seguimiento</p>
           </div>
-          <SwitchProfileButton />
+          <div className="hero__actions">
+            <SwitchProfileButton />
+            <button
+              className="icon-btn icon-btn--glass"
+              onClick={() => setPrefs({ theme: prefs.theme === 'noche' ? 'lavanda' : 'noche' })}
+              aria-label={prefs.theme === 'noche' ? 'Usar modo claro' : 'Usar modo noche'}
+              title={prefs.theme === 'noche' ? 'Modo claro' : 'Modo noche'}
+            >
+              {prefs.theme === 'noche' ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+          </div>
         </div>
         <div className="stats">
           {(['rojo', 'amarillo', 'verde'] as Level[]).map((l) => (

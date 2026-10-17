@@ -217,8 +217,19 @@ export function mountCatBot(opts: CatBotOptions): () => void {
   document.addEventListener('keydown', onKey)
 
   // El globito «¿Dudas?» aparece un momento al cargar.
-  timers.push(window.setTimeout(() => root.classList.add('show-hint'), 1500))
-  timers.push(window.setTimeout(() => root.classList.remove('show-hint'), 7500))
+  // El globo «¿Dudas?» aparece una sola vez por visita para no tapar el contenido.
+  const hintKey = `cb-hint-${opts.audience}`
+  let hinted = false
+  try {
+    hinted = sessionStorage.getItem(hintKey) === '1'
+    sessionStorage.setItem(hintKey, '1')
+  } catch {
+    // Sin almacenamiento: se muestra igual.
+  }
+  if (!hinted) {
+    timers.push(window.setTimeout(() => root.classList.add('show-hint'), 1500))
+    timers.push(window.setTimeout(() => root.classList.remove('show-hint'), 6500))
+  }
 
   return () => {
     timers.forEach(clearTimeout)

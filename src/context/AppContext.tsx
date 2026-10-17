@@ -185,7 +185,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setState((s) => ({ ...s, questions: s.questions.map((q) => (q.id === id ? { ...q, answered: !q.answered } : q)) })),
     removeQuestion: (id) => setState((s) => ({ ...s, questions: s.questions.filter((q) => q.id !== id) })),
     resetDemo: () => setState({ ...initialState, session: state.session, prefs: state.prefs }),
-    resetAll: () => setState({ ...initialState, prefs: { ...initialState.prefs, notified: state.prefs.notified } }),
+    resetAll: () =>
+      setState({
+        ...initialState,
+        // Se conservan los avisos ya mostrados, pero la bienvenida vuelve a aparecer.
+        prefs: { ...initialState.prefs, notified: state.prefs.notified.filter((k) => !k.startsWith('onboarding-')) },
+      }),
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

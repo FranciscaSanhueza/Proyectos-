@@ -10,6 +10,7 @@ import { DesktopModeHint } from './components/DesktopModeHint'
 import { Login } from './pages/Login'
 import { Resumen } from './pages/Resumen'
 import { Idiomas } from './pages/Idiomas'
+import { Bienvenida, onboardingKey } from './pages/paciente/Bienvenida'
 import { Inicio } from './pages/paciente/Inicio'
 import { Semaforo } from './pages/paciente/Semaforo'
 import { Encuesta } from './pages/paciente/Encuesta'
@@ -52,9 +53,11 @@ function DemoEntry() {
 }
 
 function PacienteLayout() {
-  const { session, messages } = useApp()
+  const { session, messages, prefs } = useApp()
   const unread = messages.filter((m) => m.patientId === session?.patientId && m.from === 'medico' && !m.read).length
   useReminderNotifications()
+  // Primera vez: bienvenida guiada antes de entrar.
+  if (session?.patientId && !prefs.notified.includes(onboardingKey(session.patientId))) return <Navigate to="/bienvenida" replace />
   // Mismo orden que la barra del prototipo: inicio, calendario, semáforo, chat, mi plan.
   return (
     <>
@@ -108,6 +111,7 @@ export function App() {
         <Route path="/demo/:role" element={<DemoEntry />} />
         <Route path="/resumen/:id" element={<Resumen />} />
         <Route path="/idiomas" element={<Idiomas />} />
+        <Route path="/bienvenida" element={<RequireRole role="paciente"><Bienvenida /></RequireRole>} />
 
         <Route path="/paciente" element={<RequireRole role="paciente"><PacienteLayout /></RequireRole>}>
           <Route index element={<Inicio />} />

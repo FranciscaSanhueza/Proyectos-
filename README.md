@@ -60,6 +60,17 @@ Prototipo de app móvil para acompañar a pacientes con **lesiones precancerosas
 - **Modo presentación**: botón «Reiniciar demo» en la pantalla de ingreso.
 - **Accesibilidad**: tema de **alto contraste**, botones «Escuchar» en Inicio, semáforo, calendario y chat, y página **Otros idiomas** (`app/#/idiomas`) con el semáforo, las señales de alarma y los cuidados en **inglés y criollo haitiano**, con audio. Las traducciones son referenciales y deben revisarlas facilitadores interculturales; los videos en Lengua de Señas Chilena quedan pendientes.
 
+### Mejoras (v5): más llamativa, útil y cuidada
+
+- **Bienvenida guiada**: la primera vez que una paciente entra ve un recorrido de 5 pasos (semáforo, encuesta, plan, chat y Kitty), con audio y deslizable. Se repite desde Ajustes y vuelve a aparecer con «Reiniciar demo».
+- **Tu siguiente paso** en el Inicio: una tarjeta muestra la acción más importante del día (semáforo rojo → mensaje nuevo del equipo → encuesta disponible → control en los próximos 7 días → cuidados pendientes → mensaje de ánimo).
+- **Racha** de días seguidos registrando el ánimo y **cuenta regresiva** al próximo control.
+- **Modo noche** (tema oscuro) en Ajustes, y botón luna/sol en el panel del médico.
+- **Pantalla de ingreso renovada** con el semáforo y Kitty.
+- **Vibración suave** al marcar el ánimo, los cuidados y las respuestas de la encuesta (se desactiva con «Animaciones suaves»).
+- **Plantillas de plan** para el médico (conización LEEP, crioterapia, colposcopía con biopsia): completan cuidados, señales de alarma y fecha de control. Contenido referencial que debe validar el equipo clínico.
+- El globo «¿Dudas?» de Kitty aparece una sola vez por visita para no tapar el contenido.
+
 ### Vista profesional de salud
 
 - **Inicio**: alertas, conteo por semáforo y tareas del día (planes por validar, dudas, encuestas pendientes).

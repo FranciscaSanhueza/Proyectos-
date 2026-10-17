@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Heart, Languages, RotateCcw, Stethoscope, UserRound } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { normalizeRut } from '../utils'
+import { catSvg } from '../bot/cat'
 
 export function Login() {
   const { login, patients, resetAll } = useApp()
@@ -46,11 +47,20 @@ export function Login() {
   return (
     <div className="login">
       <div className="login__hero">
-        <div className="login__logo">
-          <Heart size={34} fill="currentColor" />
+        <span className="login__bubble login__bubble--a" aria-hidden />
+        <span className="login__bubble login__bubble--b" aria-hidden />
+        <div className="login__brand">
+          <span className="login__logo"><Heart size={26} fill="currentColor" /></span>
+          Cérvix-B
         </div>
         <h1>¡Bienvenida!</h1>
-        <p>Te acompañamos paso a paso durante tu recuperación.</p>
+        <p>Te acompañamos paso a paso desde el alta hasta tu control.</p>
+        <ul className="login__pills" aria-label="Semáforo de síntomas">
+          <li><i className="dot-l dot-l--verde" /> Esperado</li>
+          <li><i className="dot-l dot-l--amarillo" /> Consulta</li>
+          <li><i className="dot-l dot-l--rojo" /> Urgencia</li>
+        </ul>
+        <span className="login__cat" aria-hidden dangerouslySetInnerHTML={{ __html: catSvg(52, '') }} />
       </div>
 
       <div className="quick-access">

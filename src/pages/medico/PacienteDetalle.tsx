@@ -1,8 +1,8 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { FileDown, Flag, Phone, Plus, ShieldCheck, Trash2, X } from 'lucide-react'
+import { FileDown, Flag, LayoutTemplate, Phone, Plus, ShieldCheck, Trash2, X } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
-import { currentDoctor, surveyQuestions } from '../../data/mock'
+import { currentDoctor, planTemplates, surveyQuestions } from '../../data/mock'
 import { Chat } from '../../components/Chat'
 import { KIND_LABEL } from '../../components/CalendarMonth'
 import { LevelFace } from '../../components/LevelFace'
@@ -142,8 +142,28 @@ function PlanEditor({ patientId, phone, code }: { patientId: string; phone: stri
     setTimeout(() => setFlash(''), 2500)
   }
 
+  const applyTemplate = (t: (typeof planTemplates)[number]) => {
+    const control = new Date(draft.procedureDate)
+    control.setDate(control.getDate() + t.controlDays)
+    setDraft((d) => ({ ...d, procedure: t.procedure, cares: [...t.cares], warnings: [...t.warnings], nextControl: control.toISOString() }))
+    setFlash(`Plantilla «${t.label}» aplicada: revísala y valida el plan.`)
+    setTimeout(() => setFlash(''), 3500)
+  }
+
   return (
     <>
+      <Card className="templates">
+        <p className="form__label"><LayoutTemplate size={16} className="accent" /> Partir de una plantilla</p>
+        <div className="chips">
+          {planTemplates.map((t) => (
+            <button key={t.id} className={`chip${draft.procedure === t.procedure ? ' is-active' : ''}`} onClick={() => applyTemplate(t)}>
+              {t.label}
+            </button>
+          ))}
+        </div>
+        <small className="muted">Completa procedimiento, cuidados, señales de alarma y fecha de control. Ajústala a cada paciente.</small>
+      </Card>
+
       <Card className="info-row">
         <span className="meta"><Phone size={14} /> {phone}</span>
         <span className="meta">Código app: <b>{code}</b></span>

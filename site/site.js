@@ -214,7 +214,8 @@ table.innerHTML = `
 
 const SCREENS = {
   paciente: [
-    { img: 'inicio', t: 'Inicio', d: 'Saludo, días de recuperación, check-in diario de ánimo, semáforo, encuesta, cuidados de hoy y recordatorios.' },
+    { img: 'bienvenida', t: 'Bienvenida guiada', d: 'La primera vez, un recorrido de 5 pasos (con audio y deslizable) explica el semáforo, la encuesta, el plan y el chat.' },
+    { img: 'inicio', t: 'Inicio', d: '«Tu siguiente paso» muestra la acción más importante del día, junto a la racha de registros, la cuenta regresiva al control, el ánimo, el semáforo y los recordatorios.' },
     { img: 'semaforo', t: 'Semáforo de síntomas', d: 'Estado actual según la última encuesta, evolución semana a semana y buscador «¿tu síntoma es verde, amarillo o rojo?».' },
     { img: 'encuesta', t: 'Encuesta semanal', d: 'Una pregunta por pantalla, escala visual de intensidad y botón para escuchar la pregunta.' },
     { img: 'alerta', t: 'Alerta roja', d: 'Si la encuesta da rojo, la app indica acudir a urgencias, permite llamar al 131 y avisa al equipo médico.' },
@@ -224,7 +225,7 @@ const SCREENS = {
     { img: 'calma', t: 'Rincón de calma', d: 'Frases de ánimo, respiración guiada, ejercicio 5-4-3-2-1 y sonido relajante.' },
     { img: 'aprende', t: 'Aprende', d: 'Juego «¿Mito o verdad?» y fichas sobre VPH, lesiones, conización y controles.' },
     { img: 'camino', t: 'Mi camino', d: 'Hitos de la recuperación y logros que se desbloquean para motivar la constancia.' },
-    { img: 'idiomas', t: 'Otros idiomas', d: 'Semáforo, señales de alarma y cuidados en inglés y criollo haitiano, con audio. Además: tema de alto contraste y botones «Escuchar».' },
+    { img: 'idiomas', t: 'Otros idiomas', d: 'Semáforo, señales de alarma y cuidados en inglés y criollo haitiano, con audio. Además: modo noche, tema de alto contraste y botones «Escuchar».' },
     { img: 'resumen', t: 'Resumen en PDF', d: 'Resumen de la recuperación (plan, ánimo, cuidados, encuestas y preguntas) para llevar al control o adjuntar a la ficha.' },
   ],
   medico: [

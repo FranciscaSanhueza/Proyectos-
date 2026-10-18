@@ -8,11 +8,11 @@ import type { Level } from '../../types'
 import { LEVEL_INFO, currentLevel, formatDateTime, surveyStatus } from '../../utils'
 
 export function Panel() {
-  const { patients, responses, messages, plans, alerts, reviewAlert, prefs, setPrefs } = useApp()
+  const { patients, responses, messages, plans, alerts, reviewAlert, prefs, setPrefs, symptomLogs } = useApp()
   const navigate = useNavigate()
 
   const active = patients.filter((p) => p.status === 'activa')
-  const levelOf = (id: string) => currentLevel(responses, id)
+  const levelOf = (id: string) => currentLevel(responses, id, symptomLogs)
   const count = (l: Level) => active.filter((p) => levelOf(p.id) === l).length
   const nameOf = (id: string) => patients.find((p) => p.id === id)?.name ?? ''
 
@@ -89,13 +89,18 @@ export function Panel() {
                   <LevelFace level={a.level} size={40} />
                   <div className="grow">
                     <strong>{nameOf(a.patientId)}</strong>
-                    <small>Encuesta en {LEVEL_INFO[a.level].title.toLowerCase()} · {formatDateTime(a.at)}</small>
+                    <small>
+                      {a.source === 'registro' ? `Registro rápido: ${a.detail}` : `Encuesta en ${LEVEL_INFO[a.level].title.toLowerCase()}`} · {formatDateTime(a.at)}
+                    </small>
                   </div>
                   <BellRing size={18} className={`level-text--${a.level}`} />
                 </div>
                 <div className="alert-card__actions">
-                  <button className="btn btn--primary" onClick={() => navigate(`/medico/pacientes/${a.patientId}?tab=encuestas`)}>
-                    <ClipboardList size={18} /> Ver encuesta
+                  <button
+                    className="btn btn--primary"
+                    onClick={() => navigate(`/medico/pacientes/${a.patientId}?tab=${a.source === 'registro' ? 'resumen' : 'encuestas'}`)}
+                  >
+                    <ClipboardList size={18} /> {a.source === 'registro' ? 'Ver registro' : 'Ver encuesta'}
                   </button>
                   <button className="btn btn--ghost" onClick={() => reviewAlert(a.id)} aria-label="Marcar como revisada">
                     <Check size={18} /> Ya la revisé

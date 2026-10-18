@@ -16,7 +16,7 @@ const hours = (ms: number | null) => (ms === null ? '—' : ms < HOUR ? `${Math.
 
 /** Indicadores para la institución: adherencia, alertas y tiempos de respuesta. */
 export function Metricas() {
-  const { patients, responses, messages, plans, alerts, careLogs, checkIns } = useApp()
+  const { patients, responses, messages, plans, alerts, careLogs, checkIns, symptomLogs } = useApp()
   const navigate = useNavigate()
   const now = Date.now()
 
@@ -72,7 +72,7 @@ export function Metricas() {
 
   const validated = active.filter((p) => plans.find((x) => x.patientId === p.id)?.validated).length
   const levels: Level[] = ['rojo', 'amarillo', 'verde']
-  const byLevel = (l: Level) => active.filter((p) => currentLevel(responses, p.id) === l).length
+  const byLevel = (l: Level) => active.filter((p) => currentLevel(responses, p.id, symptomLogs) === l).length
 
   const kpis = [
     { icon: ClipboardCheck, value: `${adherence}%`, label: 'Adherencia a la encuesta semanal', goal: 'Meta ≥ 80%', ok: adherence >= 80 },

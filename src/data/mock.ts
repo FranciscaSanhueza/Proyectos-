@@ -414,3 +414,16 @@ export const planTemplates: { id: string; label: string; procedure: string; cont
     warnings: defaultWarnings,
   },
 ]
+
+/** Consejos breves para las historias del día (referenciales; los valida el equipo). */
+export const dailyTips: { emoji: string; title: string; text: string }[] = [
+  { emoji: '💧', title: 'Hidrátate', text: 'Toma agua durante el día: ayuda a que te sientas con más energía mientras te recuperas.' },
+  { emoji: '🛁', title: 'Ducha, no tina', text: 'Durante la recuperación prefiere la ducha. Evita tina, piscina y mar hasta que tu médico te indique.' },
+  { emoji: '🩲', title: 'Toallas, no tampones', text: 'Usa toalla higiénica para observar el sangrado o flujo. Los tampones quedan para después del alta.' },
+  { emoji: '🏋️', title: 'Sin esfuerzo intenso', text: 'Evita levantar peso y hacer ejercicio fuerte las primeras semanas. Caminar suave sí ayuda.' },
+  { emoji: '📝', title: 'Anota tus dudas', text: 'Cuando se te ocurra una pregunta, guárdala en «Mis preguntas» para llevarla a tu control.' },
+  { emoji: '😴', title: 'Descansa', text: 'Dormir bien ayuda a sanar. Si estás muy preocupada, prueba la respiración guiada del Rincón de calma.' },
+  { emoji: '🟤', title: 'Flujo café', text: 'Un flujo café o con restos es esperable las primeras semanas. Si tiene mal olor, escribe a tu equipo.' },
+  { emoji: '🌡️', title: 'Fiebre = consulta', text: 'Si tienes fiebre sobre 38 °C, tu semáforo pasa a rojo: acude a urgencias o llama al 131.' },
+  { emoji: '💜', title: 'No estás sola', text: 'Tratarse a tiempo es cuidarse. Tu equipo de salud te acompaña en cada paso.' },
+]

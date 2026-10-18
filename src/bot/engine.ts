@@ -24,7 +24,7 @@ const has = (text: string, words: string[]) => words.some((w) => text.includes(w
  * Señales de alarma: ante la duda, Kitty deriva a urgencias. Es preferible
  * una derivación de más que una de menos.
  */
-function isRedFlag(t: string): boolean {
+export function isRedFlag(t: string): boolean {
   const bleeding = has(t, ['sangr', 'hemorrag'])
   const heavy = has(t, ['abundant', 'mucho', 'muchisim', 'harto', 'empap', 'chorro', 'coagulo', 'no para', 'no se detiene', 'cada hora', 'por hora'])
   const fever = has(t, ['fiebre', 'temperatura'])

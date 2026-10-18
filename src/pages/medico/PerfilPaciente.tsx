@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Check, ClipboardCheck, HeartPulse, MessageCircleQuestion, NotebookPen, Plus, Save, X } from 'lucide-react'
+import { Activity, Check, ClipboardCheck, HeartPulse, MessageCircleQuestion, NotebookPen, Plus, Save, X } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { Card, Empty, SectionTitle } from '../../components/ui'
 import { EvolutionChart } from '../../components/EvolutionChart'
 import { MOODS } from '../../components/MoodPicker'
 import type { Patient } from '../../types'
-import { formatShortDate, latestResponse, toDayKey } from '../../utils'
+import { LEVEL_INFO, formatDateTime, formatShortDate, latestResponse, toDayKey } from '../../utils'
 
 const lastDays = (n: number) =>
   Array.from({ length: n }, (_, i) => {
@@ -18,7 +18,7 @@ const weekdayFmt = new Intl.DateTimeFormat('es-CL', { weekday: 'narrow' })
 
 /** Vista general de la paciente para el médico. */
 export function Resumen({ patientId, onGo }: { patientId: string; onGo: (tab: 'encuestas' | 'perfil' | 'plan') => void }) {
-  const { patients, plans, responses, checkIns, careLogs, questions } = useApp()
+  const { patients, plans, responses, checkIns, careLogs, questions, symptomLogs } = useApp()
   const patient = patients.find((p) => p.id === patientId)!
   const plan = plans.find((p) => p.patientId === patientId)!
   const mine = responses.filter((r) => r.patientId === patientId)
@@ -77,6 +77,29 @@ export function Resumen({ patientId, onGo }: { patientId: string; onGo: (tab: 'e
       <Card>
         <EvolutionChart responses={mine} plan={plan} />
       </Card>
+
+      {symptomLogs.some((l) => l.patientId === patientId) && (
+        <>
+          <SectionTitle>
+            <Activity size={18} className="accent" /> Registros rápidos («Hoy noté…»)
+          </SectionTitle>
+          <Card>
+            <ul className="log-list">
+              {symptomLogs
+                .filter((l) => l.patientId === patientId)
+                .slice(0, 6)
+                .map((l) => (
+                  <li key={l.id}>
+                    <i className={`dot-l dot-l--${l.level}`} />
+                    <span className="grow">{l.label}</span>
+                    <small className={`level-text--${l.level}`}>{LEVEL_INFO[l.level].title}</small>
+                    <small className="muted">{formatDateTime(l.at)}</small>
+                  </li>
+                ))}
+            </ul>
+          </Card>
+        </>
+      )}
 
       <SectionTitle>
         <MessageCircleQuestion size={18} className="accent" /> Preguntas para el control

@@ -17,7 +17,7 @@ export function useReminderNotifications() {
     const check = () => {
       const today = toDayKey(new Date())
       const pending: { key: string; title: string; body: string }[] = reminders
-        .filter((r) => r.patientId === patientId && r.date === today)
+        .filter((r) => r.patientId === patientId && r.date === today && !r.done)
         .map((r) => ({ key: `rem-${r.id}`, title: 'Recordatorio de hoy', body: `${r.time ? r.time + ' · ' : ''}${r.title}` }))
       if (surveyStatus(responses, patientId).available) {
         pending.push({ key: `survey-${today}`, title: 'Encuesta semanal disponible', body: 'Cuéntanos cómo te has sentido (5 minutos).' })

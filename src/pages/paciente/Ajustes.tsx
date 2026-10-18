@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Bell, ChevronRight, Download, Languages, PlayCircle, LogOut, Palette, RotateCcw, Sparkles, Type } from 'lucide-react'
+import { Bell, ChevronRight, Download, Languages, LayoutGrid, PlayCircle, LogOut, Palette, RotateCcw, Sparkles, Type } from 'lucide-react'
 import { Card, PageHeader, SectionTitle } from '../../components/ui'
 import { notificationsSupported, requestNotificationPermission, showNotification } from '../../notifications'
 import type { TextSize, Theme } from '../../types'
@@ -79,6 +79,23 @@ export function Ajustes() {
             </button>
           ))}
         </div>
+      </Card>
+
+      <Card className="setting-row">
+        <LayoutGrid size={22} className="accent" />
+        <div className="grow">
+          <strong>Modo simple</strong>
+          <small className="muted">Inicio con 3 botones grandes: ¿Cómo estoy?, Hablar con mi equipo y Necesito ayuda.</small>
+        </div>
+        <button
+          role="switch"
+          aria-checked={prefs.simpleMode}
+          aria-label="Modo simple"
+          className={`switch${prefs.simpleMode ? ' is-on' : ''}`}
+          onClick={() => setPrefs({ simpleMode: !prefs.simpleMode })}
+        >
+          <span />
+        </button>
       </Card>
 
       <Card className="setting-row">

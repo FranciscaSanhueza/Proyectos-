@@ -80,6 +80,7 @@ export function Login() {
       </div>
 
       <p className="login__or">o ingresa con tu código</p>
+      <p className="login__qr">📷 ¿Tu médico te mostró un <b>código QR</b>? Escanéalo con la cámara de tu celular y entrarás directo.</p>
 
       <form className="login__form" onSubmit={submit}>
         <label htmlFor="rut">Ingresa tu RUT</label>

@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { FileDown, Flag, LayoutTemplate, Phone, Plus, ShieldCheck, Trash2, X } from 'lucide-react'
+import { FileDown, Flag, LayoutTemplate, Phone, QrCode as QrIcon, Plus, ShieldCheck, Trash2, X } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { currentDoctor, planTemplates, surveyQuestions } from '../../data/mock'
 import { Chat } from '../../components/Chat'
@@ -11,6 +11,7 @@ import { Avatar, Card, CloseChatButton, Empty, PageHeader, SectionTitle } from '
 import type { RecoveryPlan, ReminderKind } from '../../types'
 import { LEVEL_INFO, currentLevel, formatDateTime, formatShortDate, recoveryWeek } from '../../utils'
 import { PerfilEditor, Resumen } from './PerfilPaciente'
+import { QrModal } from '../../components/QrCode'
 
 const tabs = [
   { id: 'resumen', label: 'Resumen' },
@@ -26,12 +27,12 @@ export function PacienteDetalle() {
   const { id } = useParams()
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
-  const { responses, patients, plans } = useApp()
+  const { responses, patients, plans, symptomLogs } = useApp()
   const patient = patients.find((p) => p.id === id)
   if (!patient) return <Navigate to="/medico/pacientes" replace />
 
   const tab = (params.get('tab') as Tab) ?? 'resumen'
-  const level = currentLevel(responses, patient.id)
+  const level = currentLevel(responses, patient.id, symptomLogs)
   const plan = plans.find((p) => p.patientId === patient.id)!
 
   return (
@@ -132,7 +133,9 @@ function EditableList({ items, onChange, placeholder }: { items: string[]; onCha
 }
 
 function PlanEditor({ patientId, phone, code }: { patientId: string; phone: string; code: string }) {
-  const { plans, savePlan } = useApp()
+  const { plans, savePlan, patients } = useApp()
+  const patient = patients.find((p) => p.id === patientId)!
+  const [showQr, setShowQr] = useState(false)
   const saved = plans.find((p) => p.patientId === patientId)!
   const [draft, setDraft] = useState<RecoveryPlan>(saved)
   const [flash, setFlash] = useState('')
@@ -176,6 +179,10 @@ function PlanEditor({ patientId, phone, code }: { patientId: string; phone: stri
       <Card className="info-row">
         <span className="meta"><Phone size={14} /> {phone}</span>
         <span className="meta">Código app: <b>{code}</b></span>
+        <button className="btn btn--ghost qr-btn" onClick={() => setShowQr(true)}>
+          <QrIcon size={18} /> Mostrar QR para activar
+        </button>
+        {showQr && <QrModal name={patient.name} rut={patient.rut} code={code} onClose={() => setShowQr(false)} />}
         <span className="meta">Semana {recoveryWeek(draft)}</span>
       </Card>
 

@@ -1,14 +1,15 @@
 import { useState, type FormEvent } from 'react'
-import { Plus, Trash2 } from 'lucide-react'
+import { AlarmClock, Check, Plus, Trash2 } from 'lucide-react'
 import { CalendarMonth, KIND_LABEL } from '../../components/CalendarMonth'
 import { Card, Empty, PageHeader, SectionTitle } from '../../components/ui'
 import type { ReminderKind } from '../../types'
-import { formatDate, toDayKey } from '../../utils'
+import { formatDate, haptic, toDayKey } from '../../utils'
 import { ReadAloud } from '../../components/ReadAloud'
 import { usePatient } from './usePatient'
 
 export function Calendario() {
-  const { patientId, reminders, addReminder, removeReminder } = usePatient()
+  const { patientId, reminders, addReminder, removeReminder, toggleReminderDone, snoozeReminder } = usePatient()
+  const today = toDayKey(new Date())
   const [month, setMonth] = useState(new Date())
   const [selected, setSelected] = useState(toDayKey(new Date()))
   const [adding, setAdding] = useState(false)
@@ -73,11 +74,23 @@ export function Calendario() {
       )}
       <div className="stack">
         {ofDay.map((r) => (
-          <Card key={r.id} className="reminder">
+          <Card key={r.id} className={`reminder${r.done ? ' is-done' : ''}`}>
             <i className={`dot dot--lg kind--${r.kind}`} />
             <div className="grow">
               <strong>{r.title}</strong>
               <small>{r.time ? `${r.time} · ` : ''}{KIND_LABEL[r.kind]}{r.createdBy === 'medico' ? ' · indicado por tu médico' : ''}</small>
+              {r.date === today && (
+                <span className="rem-item__actions">
+                  <button className={`rem-btn${r.done ? ' is-on' : ''}`} onClick={() => { haptic(); toggleReminderDone(r.id) }} aria-pressed={!!r.done}>
+                    <Check size={15} /> Hecho
+                  </button>
+                  {!r.done && (
+                    <button className="rem-btn" onClick={() => { haptic(); snoozeReminder(r.id) }}>
+                      <AlarmClock size={15} /> Posponer 1 h
+                    </button>
+                  )}
+                </span>
+              )}
             </div>
             {r.createdBy === 'paciente' && (
               <button className="icon-btn" onClick={() => removeReminder(r.id)} aria-label="Eliminar">

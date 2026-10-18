@@ -216,7 +216,14 @@ export function mountCatBot(opts: CatBotOptions): () => void {
   }
   document.addEventListener('keydown', onKey)
 
-  // El globito «¿Dudas?» aparece un momento al cargar.
+  // Otras partes de la página pueden pasarle una pregunta a Kitty (p. ej. el buscador del Inicio).
+  const onAsk = (e: Event) => {
+    const q = (e as CustomEvent<string>).detail
+    if (!q) return
+    open()
+    timers.push(window.setTimeout(() => ask(q), 120))
+  }
+  window.addEventListener('kitty:ask', onAsk)
   // El globo «¿Dudas?» aparece una sola vez por visita para no tapar el contenido.
   const hintKey = `cb-hint-${opts.audience}`
   let hinted = false
@@ -234,6 +241,7 @@ export function mountCatBot(opts: CatBotOptions): () => void {
   return () => {
     timers.forEach(clearTimeout)
     document.removeEventListener('keydown', onKey)
+    window.removeEventListener('kitty:ask', onAsk)
     root.remove()
   }
 }

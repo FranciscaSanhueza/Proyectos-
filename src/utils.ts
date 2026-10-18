@@ -1,4 +1,4 @@
-import type { Level, RecoveryPlan, SurveyQuestion, SurveyResponse } from './types'
+import type { Level, RecoveryPlan, SurveyQuestion, SurveyResponse, SymptomLog } from './types'
 
 const dateFmt = new Intl.DateTimeFormat('es-CL', { weekday: 'short', day: 'numeric', month: 'short' })
 const longDateFmt = new Intl.DateTimeFormat('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' })
@@ -63,8 +63,16 @@ export const surveyStatus = (responses: SurveyResponse[], patientId: string) => 
 }
 
 /** Nivel actual del semáforo: el de la última encuesta respondida (verde si no hay). */
-export const currentLevel = (responses: SurveyResponse[], patientId: string): Level =>
-  latestResponse(responses, patientId)?.level ?? 'verde'
+/**
+ * Nivel actual del semáforo: la última encuesta, empeorado por los registros rápidos
+ * («Hoy noté…») de las últimas 24 horas posteriores a esa encuesta.
+ */
+export const currentLevel = (responses: SurveyResponse[], patientId: string, logs: SymptomLog[] = []): Level => {
+  const last = latestResponse(responses, patientId)
+  const since = Math.max(Date.now() - 24 * 60 * 60 * 1000, last ? new Date(last.at).getTime() : 0)
+  const recent = logs.filter((l) => l.patientId === patientId && new Date(l.at).getTime() > since).map((l) => l.level)
+  return worstLevel([last?.level ?? 'verde', ...recent])
+}
 
 /** Semana de recuperación (1, 2, …) contada desde el procedimiento. */
 export const recoveryWeek = (plan: RecoveryPlan) =>

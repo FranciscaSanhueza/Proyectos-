@@ -14,10 +14,10 @@ import { usePatient } from './usePatient'
 const LEVELS: Level[] = ['verde', 'amarillo', 'rojo']
 
 export function Semaforo() {
-  const { patientId, plan, responses } = usePatient()
+  const { patientId, plan, responses, symptomLogs } = usePatient()
   const navigate = useNavigate()
   const [q, setQ] = useState('')
-  const level = currentLevel(responses, patientId)
+  const level = currentLevel(responses, patientId, symptomLogs)
   const last = latestResponse(responses, patientId)
 
   const matches = symptomGuide.filter((s) => s.symptom.toLowerCase().includes(q.trim().toLowerCase()))
@@ -26,7 +26,13 @@ export function Semaforo() {
     <div className="page">
       <PageHeader
         title="Semáforo"
-        subtitle={last ? `Según tu encuesta del ${formatShortDate(last.at)}` : 'Aún no respondes tu primera encuesta'}
+        subtitle={
+          level !== (last?.level ?? 'verde')
+            ? 'Según lo que registraste hoy en «Hoy noté…»'
+            : last
+              ? `Según tu encuesta del ${formatShortDate(last.at)}`
+              : 'Aún no respondes tu primera encuesta'
+        }
       />
 
       <ReadAloud text={`Tu semáforo está en ${LEVEL_INFO[level].title}. ${LEVEL_INFO[level].message}`} label="Escuchar mi estado" />

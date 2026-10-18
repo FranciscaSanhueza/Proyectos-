@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Copy, PartyPopper } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { Card, PageHeader } from '../../components/ui'
+import { QrCode, activationUrl } from '../../components/QrCode'
 import type { Patient } from '../../types'
 import { normalizeRut, toDayKey } from '../../utils'
 
@@ -45,7 +46,9 @@ export function NuevaPaciente() {
         <Card className="survey-state pop-in">
           <PartyPopper size={56} className="accent" />
           <h2>{created.name} ya está en tu lista</h2>
-          <p>Entrégale este código en la consulta para que active la app con su RUT:</p>
+          <p>Pídele que escanee este código con la <b>cámara de su celular</b>: la app se abre lista para usar.</p>
+          <QrCode value={activationUrl(created.rut, created.code)} size={200} />
+          <p className="muted">O que ingrese con su RUT y este código:</p>
           <button className="code-chip" onClick={() => navigator.clipboard?.writeText(created.code)} aria-label="Copiar código">
             {created.code} <Copy size={18} />
           </button>

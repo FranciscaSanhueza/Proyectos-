@@ -267,8 +267,8 @@ export const ENTRIES: Entry[] = [
   },
   {
     id: 'ajustes',
-    keys: ['letra', 'tamano de letra', 'letra grande', 'color de la app', 'cambiar color', 'notificacion', 'aviso', 'instalar', 'descargar la app', 'bajar la app'],
-    text: 'En **Ajustes** (el engranaje en Inicio) puedes agrandar la letra, cambiar los colores (Lavanda, Rosa, Menta o Alto contraste), activar avisos e instalar la app en tu celular ⚙️.',
+    keys: ['letra', 'tamano de letra', 'letra grande', 'color de la app', 'cambiar color', 'cambio el color', 'colores', 'modo noche', 'tema oscuro', 'oscuro', 'notificacion', 'aviso', 'instalar', 'descargar la app', 'bajar la app'],
+    text: 'En **Ajustes** (el engranaje en Inicio) puedes agrandar la letra, cambiar los colores (Lavanda, Rosa, Menta, Noche o Alto contraste), activar avisos e instalar la app en tu celular ⚙️.',
     actions: { app: [{ label: 'Abrir Ajustes', href: APP('ajustes') }] },
   },
   {
@@ -280,6 +280,36 @@ export const ENTRIES: Entry[] = [
     id: 'perfil',
     keys: ['cambiar perfil', 'cambiar de perfil', 'vista medico', 'vista del medico', 'modo medico', 'profesional', 'cerrar sesion', 'volver al inicio'],
     text: 'Para pasar de la vista de paciente a la del profesional (o al revés), toca **Cambiar perfil** arriba en la pantalla de Inicio. Vuelves a la pantalla de ingreso y eliges «Paciente» o «Profesional» 🔁.',
+  },
+  {
+    id: 'registro',
+    keys: ['hoy note', 'registro rapido', 'registrar sintoma', 'anotar sintoma', 'sin esperar la encuesta'],
+    text: 'En el Inicio está **«Hoy noté…»**: toca sangrado, dolor, fiebre, flujo o «nada raro», elige cómo es y verás al instante si es verde, amarillo o rojo. Si es amarillo o rojo, tu equipo recibe un aviso 🩺.',
+    actions: { app: [{ label: 'Ir al Inicio', href: '#/paciente' }] },
+    only: 'app',
+  },
+  {
+    id: 'simple',
+    keys: ['modo simple', 'mas facil', 'botones grandes', 'no entiendo la app', 'muy complicad', 'me cuesta usar'],
+    text: 'Puedes activar el **modo simple** en Ajustes: el Inicio queda con 3 botones grandes, **¿Cómo estoy?**, **Hablar con mi equipo** y **Necesito ayuda** 👵.',
+    actions: { app: [{ label: 'Ir a Ajustes', href: APP('ajustes') }] },
+  },
+  {
+    id: 'audio',
+    keys: ['audio', 'mensaje de voz', 'nota de voz', 'grabar', 'microfono', 'hablar en vez de escribir'],
+    text: 'En el chat con tu equipo puedes enviar un **mensaje de voz**: toca el micrófono 🎤, habla (hasta 1 minuto) y envía. Los ✓✓ celestes indican que tu mensaje fue leído.',
+    actions: { app: [{ label: 'Abrir el chat', href: APP('chat/d1') }] },
+  },
+  {
+    id: 'qr',
+    keys: ['qr', 'codigo qr', 'escanear', 'camara'],
+    text: 'En la consulta tu médico puede mostrarte un **código QR**: apunta la cámara de tu celular, toca el enlace y la app se abre lista, sin escribir RUT ni código 📷.',
+  },
+  {
+    id: 'historias',
+    keys: ['historias', 'circulos', 'consejo del dia', 'tu semana', 'resumen semanal'],
+    text: 'Arriba del Inicio están las **historias del día**: un consejo, un «¿mito o verdad?», **Tu semana** (tu resumen de 7 días, que puedes compartir) y una frase de ánimo. Toca un círculo para verlas ✨.',
+    actions: { app: [{ label: 'Ir al Inicio', href: '#/paciente' }] },
   },
   {
     id: 'idiomas',

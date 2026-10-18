@@ -71,6 +71,25 @@ Prototipo de app móvil para acompañar a pacientes con **lesiones precancerosas
 - **Plantillas de plan** para el médico (conización LEEP, crioterapia, colposcopía con biopsia): completan cuidados, señales de alarma y fecha de control. Contenido referencial que debe validar el equipo clínico.
 - El globo «¿Dudas?» de Kitty aparece una sola vez por visita para no tapar el contenido.
 
+### Mejoras (v6): interacciones que todos conocen
+
+Inspiradas en apps de uso diario y adaptadas al seguimiento post-procedimiento:
+
+- **Historias del día** (como Instagram): consejo, «¿mito o verdad?», **Tu semana** y frase de ánimo, a pantalla completa.
+- **Tu semana** (como Spotify Wrapped): resumen animado de 7 días al terminar la encuesta, para guardar o compartir.
+- **«Hoy noté…»** (como las reacciones de WhatsApp o Flo): registrar sangrado, dolor, fiebre o flujo con un toque; en amarillo o rojo avisa al equipo y actualiza el semáforo por 24 horas.
+- **Buscador «¿Qué te preocupa?»** (como Google): entiende palabras simples («me duele», «manché») y muestra si es verde, amarillo o rojo.
+- **Anillos del día** (como el Apple Watch): ánimo, cuidados y encuesta, con celebración al cerrarlos.
+- **Botón «Ayuda» y deslizar para llamar al 131** (como el kit de seguridad de Uber), urgencias cercanas y Salud Responde.
+- **Modo simple** (como el modo fácil de Android): Inicio con 3 botones grandes.
+- **Activación por QR** (como WhatsApp Web): el médico muestra un QR y la paciente entra sin escribir RUT ni código (`#/activar?rut=…&code=…`).
+- **Chat con mensajes de voz, ✓✓ de leído** y tiempo de respuesta esperado (como WhatsApp).
+- **Recordatorios con «Hecho» y «Posponer 1 h»** (como Google Calendar o Medisafe).
+- **Mito o verdad deslizando** la tarjeta (como Tinder).
+- **Compartir por WhatsApp** el resumen y «Tu semana» con la pareja o la familia.
+
+> Los audios y registros se guardan en el dispositivo (demo). Para que lleguen a otro celular se necesita el servidor pendiente.
+
 ### Vista profesional de salud
 
 - **Inicio**: alertas, conteo por semáforo y tareas del día (planes por validar, dudas, encuestas pendientes).

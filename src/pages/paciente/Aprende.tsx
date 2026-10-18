@@ -1,15 +1,19 @@
-import { useState } from 'react'
+import { useRef, useState, type PointerEvent } from 'react'
 import { BookOpen, Check, ChevronDown, Gamepad2, X } from 'lucide-react'
 import { Card, PageHeader, SectionTitle } from '../../components/ui'
 import { Celebrate } from '../../components/Celebrate'
 import { ReadAloud } from '../../components/ReadAloud'
 import { learnCards, mythQuiz } from '../../data/mock'
+import { haptic } from '../../utils'
 
 /** Juego «¿Mito o verdad?» con explicación después de cada respuesta. */
 function MythQuiz() {
   const [i, setI] = useState(0)
   const [answer, setAnswer] = useState<boolean | null>(null)
   const [score, setScore] = useState(0)
+  // Deslizar la tarjeta (como Tinder): izquierda = Mito, derecha = Verdad.
+  const [dx, setDx] = useState(0)
+  const startX = useRef<number | null>(null)
 
   if (i >= mythQuiz.length) {
     return (
@@ -26,17 +30,42 @@ function MythQuiz() {
   const q = mythQuiz[i]
   const pick = (v: boolean) => {
     if (answer !== null) return
+    haptic(v === q.truth ? [10, 40, 10] : 30)
     setAnswer(v)
     if (v === q.truth) setScore((s) => s + 1)
   }
   const correct = answer === q.truth
+  const onDown = (e: PointerEvent) => {
+    if (answer !== null) return
+    startX.current = e.clientX
+    ;(e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId)
+  }
+  const onMove = (e: PointerEvent) => startX.current !== null && setDx(e.clientX - startX.current)
+  const onUp = () => {
+    if (startX.current === null) return
+    startX.current = null
+    if (Math.abs(dx) > 90) pick(dx > 0)
+    setDx(0)
+  }
 
   return (
     <div className="quiz" key={i}>
       <div className="quiz__progress">
         {mythQuiz.map((_, k) => <span key={k} className={k < i ? 'is-done' : k === i ? 'is-now' : ''} />)}
       </div>
-      <p className="quiz__statement">“{q.statement}”</p>
+      <div
+        className={`swipe-card${answer !== null ? ' is-answered' : ''}`}
+        style={{ transform: `translateX(${dx}px) rotate(${dx / 18}deg)`, transition: startX.current === null ? 'transform 0.3s ease' : 'none' }}
+        onPointerDown={onDown}
+        onPointerMove={onMove}
+        onPointerUp={onUp}
+        onPointerCancel={onUp}
+      >
+        <span className="swipe-card__stamp swipe-card__stamp--myth" style={{ opacity: Math.max(0, -dx / 90) }}>MITO</span>
+        <span className="swipe-card__stamp swipe-card__stamp--truth" style={{ opacity: Math.max(0, dx / 90) }}>VERDAD</span>
+        <p className="quiz__statement">“{q.statement}”</p>
+        {answer === null && <small className="swipe-card__hint">← Desliza: Mito · Verdad →</small>}
+      </div>
       <div className="quiz__options">
         <button
           className={`quiz__btn quiz__btn--myth${answer === false ? ' is-picked' : ''}${answer !== null && !q.truth ? ' is-right' : ''}`}

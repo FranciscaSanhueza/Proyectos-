@@ -10,6 +10,8 @@ import { HIGH_WORRY, surveyQuestions } from '../../data/mock'
 import type { Level } from '../../types'
 import { LEVEL_INFO, formatShortDate, haptic, levelFromAnswers, surveyStatus } from '../../utils'
 import { usePatient } from './usePatient'
+import { useWeekStory } from './useStories'
+import { StoryViewer } from '../../components/Stories'
 
 type Step = 'intro' | 'questions' | 'done'
 
@@ -23,6 +25,9 @@ export function Encuesta() {
   const [comment, setComment] = useState('')
   const [result, setResult] = useState<Level | null>(null)
   const [showUrgent, setShowUrgent] = useState(false)
+  const weekStory = useWeekStory()
+  const [showWeek, setShowWeek] = useState(false)
+  const week = showWeek && <StoryViewer stories={[weekStory]} onClose={() => setShowWeek(false)} />
 
   // Una página de preguntas por pantalla, con la última para comentarios.
   const total = surveyQuestions.length + 1
@@ -81,8 +86,10 @@ export function Encuesta() {
           )}
           {worried && <SupportCard />}
           <p className="muted">Próxima encuesta: <b>{formatShortDate(next)}</b></p>
-          <button className="btn btn--primary btn--block" onClick={() => navigate('/paciente/semaforo')}>Ver mi semáforo</button>
+          <button className="btn btn--primary btn--block week-btn" onClick={() => setShowWeek(true)}>✨ Ver tu semana</button>
+          <button className="btn btn--ghost btn--block" onClick={() => navigate('/paciente/semaforo')}>Ver mi semáforo</button>
         </Card>
+        {week}
       </div>
     )
   }
@@ -97,7 +104,9 @@ export function Encuesta() {
           <p>Próxima encuesta disponible:</p>
           <strong className="big-date">{formatShortDate(status.next!.toISOString())}</strong>
           <p className="muted">Si antes tienes síntomas nuevos, revisa el semáforo o escribe a tu equipo.</p>
+          <button className="btn btn--primary btn--block week-btn" onClick={() => setShowWeek(true)}>✨ Ver tu semana</button>
         </Card>
+        {week}
       </div>
     )
   }

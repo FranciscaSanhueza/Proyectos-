@@ -50,6 +50,9 @@ export interface Message {
   text: string
   at: string // ISO
   read: boolean
+  /** Mensaje de voz (data URL) y su duración en segundos. */
+  audio?: string
+  duration?: number
 }
 
 export interface SurveyOption {
@@ -87,6 +90,8 @@ export interface Reminder {
   title: string
   kind: ReminderKind
   createdBy: Role
+  /** Marcado como hecho por la paciente. */
+  done?: boolean
 }
 
 /** Guía de síntomas validada por especialistas. */
@@ -105,6 +110,20 @@ export interface Alert {
   reviewed: boolean
   /** Cuándo el equipo la marcó como revisada (para medir tiempos de respuesta). */
   reviewedAt?: string
+  /** Origen: la encuesta semanal o un registro rápido («Hoy noté…»). */
+  source?: 'encuesta' | 'registro'
+  /** Detalle del registro rápido (p. ej. «Sangrado: abundante»). */
+  detail?: string
+}
+
+/** Registro rápido de un síntoma, sin esperar la encuesta semanal. */
+export interface SymptomLog {
+  id: string
+  patientId: string
+  at: string // ISO
+  symptom: 'sangrado' | 'dolor' | 'fiebre' | 'flujo' | 'nada'
+  label: string
+  level: Level
 }
 
 export type TextSize = 'normal' | 'grande' | 'muy-grande'
@@ -140,6 +159,8 @@ export interface Prefs {
   theme: Theme
   /** Reduce animaciones (además de la preferencia del sistema). */
   calmMotion: boolean
+  /** Modo simple: inicio con tres botones grandes. */
+  simpleMode: boolean
   notifications: boolean
   /** Claves de avisos ya mostrados, para no repetirlos. */
   notified: string[]

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import type { Alert, CareLog, CheckIn, Message, Patient, PatientQuestion, Prefs, RecoveryPlan, Reminder, Role, SurveyResponse } from '../types'
+import type { Alert, CareLog, CheckIn, Message, Patient, PatientQuestion, Prefs, RecoveryPlan, Reminder, Role, SurveyResponse, SymptomLog } from '../types'
 import {
   initialAlerts,
   initialCareLogs,
@@ -12,6 +12,7 @@ import {
   initialReminders,
   initialResponses,
 } from '../data/mock'
+import { toDayKey } from '../utils'
 
 // Estado global de la app. Por ahora vive en el navegador (localStorage);
 // cuando exista un backend, estas funciones pasan a llamar a la API.
@@ -33,6 +34,7 @@ interface State {
   checkIns: CheckIn[]
   careLogs: CareLog[]
   questions: PatientQuestion[]
+  symptomLogs: SymptomLog[]
   prefs: Prefs
 }
 
@@ -40,6 +42,11 @@ interface AppContextValue extends State {
   login: (session: Session) => void
   logout: () => void
   sendMessage: (m: Omit<Message, 'id' | 'at' | 'read'>) => void
+  /** Registro rápido «Hoy noté…»; en amarillo o rojo avisa al equipo. */
+  logSymptom: (l: Omit<SymptomLog, 'id' | 'at'>) => void
+  toggleReminderDone: (id: string) => void
+  /** Pospone un recordatorio de hoy (por defecto 1 hora desde ahora). */
+  snoozeReminder: (id: string, minutes?: number) => void
   markThreadRead: (patientId: string, staffId: string, reader: Role) => void
   submitSurvey: (r: Omit<SurveyResponse, 'id' | 'at'>) => void
   addReminder: (r: Omit<Reminder, 'id'>) => void
@@ -76,7 +83,8 @@ const initialState: State = {
   checkIns: initialCheckIns,
   careLogs: initialCareLogs,
   questions: initialQuestions,
-  prefs: { textSize: 'normal', theme: 'lavanda', calmMotion: false, notifications: false, notified: [] },
+  symptomLogs: [],
+  prefs: { textSize: 'normal', theme: 'lavanda', calmMotion: false, simpleMode: false, notifications: false, notified: [] },
 }
 
 function loadState(): State {
@@ -129,13 +137,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
           ),
         }
       }),
+    logSymptom: (l) =>
+      setState((s) => {
+        const at = new Date().toISOString()
+        const alerts: Alert[] =
+          l.level === 'verde'
+            ? s.alerts
+            : [{ id: uid(), patientId: l.patientId, level: l.level, at, reviewed: false, source: 'registro', detail: l.label }, ...s.alerts]
+        return { ...s, alerts, symptomLogs: [{ ...l, id: uid(), at }, ...s.symptomLogs].slice(0, 200) }
+      }),
+    toggleReminderDone: (id) =>
+      setState((s) => ({ ...s, reminders: s.reminders.map((r) => (r.id === id ? { ...r, done: !r.done } : r)) })),
+    snoozeReminder: (id, minutes = 60) =>
+      setState((s) => {
+        const t = new Date(Date.now() + minutes * 60 * 1000)
+        const time = `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`
+        const date = toDayKey(t)
+        return {
+          ...s,
+          reminders: s.reminders.map((r) => (r.id === id ? { ...r, date, time, done: false } : r)),
+          // Se vuelve a avisar a la nueva hora.
+          prefs: { ...s.prefs, notified: s.prefs.notified.filter((k) => k !== `rem-${id}`) },
+        }
+      }),
     submitSurvey: (r) =>
       setState((s) => {
         const at = new Date().toISOString()
         const { level } = r
         // Amarillo o rojo: se avisa al equipo médico en su panel.
         const alerts =
-          level === 'verde' ? s.alerts : [{ id: uid(), patientId: r.patientId, level, at, reviewed: false }, ...s.alerts]
+          level === 'verde' ? s.alerts : [{ id: uid(), patientId: r.patientId, level, at, reviewed: false, source: 'encuesta' as const }, ...s.alerts]
         return { ...s, alerts, responses: [{ ...r, id: uid(), at }, ...s.responses] }
       }),
     addReminder: (r) => setState((s) => ({ ...s, reminders: [...s.reminders, { ...r, id: uid() }] })),

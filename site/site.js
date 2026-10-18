@@ -215,13 +215,16 @@ table.innerHTML = `
 const SCREENS = {
   paciente: [
     { img: 'bienvenida', t: 'Bienvenida guiada', d: 'La primera vez, un recorrido de 5 pasos (con audio y deslizable) explica el semáforo, la encuesta, el plan y el chat.' },
-    { img: 'inicio', t: 'Inicio', d: '«Tu siguiente paso» muestra la acción más importante del día, junto a la racha de registros, la cuenta regresiva al control, el ánimo, el semáforo y los recordatorios.' },
+    { img: 'historias', t: 'Historias del día', d: 'Como en Instagram: consejo del día, «¿mito o verdad?», Tu semana (resumen para compartir) y una frase de ánimo.' },
+    { img: 'inicio', t: 'Inicio', d: '«Tu siguiente paso», buscador «¿Qué te preocupa?», anillos del día (ánimo, cuidados y encuesta) y recordatorios con «Hecho» o «Posponer».' },
+    { img: 'registro', t: '«Hoy noté…»', d: 'Registrar un síntoma con un toque y ver al instante si es verde, amarillo o rojo; el equipo recibe un aviso si es necesario.' },
     { img: 'semaforo', t: 'Semáforo de síntomas', d: 'Estado actual según la última encuesta, evolución semana a semana y buscador «¿tu síntoma es verde, amarillo o rojo?».' },
     { img: 'encuesta', t: 'Encuesta semanal', d: 'Una pregunta por pantalla, escala visual de intensidad y botón para escuchar la pregunta.' },
     { img: 'alerta', t: 'Alerta roja', d: 'Si la encuesta da rojo, la app indica acudir a urgencias, permite llamar al 131 y avisa al equipo médico.' },
     { img: 'plan', t: 'Mi plan', d: 'Plan validado por el médico con cuidados que se marcan cada día y señales de alarma.' },
     { img: 'calendario', t: 'Recordatorios', d: 'Controles, medicamentos, cuidados y encuestas en un calendario por colores.' },
     { img: 'chat', t: 'Chat de dudas', d: 'Canal con la médica y la matrona, con preguntas rápidas como «¿es verde, amarillo o rojo?».' },
+    { img: 'ayuda', t: 'Ayuda y modo simple', d: 'Botón «Ayuda» con deslizar para llamar al 131 y un modo simple de 3 botones grandes para quien recién usa el celular.' },
     { img: 'calma', t: 'Rincón de calma', d: 'Frases de ánimo, respiración guiada, ejercicio 5-4-3-2-1 y sonido relajante.' },
     { img: 'aprende', t: 'Aprende', d: 'Juego «¿Mito o verdad?» y fichas sobre VPH, lesiones, conización y controles.' },
     { img: 'camino', t: 'Mi camino', d: 'Hitos de la recuperación y logros que se desbloquean para motivar la constancia.' },

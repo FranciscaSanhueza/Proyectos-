@@ -3,6 +3,7 @@ import { ChevronLeft, Printer } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { surveyQuestions } from '../data/mock'
 import { MOODS } from '../components/MoodPicker'
+import { ShareButtons } from '../components/ShareButtons'
 import { LEVEL_INFO, currentLevel, daysSince, formatDate, formatShortDate, recoveryWeek, toDayKey } from '../utils'
 
 const DAY = 24 * 60 * 60 * 1000
@@ -15,14 +16,14 @@ const COLUMN: Record<string, string> = { sangrado: 'Sangrado', dolor: 'Dolor', f
 export function Resumen() {
   const { id = '' } = useParams()
   const navigate = useNavigate()
-  const { session, patients, plans, responses, checkIns, careLogs, questions } = useApp()
+  const { session, patients, plans, responses, checkIns, careLogs, questions, symptomLogs } = useApp()
 
   const patient = patients.find((p) => p.id === id)
   const plan = plans.find((p) => p.patientId === id)
   const isDoctor = session?.role === 'medico'
   if (!patient || !plan || !(isDoctor || session?.patientId === id)) return <Navigate to="/" replace />
 
-  const level = currentLevel(responses, id)
+  const level = currentLevel(responses, id, symptomLogs)
   const surveys = responses.filter((r) => r.patientId === id).sort((a, b) => b.at.localeCompare(a.at)).slice(0, 6)
   const days = Array.from({ length: 7 }, (_, i) => toDayKey(new Date(Date.now() - (6 - i) * DAY)))
   const moodOf = (d: string) => checkIns.find((c) => c.patientId === id && c.date === d)?.mood
@@ -38,6 +39,22 @@ export function Resumen() {
         <button className="btn btn--primary" onClick={() => window.print()}><Printer size={18} /> Descargar PDF / imprimir</button>
       </div>
       <p className="summary__tip no-print">En el diálogo de impresión elige «Guardar como PDF» para descargarlo.</p>
+      {!isDoctor && (
+        <div className="summary__share no-print">
+          <small>Envía lo principal a tu pareja o familia:</small>
+          <ShareButtons
+            title="Mi recuperación en Cérvix-B"
+            text={
+              `Mi recuperación en Cérvix-B 💜\n` +
+              `• Semáforo: ${LEVEL_INFO[level].title}\n` +
+              `• Semana ${recoveryWeek(plan)} después de mi ${plan.procedure.toLowerCase()}\n` +
+              `• Próximo control: ${formatShortDate(plan.nextControl)}\n` +
+              (pending.length ? `• Preguntas para el control:\n${pending.map((q) => `   – ${q.text}`).join('\n')}\n` : '') +
+              `• Señales de alarma: ${plan.warnings.join('; ')} → urgencias o 131.`
+            }
+          />
+        </div>
+      )}
 
       <article className="summary__sheet">
         <header className="summary__head">

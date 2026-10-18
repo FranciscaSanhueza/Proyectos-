@@ -6,10 +6,13 @@ import { currentDoctor } from './data/mock'
 import type { Role } from './types'
 import { Layout } from './components/Layout'
 import { CatBot } from './components/CatBot'
+import { HelpFab } from './components/HelpFab'
+import { SimpleHome } from './pages/paciente/SimpleHome'
 import { DesktopModeHint } from './components/DesktopModeHint'
 import { Login } from './pages/Login'
 import { Resumen } from './pages/Resumen'
 import { Idiomas } from './pages/Idiomas'
+import { Activar } from './pages/Activar'
 import { Bienvenida, onboardingKey } from './pages/paciente/Bienvenida'
 import { Inicio } from './pages/paciente/Inicio'
 import { Semaforo } from './pages/paciente/Semaforo'
@@ -62,6 +65,7 @@ function PacienteLayout() {
   return (
     <>
       <CatBot />
+      <HelpFab />
       <Layout
         nav={[
           { to: '/paciente', label: 'Inicio', icon: Home, end: true },
@@ -111,10 +115,11 @@ export function App() {
         <Route path="/demo/:role" element={<DemoEntry />} />
         <Route path="/resumen/:id" element={<Resumen />} />
         <Route path="/idiomas" element={<Idiomas />} />
+        <Route path="/activar" element={<Activar />} />
         <Route path="/bienvenida" element={<RequireRole role="paciente"><Bienvenida /></RequireRole>} />
 
         <Route path="/paciente" element={<RequireRole role="paciente"><PacienteLayout /></RequireRole>}>
-          <Route index element={<Inicio />} />
+          <Route index element={prefs.simpleMode ? <SimpleHome /> : <Inicio />} />
           <Route path="calendario" element={<Calendario />} />
           <Route path="semaforo" element={<Semaforo />} />
           <Route path="encuesta" element={<Encuesta />} />

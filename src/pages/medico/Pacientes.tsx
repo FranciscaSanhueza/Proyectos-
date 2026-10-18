@@ -25,7 +25,7 @@ type Sort = keyof typeof SORTS
 const RANK: Record<Level, number> = { rojo: 0, amarillo: 1, verde: 2 }
 
 export function Pacientes() {
-  const { patients, plans, responses, messages } = useApp()
+  const { patients, plans, responses, messages, symptomLogs } = useApp()
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
   const [q, setQ] = useState('')
@@ -37,7 +37,7 @@ export function Pacientes() {
     return {
       p,
       plan,
-      level: currentLevel(responses, p.id),
+      level: currentLevel(responses, p.id, symptomLogs),
       last: latestResponse(responses, p.id),
       surveyDue: surveyStatus(responses, p.id).available,
       unread: messages.filter((m) => m.patientId === p.id && m.staffId === currentDoctor.id && m.from === 'paciente' && !m.read).length,

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AlertTriangle, Bell, BookOpen, CalendarClock, ChevronRight, ClipboardCheck, ClipboardList, Flame, Flower2, HeartPulse, MessageCircle, MessageCircleQuestion, Route, Settings, ShieldCheck, Sparkles, type LucideIcon } from 'lucide-react'
+import { AlarmClock, AlertTriangle, Bell, Check, BookOpen, CalendarClock, ChevronRight, ClipboardList, Flame, Flower2, HeartPulse, MessageCircle, MessageCircleQuestion, Route, Settings, ShieldCheck, Sparkles, type LucideIcon } from 'lucide-react'
 import { Card, SectionTitle, SwitchProfileButton } from '../../components/ui'
 import { LevelFace } from '../../components/LevelFace'
 import { KIND_LABEL } from '../../components/CalendarMonth'
@@ -8,6 +8,11 @@ import { SupportCard } from '../../components/Support'
 import { MOODS, MoodPicker } from '../../components/MoodPicker'
 import { ProgressRing } from '../../components/ProgressRing'
 import { Celebrate } from '../../components/Celebrate'
+import { StoriesBar, StoryViewer } from '../../components/Stories'
+import { SymptomSearch } from '../../components/SymptomSearch'
+import { QuickLog } from '../../components/QuickLog'
+import { DayRings } from '../../components/DayRings'
+import { useDailyStories } from './useStories'
 import { ReadAloud } from '../../components/ReadAloud'
 import { HIGH_WORRY, affirmations, staff } from '../../data/mock'
 import { LEVEL_INFO, checkInStreak, currentLevel, daysSince, formatShortDate, haptic, recoveryWeek, surveyStatus, toDayKey } from '../../utils'
@@ -41,13 +46,17 @@ interface Step {
 const DAY_MS = 24 * 60 * 60 * 1000
 
 export function Inicio() {
-  const { patient, patientId, plan, responses, reminders, checkIns, careLogs, messages, questions, checkIn } = usePatient()
+  const { patient, patientId, plan, responses, reminders, checkIns, careLogs, messages, questions, symptomLogs, prefs, setPrefs, markNotified, checkIn, toggleReminderDone, snoozeReminder } = usePatient()
+  const stories = useDailyStories()
+  const [storyAt, setStoryAt] = useState<number | null>(null)
   const navigate = useNavigate()
   const [party, setParty] = useState(0)
 
-  const level = currentLevel(responses, patientId)
+  const level = currentLevel(responses, patientId, symptomLogs)
   const survey = surveyStatus(responses, patientId)
   const today = toDayKey(new Date())
+  const seenKey = (id: string) => `story-${id}-${today}`
+  const seen = stories.filter((st) => prefs.notified.includes(seenKey(st.id))).map((st) => st.id)
   const todayMood = checkIns.find((c) => c.patientId === patientId && c.date === today)?.mood
   const careDone = careLogs.find((l) => l.patientId === patientId && l.date === today)?.done.filter((c) => plan.cares.includes(c)).length ?? 0
   const days = daysSince(plan.procedureDate)
@@ -120,6 +129,16 @@ export function Inicio() {
         </div>
       </header>
 
+      <StoriesBar stories={stories} seen={seen} onOpen={setStoryAt} />
+      {storyAt !== null && (
+        <StoryViewer
+          stories={stories}
+          start={storyAt}
+          onClose={() => setStoryAt(null)}
+          onSeen={(id) => !prefs.notified.includes(seenKey(id)) && markNotified([seenKey(id)])}
+        />
+      )}
+
       <button
         className={`next-step next-step--${step.tone}`}
         onClick={() => {
@@ -140,6 +159,8 @@ export function Inicio() {
         )}
       </button>
 
+      <SymptomSearch />
+
       <Card className="checkin home-half">
         <p className="form__label">¿Cómo te sientes hoy?</p>
         <MoodPicker
@@ -155,6 +176,8 @@ export function Inicio() {
         )}
       </Card>
 
+      <QuickLog patientId={patientId} />
+
       <Card className={`home-card home-half level-bg--${level}`} onClick={() => navigate('/paciente/semaforo')}>
         <div>
           <small>Mi semáforo</small>
@@ -166,41 +189,46 @@ export function Inicio() {
 
       {survey.last && !survey.available && survey.last.answers.animo === HIGH_WORRY && <SupportCard />}
 
-      <div className="duo home-half">
-        <Card className="mini-card" onClick={() => navigate('/paciente/encuesta')}>
-          {survey.available ? <ClipboardList size={26} className="accent" /> : <ClipboardCheck size={26} className="level-text--verde" />}
-          <small>Encuesta semanal</small>
-          <strong className={survey.available ? 'accent' : ''}>{survey.available ? '¡Disponible!' : 'Respondida'}</strong>
-          {!survey.available && <span className="muted">Próxima: {formatShortDate(survey.next!.toISOString())}</span>}
-        </Card>
-        <Card className="mini-card" onClick={() => navigate('/paciente/plan')}>
-          <ProgressRing value={plan.cares.length ? careDone / plan.cares.length : 0} size={44} stroke={6}>
-            <small>{careDone}/{plan.cares.length}</small>
-          </ProgressRing>
-          <small>Cuidados de hoy</small>
-          <strong>{careDone === plan.cares.length ? '¡Completos! 🌸' : 'Márcalos aquí'}</strong>
-        </Card>
-      </div>
+      <DayRings
+        onComplete={() => setParty((n) => n + 1)}
+        rings={[
+          { key: 'animo', label: 'Ánimo', detail: todayMood ? 'Registrado hoy' : 'Cuéntanos cómo estás', value: todayMood ? 1 : 0, color: '#ec5f9b', onClick: () => document.querySelector('.checkin')?.scrollIntoView({ behavior: 'smooth', block: 'center' }) },
+          { key: 'cuidados', label: 'Cuidados', detail: `${careDone} de ${plan.cares.length} hoy`, value: plan.cares.length ? careDone / plan.cares.length : 1, color: '#9a5fd0', onClick: () => navigate('/paciente/plan') },
+          { key: 'encuesta', label: 'Encuesta semanal', detail: survey.available ? 'Disponible · 5 min' : `Lista · próxima ${formatShortDate(survey.next!.toISOString())}`, value: survey.available ? 0 : 1, color: '#23a6a0', onClick: () => navigate('/paciente/encuesta') },
+        ]}
+      />
 
-      <Card className="home-card home-half" onClick={() => navigate('/paciente/calendario')}>
-        <div>
-          <small>Recordatorios</small>
-          {upcoming.length === 0 && <span>No tienes recordatorios próximos.</span>}
-          <ul className="mini-list">
-            {upcoming.map((r) => (
-              <li key={r.id}>
-                <i className={`dot kind--${r.kind}`} />
-                <span>
-                  <b>{r.date === today ? 'Hoy' : formatShortDate(r.date + 'T12:00')}</b>
-                  {r.time && ` · ${r.time}`} — {r.title}
-                  <em> ({KIND_LABEL[r.kind]})</em>
-                </span>
-              </li>
-            ))}
-          </ul>
+      <div className="card reminders-card home-half">
+        <div className="reminders-card__head">
+          <p className="form__label"><Bell size={18} className="accent" /> Recordatorios</p>
+          <button className="link-btn" onClick={() => navigate('/paciente/calendario')}>Ver calendario</button>
         </div>
-        <span className="home-card__icon"><Bell size={32} /></span>
-      </Card>
+        {upcoming.length === 0 && <span className="muted">No tienes recordatorios próximos.</span>}
+        <ul className="rem-list">
+          {upcoming.map((r) => (
+            <li key={r.id} className={`rem-item${r.done ? ' is-done' : ''}`}>
+              <i className={`dot kind--${r.kind}`} />
+              <span className="grow">
+                <b>{r.date === today ? 'Hoy' : formatShortDate(r.date + 'T12:00')}</b>
+                {r.time && ` · ${r.time}`} — {r.title}
+                <em> ({KIND_LABEL[r.kind]})</em>
+              </span>
+              {r.date === today && (
+                <span className="rem-item__actions">
+                  <button className={`rem-btn${r.done ? ' is-on' : ''}`} onClick={() => { haptic(); toggleReminderDone(r.id) }} aria-pressed={!!r.done}>
+                    <Check size={15} /> Hecho
+                  </button>
+                  {!r.done && (
+                    <button className="rem-btn" onClick={() => { haptic(); snoozeReminder(r.id) }} title="Posponer 1 hora">
+                      <AlarmClock size={15} /> 1 h
+                    </button>
+                  )}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <SectionTitle>Para ti</SectionTitle>
       <div className="explore">
@@ -212,6 +240,10 @@ export function Inicio() {
           </button>
         ))}
       </div>
+
+      <button className="simple-invite" onClick={() => setPrefs({ simpleMode: true })}>
+        ¿Prefieres una vista más simple? <b>Activa el modo simple</b> con 3 botones grandes.
+      </button>
 
       <p className="trust">
         <ShieldCheck size={16} /> Información validada por tu equipo médico

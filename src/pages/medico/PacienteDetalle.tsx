@@ -7,7 +7,7 @@ import { Chat } from '../../components/Chat'
 import { KIND_LABEL } from '../../components/CalendarMonth'
 import { LevelFace } from '../../components/LevelFace'
 import { EvolutionChart } from '../../components/EvolutionChart'
-import { Avatar, Card, Empty, PageHeader, SectionTitle } from '../../components/ui'
+import { Avatar, Card, CloseChatButton, Empty, PageHeader, SectionTitle } from '../../components/ui'
 import type { RecoveryPlan, ReminderKind } from '../../types'
 import { LEVEL_INFO, currentLevel, formatDateTime, formatShortDate, recoveryWeek } from '../../utils'
 import { PerfilEditor, Resumen } from './PerfilPaciente'
@@ -36,7 +36,16 @@ export function PacienteDetalle() {
 
   return (
     <div className={`page${tab === 'chat' ? ' page--chat' : ''}`}>
-      <PageHeader title="Perfil de paciente" back />
+      {tab === 'chat' ? (
+        <PageHeader
+          title={`Chat con ${patient.name.split(' ')[0]}`}
+          subtitle={patient.name}
+          back
+          action={<CloseChatButton onClose={() => setParams({ tab: 'resumen' }, { replace: true })} />}
+        />
+      ) : (
+        <PageHeader title="Perfil de paciente" back />
+      )}
 
       {tab !== 'chat' && (
         <div className={`profile-card level-bg--${level}`}>

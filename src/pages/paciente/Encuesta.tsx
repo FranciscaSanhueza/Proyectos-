@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ClipboardCheck, ClipboardList, Clock } from 'lucide-react'
 import { Card, PageHeader } from '../../components/ui'
@@ -27,6 +27,21 @@ export function Encuesta() {
   // Una página de preguntas por pantalla, con la última para comentarios.
   const total = surveyQuestions.length + 1
   const question = surveyQuestions[index]
+
+  // Atajo: en computador se puede responder con las teclas 1, 2, 3…
+  useEffect(() => {
+    if (step !== 'questions' || !question) return
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement).tagName === 'TEXTAREA') return
+      const n = Number(e.key)
+      if (n >= 1 && n <= question.options.length) {
+        haptic()
+        setAnswers((a) => ({ ...a, [question.id]: n - 1 }))
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [step, question])
 
   const send = () => {
     const level = levelFromAnswers(surveyQuestions, answers)
@@ -137,6 +152,7 @@ export function Encuesta() {
                       setAnswers({ ...answers, [question.id]: i })
                     }}
                   />
+                  <span className="option__num" aria-hidden="true">{i + 1}</span>
                   <span className="grow">{o.label}</span>
                   {question.id !== 'plan' && question.id !== 'animo' && <IntensityScale icon={question.id} intensity={o.intensity} />}
                 </label>

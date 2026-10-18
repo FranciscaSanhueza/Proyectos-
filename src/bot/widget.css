@@ -127,16 +127,23 @@
 .cb-head__text strong { font-size: 18px; font-weight: 900; letter-spacing: 0.02em; }
 .cb-head__text small { font-size: 11px; opacity: 0.92; }
 .cb-close {
-  width: 34px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   height: 34px;
-  border-radius: 10px;
+  padding: 0 10px;
+  border-radius: 999px;
   border: 2px solid #fff;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.22);
   color: #fff;
-  font-size: 22px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
   line-height: 1;
   cursor: pointer;
 }
+.cb-close:hover { background: rgba(255, 255, 255, 0.35); }
 
 .cb-log {
   flex: 1;

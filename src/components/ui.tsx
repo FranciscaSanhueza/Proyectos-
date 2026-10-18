@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { ChevronLeft, Repeat2 } from 'lucide-react'
+import { ChevronLeft, Repeat2, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { initials } from '../utils'
 import { useApp } from '../context/AppContext'
@@ -91,6 +91,16 @@ export function SwitchProfileButton({ variant = 'glass' }: { variant?: 'glass' |
     >
       <Repeat2 size={18} />
       <span>Cambiar perfil</span>
+    </button>
+  )
+}
+
+/** Botón visible para salir de una conversación. */
+export function CloseChatButton({ onClose }: { onClose: () => void }) {
+  return (
+    <button className="close-chat" onClick={onClose} aria-label="Cerrar chat" title="Cerrar chat">
+      <X size={18} />
+      <span>Cerrar chat</span>
     </button>
   )
 }

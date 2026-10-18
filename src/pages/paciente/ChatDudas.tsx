@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { Chat } from '../../components/Chat'
-import { Avatar, Badge, Card, PageHeader } from '../../components/ui'
+import { Avatar, Badge, Card, CloseChatButton, PageHeader } from '../../components/ui'
 import { staff } from '../../data/mock'
 import { formatDate } from '../../utils'
 import { ReadAloud } from '../../components/ReadAloud'
@@ -41,6 +41,7 @@ export function ChatDudas() {
 export function ChatHilo() {
   const { staffId } = useParams()
   const { patientId, messages } = usePatient()
+  const navigate = useNavigate()
   const member = staff.find((s) => s.id === staffId) ?? staff[0]
   const last = messages
     .filter((m) => m.patientId === patientId && m.staffId === member.id && m.from === 'medico')
@@ -51,8 +52,9 @@ export function ChatHilo() {
         title={member.name}
         subtitle={member.role}
         back
-        action={last && <ReadAloud label="Escuchar" text={`Último mensaje de ${member.name}: ${last.text}`} />}
+        action={<CloseChatButton onClose={() => navigate('/paciente')} />}
       />
+      {last && <ReadAloud label="Escuchar último mensaje" text={`Último mensaje de ${member.name}: ${last.text}`} />}
       <Chat patientId={patientId} staffId={member.id} me="paciente" />
     </div>
   )

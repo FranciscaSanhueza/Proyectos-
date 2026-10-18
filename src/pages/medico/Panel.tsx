@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import { BarChart3, BellRing, Check, Moon, Sun, ClipboardCheck, MessageCircle, ShieldAlert, UserPlus, Users } from 'lucide-react'
+import { BarChart3, BellRing, Check, ChevronRight, ClipboardCheck, ClipboardList, MessageCircle, Moon, ShieldAlert, Sun, UserPlus, Users } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { currentDoctor } from '../../data/mock'
-import { Card, SectionTitle, SwitchProfileButton } from '../../components/ui'
+import { SwitchProfileButton } from '../../components/ui'
 import { LevelFace } from '../../components/LevelFace'
 import type { Level } from '../../types'
 import { LEVEL_INFO, currentLevel, formatDateTime, surveyStatus } from '../../utils'
@@ -23,10 +23,19 @@ export function Panel() {
   const toValidate = active.filter((p) => !plans.find((x) => x.patientId === p.id)?.validated)
   const surveyDue = active.filter((p) => surveyStatus(responses, p.id).available)
 
+  // Tareas del día, cada una con el botón que la resuelve.
   const tasks = [
-    { icon: ShieldAlert, n: toValidate.length, label: toValidate.length === 1 ? 'plan por validar' : 'planes por validar', to: '/medico/pacientes?filtro=validar' },
-    { icon: MessageCircle, n: unread, label: unread === 1 ? 'duda sin responder' : 'dudas sin responder', to: '/medico/mensajes' },
-    { icon: ClipboardCheck, n: surveyDue.length, label: surveyDue.length === 1 ? 'encuesta pendiente' : 'encuestas pendientes', to: '/medico/pacientes?filtro=encuesta' },
+    { icon: MessageCircle, n: unread, label: unread === 1 ? 'duda sin responder' : 'dudas sin responder', hint: 'Pacientes esperando tu respuesta en el chat', cta: 'Responder', to: '/medico/mensajes' },
+    { icon: ShieldAlert, n: toValidate.length, label: toValidate.length === 1 ? 'plan por validar' : 'planes por validar', hint: 'La paciente lo verá cuando lo valides', cta: 'Validar', to: '/medico/pacientes?filtro=validar' },
+    { icon: ClipboardCheck, n: surveyDue.length, label: surveyDue.length === 1 ? 'encuesta sin responder' : 'encuestas sin responder', hint: 'Pacientes que aún no responden esta semana', cta: 'Ver quiénes', to: '/medico/pacientes?filtro=encuesta' },
+  ]
+  const pending = newAlerts.length + tasks.reduce((n, t) => n + t.n, 0)
+
+  const shortcuts = [
+    { icon: Users, title: 'Mis pacientes', text: 'Lista, búsqueda y perfiles', to: '/medico/pacientes' },
+    { icon: UserPlus, title: 'Nueva paciente', text: 'Crear ficha y código de la app', to: '/medico/pacientes/nueva' },
+    { icon: MessageCircle, title: 'Dudas', text: 'Todas las conversaciones', to: '/medico/mensajes' },
+    { icon: BarChart3, title: 'Métricas', text: 'Indicadores del seguimiento', to: '/medico/metricas' },
   ]
 
   const hour = new Date().getHours()
@@ -53,61 +62,83 @@ export function Panel() {
             </button>
           </div>
         </div>
+        <p className="hero__hint">Tus pacientes según su semáforo · toca un color para verlas</p>
         <div className="stats">
           {(['rojo', 'amarillo', 'verde'] as Level[]).map((l) => (
             <button key={l} className={`stat level-bg--${l}`} onClick={() => navigate(`/medico/pacientes?filtro=${l}`)}>
               <LevelFace level={l} size={26} />
               <strong>{count(l)}</strong>
-              <small>{LEVEL_INFO[l].title}</small>
+              <small>{LEVEL_INFO[l].title} <ChevronRight size={12} /></small>
             </button>
           ))}
         </div>
+        <p className="hero__summary">
+          {pending === 0 ? '¡Estás al día! No tienes pendientes por ahora ✨' : `Tienes ${pending} ${pending === 1 ? 'pendiente' : 'pendientes'} hoy. Sigue los pasos de abajo en orden.`}
+        </p>
       </header>
 
-      {newAlerts.length > 0 && (
-        <>
-          <SectionTitle>
-            <BellRing size={18} className="accent" /> Alertas de encuestas
-          </SectionTitle>
+      <section className="doc-step">
+        <h2 className="doc-step__title"><span className="doc-step__num">1</span> Revisa las alertas del semáforo</h2>
+        {newAlerts.length === 0 ? (
+          <p className="doc-step__empty"><Check size={18} /> Sin alertas nuevas. Las encuestas en amarillo o rojo aparecerán aquí.</p>
+        ) : (
           <div className="stack">
             {newAlerts.map((a) => (
-              <div key={a.id} className={`card alert-row level-bg--${a.level}`}>
-                <LevelFace level={a.level} size={36} />
-                <button className="alert-row__text" onClick={() => navigate(`/medico/pacientes/${a.patientId}?tab=encuestas`)}>
-                  <strong>{nameOf(a.patientId)} · {LEVEL_INFO[a.level].title}</strong>
-                  <small>{formatDateTime(a.at)} · ver encuesta</small>
-                </button>
-                <button className="icon-btn" onClick={() => reviewAlert(a.id)} aria-label="Marcar como revisada" title="Marcar como revisada">
-                  <Check size={18} />
-                </button>
+              <div key={a.id} className={`card alert-card level-bg--${a.level}`}>
+                <div className="alert-card__head">
+                  <LevelFace level={a.level} size={40} />
+                  <div className="grow">
+                    <strong>{nameOf(a.patientId)}</strong>
+                    <small>Encuesta en {LEVEL_INFO[a.level].title.toLowerCase()} · {formatDateTime(a.at)}</small>
+                  </div>
+                  <BellRing size={18} className={`level-text--${a.level}`} />
+                </div>
+                <div className="alert-card__actions">
+                  <button className="btn btn--primary" onClick={() => navigate(`/medico/pacientes/${a.patientId}?tab=encuestas`)}>
+                    <ClipboardList size={18} /> Ver encuesta
+                  </button>
+                  <button className="btn btn--ghost" onClick={() => reviewAlert(a.id)} aria-label="Marcar como revisada">
+                    <Check size={18} /> Ya la revisé
+                  </button>
+                </div>
               </div>
             ))}
           </div>
-        </>
-      )}
+        )}
+      </section>
 
-      <SectionTitle>Para hoy</SectionTitle>
-      <div className="stack">
-        {tasks.map(({ icon: Icon, n, label, to }) => (
-          <Card key={label} className={`task-row${n === 0 ? ' is-done' : ''}`} onClick={() => navigate(to)}>
-            <span className="task-row__icon"><Icon size={20} /></span>
-            <span className="grow"><b>{n}</b> {label}</span>
-            {n === 0 && <Check size={18} className="level-text--verde" />}
-          </Card>
-        ))}
-      </div>
+      <section className="doc-step">
+        <h2 className="doc-step__title"><span className="doc-step__num">2</span> Resuelve las tareas de hoy</h2>
+        <div className="stack">
+          {tasks.map(({ icon: Icon, n, label, hint, cta, to }) => (
+            <button key={label} className={`card task-card${n === 0 ? ' is-done' : ''}`} onClick={() => navigate(to)}>
+              <span className="task-card__icon"><Icon size={20} /></span>
+              <span className="task-card__text">
+                <strong><b>{n}</b> {label}</strong>
+                <small>{n === 0 ? 'Todo al día' : hint}</small>
+              </span>
+              {n === 0 ? (
+                <Check size={20} className="level-text--verde" />
+              ) : (
+                <span className="task-card__cta">{cta} <ChevronRight size={16} /></span>
+              )}
+            </button>
+          ))}
+        </div>
+      </section>
 
-      <div className="quick-actions">
-        <button className="btn btn--primary" onClick={() => navigate('/medico/pacientes')}>
-          <Users size={18} /> Ver pacientes
-        </button>
-        <button className="btn btn--ghost" onClick={() => navigate('/medico/pacientes/nueva')}>
-          <UserPlus size={18} /> Nueva paciente
-        </button>
-        <button className="btn btn--ghost" onClick={() => navigate('/medico/metricas')}>
-          <BarChart3 size={18} /> Métricas
-        </button>
-      </div>
+      <section className="doc-step">
+        <h2 className="doc-step__title"><span className="doc-step__num">3</span> Accesos rápidos</h2>
+        <div className="shortcuts">
+          {shortcuts.map(({ icon: Icon, title, text, to }) => (
+            <button key={to} className="shortcut" onClick={() => navigate(to)}>
+              <span className="shortcut__icon"><Icon size={22} /></span>
+              <strong>{title}</strong>
+              <small>{text}</small>
+            </button>
+          ))}
+        </div>
+      </section>
     </div>
   )
 }

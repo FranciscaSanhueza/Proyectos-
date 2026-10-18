@@ -38,7 +38,7 @@ export function mountCatBot(opts: CatBotOptions): () => void {
           <strong>Kitty</strong>
           <small>Respuestas referenciales · no reemplaza a tu equipo</small>
         </div>
-        <button class="cb-close" type="button" aria-label="Cerrar chat">×</button>
+        <button class="cb-close" type="button" aria-label="Cerrar chat"><span aria-hidden="true">✕</span> Cerrar</button>
       </header>
       <div class="cb-log" aria-live="polite"></div>
       <div class="cb-chips"></div>

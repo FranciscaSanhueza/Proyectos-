@@ -91,11 +91,6 @@ export function Inicio() {
             <p className="hero__eyebrow">{hello}</p>
             <h1>{patient.name.split(' ')[0]} 🌷</h1>
             <p className="hero__sub">Semana {recoveryWeek(plan)} de tu recuperación</p>
-            {streak >= 2 && (
-              <span className="hero__streak pop-in" title="Días seguidos registrando tu ánimo">
-                <Flame size={14} /> {streak} días seguidos
-              </span>
-            )}
           </div>
           <div className="hero__actions">
             <SwitchProfileButton />
@@ -104,6 +99,11 @@ export function Inicio() {
             </button>
           </div>
         </div>
+        {streak >= 2 && (
+          <p className="hero__streak pop-in">
+            <Flame size={15} /> Registraste cómo te sientes {streak} días seguidos. ¡Sigue así!
+          </p>
+        )}
         <div className="hero__progress">
           <ProgressRing value={days / RECOVERY_DAYS}>
             <strong>{Math.min(days, RECOVERY_DAYS)}</strong>

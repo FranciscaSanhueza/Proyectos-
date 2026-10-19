@@ -192,9 +192,9 @@ export function Inicio() {
       <DayRings
         onComplete={() => setParty((n) => n + 1)}
         rings={[
-          { key: 'animo', label: 'Ánimo', detail: todayMood ? 'Registrado hoy' : 'Cuéntanos cómo estás', value: todayMood ? 1 : 0, color: '#ec5f9b', onClick: () => document.querySelector('.checkin')?.scrollIntoView({ behavior: 'smooth', block: 'center' }) },
-          { key: 'cuidados', label: 'Cuidados', detail: `${careDone} de ${plan.cares.length} hoy`, value: plan.cares.length ? careDone / plan.cares.length : 1, color: '#9a5fd0', onClick: () => navigate('/paciente/plan') },
-          { key: 'encuesta', label: 'Encuesta semanal', detail: survey.available ? 'Disponible · 5 min' : `Lista · próxima ${formatShortDate(survey.next!.toISOString())}`, value: survey.available ? 0 : 1, color: '#23a6a0', onClick: () => navigate('/paciente/encuesta') },
+          { key: 'animo', label: 'Ánimo de hoy', detail: todayMood ? 'Registrado hoy' : 'Cuéntanos cómo estás', value: todayMood ? 1 : 0, color: '#ec5f9b', onClick: () => document.querySelector('.checkin')?.scrollIntoView({ behavior: 'smooth', block: 'center' }) },
+          { key: 'cuidados', label: 'Cuidados de hoy', detail: `${careDone} de ${plan.cares.length} marcados · toca para verlos`, value: plan.cares.length ? careDone / plan.cares.length : 1, color: '#9a5fd0', onClick: () => navigate('/paciente/plan') },
+          { key: 'encuesta', label: 'Encuesta de la semana', detail: survey.available ? 'Disponible · 5 min' : `Lista ✓ · la próxima es el ${formatShortDate(survey.next!.toISOString())}`, value: survey.available ? 0 : 1, color: '#23a6a0', onClick: () => navigate('/paciente/encuesta') },
         ]}
       />
 

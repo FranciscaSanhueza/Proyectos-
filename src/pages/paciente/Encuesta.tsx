@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ClipboardCheck, ClipboardList, Clock } from 'lucide-react'
+import { ClipboardCheck, ClipboardList, Clock, RotateCcw } from 'lucide-react'
 import { Card, PageHeader } from '../../components/ui'
 import { LevelFace } from '../../components/LevelFace'
 import { IntensityScale, QUESTION_ICON } from '../../components/IntensityScale'
@@ -28,6 +28,25 @@ export function Encuesta() {
   const weekStory = useWeekStory()
   const [showWeek, setShowWeek] = useState(false)
   const week = showWeek && <StoryViewer stories={[weekStory]} onClose={() => setShowWeek(false)} />
+  // En el prototipo se puede volver a responder para probar la encuesta.
+  const retry = (
+    <div className="survey-retry">
+      <p>¿Estás probando la app? Puedes volver a responderla.</p>
+      <button
+        className="btn btn--ghost btn--block"
+        onClick={() => {
+          setAnswers({})
+          setComment('')
+          setIndex(0)
+          setResult(null)
+          setShowUrgent(false)
+          setStep('questions')
+        }}
+      >
+        <RotateCcw size={18} /> Responder de nuevo (modo prueba)
+      </button>
+    </div>
+  )
 
   // Una página de preguntas por pantalla, con la última para comentarios.
   const total = surveyQuestions.length + 1
@@ -88,6 +107,7 @@ export function Encuesta() {
           <p className="muted">Próxima encuesta: <b>{formatShortDate(next)}</b></p>
           <button className="btn btn--primary btn--block week-btn" onClick={() => setShowWeek(true)}>✨ Ver tu semana</button>
           <button className="btn btn--ghost btn--block" onClick={() => navigate('/paciente/semaforo')}>Ver mi semáforo</button>
+          {retry}
         </Card>
         {week}
       </div>
@@ -105,6 +125,7 @@ export function Encuesta() {
           <strong className="big-date">{formatShortDate(status.next!.toISOString())}</strong>
           <p className="muted">Si antes tienes síntomas nuevos, revisa el semáforo o escribe a tu equipo.</p>
           <button className="btn btn--primary btn--block week-btn" onClick={() => setShowWeek(true)}>✨ Ver tu semana</button>
+          {retry}
         </Card>
         {week}
       </div>

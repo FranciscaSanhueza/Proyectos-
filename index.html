@@ -366,6 +366,28 @@
             </article>
           </div>
 
+          <!--
+            VIDEO DE VALIDACIÓN: para mostrarlo, completa UNO de estos atributos en el div #video-validacion:
+              data-youtube="https://youtu.be/XXXXXXXXXXX"   (YouTube, puede ser «no listado»)
+              data-drive="https://drive.google.com/file/d/XXXX/view"   (Google Drive con acceso «cualquier persona con el enlace»)
+              data-src="./video/validacion.mp4"   (archivo subido a public/video/, idealmente de menos de 50 MB)
+            Si los tres están vacíos se muestra el aviso «próximamente».
+          -->
+          <div class="video-block reveal" id="video">
+            <div class="video-block__text">
+              <span class="badge badge--ok">▶ Video</span>
+              <h3 class="h3">Video de validación</h3>
+              <p>Un recorrido en video por cómo validamos el problema y la propuesta de Cérvix-B con pacientes y profesionales de salud.</p>
+            </div>
+            <div class="video-frame" id="video-validacion" data-youtube="" data-drive="" data-src="" data-title="Video de validación · Cérvix-B">
+              <div class="video-frame__soon">
+                <span class="video-frame__play" aria-hidden="true">▶</span>
+                <strong>Video de validación</strong>
+                <span>Próximamente disponible aquí</span>
+              </div>
+            </div>
+          </div>
+
           <div class="experiment reveal">
             <div>
               <h3 class="h3">El experimento que viene</h3>

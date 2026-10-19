@@ -308,6 +308,46 @@ $$('.switch__btn').forEach((btn) =>
   ),
 )
 
+/* ---------- Video de validación ---------- */
+
+// Acepta YouTube (enlace o ID), Google Drive o un archivo propio; ver el comentario en index.html.
+const videoBox = $('#video-validacion')
+if (videoBox) {
+  const { youtube = '', drive = '', src = '', title = 'Video' } = videoBox.dataset
+  const ytId = (youtube.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/) || [])[1] || (/^[\w-]{11}$/.test(youtube) ? youtube : '')
+  const driveId = (drive.match(/\/d\/([\w-]+)/) || drive.match(/id=([\w-]+)/) || [])[1]
+  const iframe = (url) => {
+    const f = document.createElement('iframe')
+    f.src = url
+    f.title = title
+    f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen'
+    f.allowFullscreen = true
+    f.loading = 'lazy'
+    return f
+  }
+  if (ytId) {
+    // Miniatura liviana: el reproductor de YouTube se carga solo al tocar «play».
+    videoBox.innerHTML = `<button class="video-frame__poster" type="button" aria-label="Reproducir: ${title}">
+        <img src="https://i.ytimg.com/vi/${ytId}/hqdefault.jpg" alt="" loading="lazy" />
+        <span class="video-frame__play" aria-hidden="true">▶</span>
+      </button>`
+    $('button', videoBox).addEventListener('click', () =>
+      videoBox.replaceChildren(iframe(`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0`)),
+    )
+  } else if (driveId) {
+    videoBox.replaceChildren(iframe(`https://drive.google.com/file/d/${driveId}/preview`))
+  } else if (src) {
+    const v = document.createElement('video')
+    v.src = src
+    v.controls = true
+    v.preload = 'metadata'
+    v.playsInline = true
+    v.setAttribute('aria-label', title)
+    videoBox.replaceChildren(v)
+  }
+  if (ytId || driveId || src) videoBox.classList.add('has-video')
+}
+
 /* ---------- Equipo ---------- */
 
 const TEAM = ['Victoria Cubelli', 'Amaro Rojas', 'Maximiliano Rozas', 'Francisca Sanhueza', 'Josefa Vergara', 'Julio Villarroel']

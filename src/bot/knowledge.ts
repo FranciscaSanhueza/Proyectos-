@@ -372,6 +372,13 @@ export const ENTRIES: Entry[] = [
     only: 'sitio',
   },
   {
+    id: 'video',
+    keys: ['video', 'ver el video', 'video de validacion'],
+    text: 'En la sección **Validación** de esta página está el espacio para el **video de validación** del equipo 🎬.',
+    actions: { sitio: [{ label: 'Ir al video', href: '#video' }] },
+    only: 'sitio',
+  },
+  {
     id: 'validacion',
     keys: ['validad', 'resultados', 'prueba', 'funciona', 'evidencia', 'experimento'],
     text:

@@ -371,8 +371,21 @@ $$('.video-frame').forEach(async (box) => {
       v.addEventListener('click', () => (v.paused ? v.play() : v.pause()))
       box.replaceChildren(v, sound)
     } else {
-      v.controls = true
-      box.replaceChildren(v)
+      // Portada con botón ▶: el video se carga y reproduce recién al tocarlo.
+      const { duration = '' } = box.dataset
+      box.innerHTML = `${poster ? `<span class="video-frame__blur" style="background-image:url('${poster}')"></span>` : ''}
+        <button class="video-frame__poster video-frame__poster--file" type="button" aria-label="Reproducir: ${title}">
+          ${poster ? `<img src="${poster}" alt="" loading="lazy" />` : ''}
+          <span class="video-frame__play" aria-hidden="true">▶</span>
+          ${duration ? `<span class="video-frame__dur">${duration}</span>` : ''}
+        </button>`
+      $('button', box).addEventListener('click', () => {
+        v.controls = true
+        v.autoplay = true
+        v.preload = 'auto'
+        $('.video-frame__poster', box).replaceWith(v)
+        v.play().catch(() => {})
+      })
     }
   } else return
   box.classList.add('has-video')

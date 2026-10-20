@@ -79,6 +79,8 @@ button { font: inherit; cursor: pointer; color: inherit; }
 .btn--ghost { background: var(--primary-soft); color: var(--primary-dark); }
 .btn--white { background: #fff; color: var(--primary-dark); }
 .btn--sm { padding: 9px 18px; font-size: 14px; }
+.btn--video { background: #1b1328; color: #fff; }
+.btn--video:hover { background: #3b2252; }
 .btn--link { background: none; color: var(--primary-dark); padding-left: 6px; padding-right: 6px; text-decoration: underline; text-underline-offset: 4px; }
 
 /* ---------- Navegación ---------- */
@@ -846,7 +848,14 @@ button { font: inherit; cursor: pointer; color: inherit; }
 .reel__info .h3 { color: #fff; margin: 0; }
 .reel__info p { margin: 0; }
 
-.video-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+.video-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+/* Tarjetas en formato 4:5: los videos verticales se ven grandes y los horizontales, sobre su portada difuminada. */
+.video-frame--card { aspect-ratio: 4 / 5; background: #120c1c; }
+.video-frame__blur { position: absolute; inset: -24px; background: center / cover no-repeat; filter: blur(22px) brightness(0.55); }
+.video-frame--card video { object-fit: contain; background: transparent; }
+.video-frame__poster--file { background: transparent; }
+.video-frame__poster--file img { object-fit: contain; opacity: 1; }
+.video-frame__dur { position: absolute; right: 12px; bottom: 12px; padding: 4px 10px; border-radius: 999px; background: rgba(0, 0, 0, 0.6); color: #fff; font-size: 13px; font-weight: 800; }
 .video-card { display: flex; flex-direction: column; gap: 8px; }
 .video-card .video-frame { margin-bottom: 6px; }
 .video-card__num { font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #f3a6d6; }
@@ -873,6 +882,9 @@ button { font: inherit; cursor: pointer; color: inherit; }
 
 @media (max-width: 900px) {
   .reel { grid-template-columns: 1fr; gap: 18px; }
+}
+@media (max-width: 980px) {
+  .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 600px) {
   .video-grid { grid-template-columns: 1fr; gap: 26px; }

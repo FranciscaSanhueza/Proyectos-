@@ -332,8 +332,49 @@ const fileExists = async (src) => {
   }
 }
 
+// Ventana (modal) para ver un video: siempre parte desde el inicio, se puede reiniciar y cerrar.
+const openVideo = ({ src, poster, title, from }) => {
+  const modal = document.createElement('div')
+  modal.className = 'vmodal'
+  modal.setAttribute('role', 'dialog')
+  modal.setAttribute('aria-modal', 'true')
+  modal.setAttribute('aria-label', title)
+  modal.innerHTML = `<div class="vmodal__box">
+      <div class="vmodal__head">
+        <strong>${title}</strong>
+        <button class="vmodal__btn vmodal__restart" type="button">↺ Ver desde el inicio</button>
+        <button class="vmodal__btn vmodal__close" type="button" aria-label="Cerrar video">✕</button>
+      </div>
+      <video class="vmodal__video" controls playsinline preload="auto"${poster ? ` poster="${poster}"` : ''}></video>
+    </div>`
+  const v = $('video', modal)
+  v.src = src
+  const close = () => {
+    v.pause()
+    v.removeAttribute('src')
+    v.load()
+    modal.remove()
+    document.body.style.overflow = ''
+    document.removeEventListener('keydown', onKey)
+    from?.focus()
+  }
+  const onKey = (e) => e.key === 'Escape' && close()
+  $('.vmodal__close', modal).addEventListener('click', close)
+  $('.vmodal__restart', modal).addEventListener('click', () => {
+    v.currentTime = 0
+    v.play().catch(() => {})
+  })
+  modal.addEventListener('click', (e) => e.target === modal && close())
+  document.addEventListener('keydown', onKey)
+  document.body.append(modal)
+  document.body.style.overflow = 'hidden'
+  v.currentTime = 0
+  v.play().catch(() => {})
+  $('.vmodal__close', modal).focus({ preventScroll: true })
+}
+
 $$('.video-frame').forEach(async (box) => {
-  const { youtube = '', drive = '', src = '', poster = '', title = 'Video', reel } = box.dataset
+  const { youtube = '', drive = '', src = '', poster = '', title = 'Video' } = box.dataset
   const ytId = ytIdOf(youtube)
   const driveId = driveIdOf(drive)
   if (ytId) {
@@ -346,47 +387,15 @@ $$('.video-frame').forEach(async (box) => {
   } else if (driveId) {
     box.replaceChildren(makeIframe(`https://drive.google.com/file/d/${driveId}/preview`, title))
   } else if (src && (await fileExists(src))) {
-    const v = document.createElement('video')
-    v.src = src
-    if (poster) v.poster = poster
-    v.preload = 'metadata'
-    v.playsInline = true
-    v.setAttribute('aria-label', title)
-    if (reel) {
-      // La recopilación se reproduce sola, en silencio y en bucle; el parlante activa el sonido.
-      v.muted = true
-      v.loop = true
-      v.autoplay = !reduceMotion
-      const sound = document.createElement('button')
-      sound.type = 'button'
-      sound.className = 'video-frame__sound'
-      sound.setAttribute('aria-label', 'Activar sonido')
-      sound.textContent = '🔇'
-      sound.addEventListener('click', () => {
-        v.muted = !v.muted
-        if (!v.muted && v.paused) v.play()
-        sound.textContent = v.muted ? '🔇' : '🔊'
-        sound.setAttribute('aria-label', v.muted ? 'Activar sonido' : 'Silenciar')
-      })
-      v.addEventListener('click', () => (v.paused ? v.play() : v.pause()))
-      box.replaceChildren(v, sound)
-    } else {
-      // Portada con botón ▶: el video se carga y reproduce recién al tocarlo.
-      const { duration = '' } = box.dataset
-      box.innerHTML = `${poster ? `<span class="video-frame__blur" style="background-image:url('${poster}')"></span>` : ''}
-        <button class="video-frame__poster video-frame__poster--file" type="button" aria-label="Reproducir: ${title}">
-          ${poster ? `<img src="${poster}" alt="" loading="lazy" />` : ''}
-          <span class="video-frame__play" aria-hidden="true">▶</span>
-          ${duration ? `<span class="video-frame__dur">${duration}</span>` : ''}
-        </button>`
-      $('button', box).addEventListener('click', () => {
-        v.controls = true
-        v.autoplay = true
-        v.preload = 'auto'
-        $('.video-frame__poster', box).replaceWith(v)
-        v.play().catch(() => {})
-      })
-    }
+    // Portada con botón ▶: el video se abre en una ventana y siempre empieza desde el inicio.
+    const { duration = '' } = box.dataset
+    box.innerHTML = `${poster ? `<span class="video-frame__blur" style="background-image:url('${poster}')"></span>` : ''}
+      <button class="video-frame__poster video-frame__poster--file" type="button" aria-label="Ver video: ${title}">
+        ${poster ? `<img src="${poster}" alt="" loading="lazy" />` : ''}
+        <span class="video-frame__play" aria-hidden="true">▶</span>
+        ${duration ? `<span class="video-frame__dur">${duration}</span>` : ''}
+      </button>`
+    $('button', box).addEventListener('click', (e) => openVideo({ src, poster, title: title.replace(' · Cérvix-B', ''), from: e.currentTarget }))
   } else return
   box.classList.add('has-video')
 })

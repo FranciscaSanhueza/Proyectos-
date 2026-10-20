@@ -919,3 +919,19 @@ button { font: inherit; cursor: pointer; color: inherit; }
   .results__cols { grid-template-columns: 1fr; }
   .results--full .results__box { padding: 22px; }
 }
+
+/* ---------- Ventana de video ---------- */
+.vmodal { position: fixed; inset: 0; z-index: 100000; display: grid; place-items: center; padding: 16px; background: rgba(12, 6, 20, 0.94); animation: fade-in 0.2s ease; }
+@keyframes fade-in { from { opacity: 0; } }
+.vmodal__box { width: min(1000px, 100%); max-height: calc(100dvh - 32px); display: flex; flex-direction: column; gap: 10px; }
+.vmodal__head { display: flex; align-items: center; gap: 10px; color: #fff; }
+.vmodal__head strong { flex: 1; min-width: 0; font-size: 17px; }
+.vmodal__btn { flex: none; border: 2px solid rgba(255, 255, 255, 0.7); background: rgba(255, 255, 255, 0.12); color: #fff; border-radius: 999px; padding: 8px 14px; font: inherit; font-weight: 800; font-size: 14px; cursor: pointer; }
+.vmodal__btn:hover { background: rgba(255, 255, 255, 0.25); }
+.vmodal__close { width: 42px; height: 42px; padding: 0; font-size: 18px; }
+.vmodal__video { width: 100%; max-height: calc(100dvh - 100px); border-radius: 16px; background: #000; }
+@media (max-width: 600px) {
+  .vmodal__head { flex-wrap: wrap; }
+  .vmodal__head strong { flex-basis: calc(100% - 52px); }
+  .vmodal__restart { order: 3; }
+}

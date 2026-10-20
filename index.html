@@ -223,7 +223,7 @@
               <h3 class="h3">Pruébalo: ¿tu síntoma es verde, amarillo o rojo?</h3>
               <p>
                 En la app, la paciente puede consultar un síntoma y recibir una orientación clara. Toca un síntoma de ejemplo:
-                <small>Criterios con una primera revisión profesional; falta su validación clínica formal.</small>
+                <small>Criterios referenciales, pendientes de validación clínica.</small>
               </p>
               <div class="demo__chips" role="group" aria-label="Síntomas de ejemplo"></div>
             </div>
@@ -359,14 +359,14 @@
             <article class="status status--new reveal">
               <span class="status__badges"><span class="badge badge--ok">✓ Validado</span><span class="badge badge--new">✨ Nuevo</span></span>
               <h3>Comprensión y usabilidad</h3>
-              <p>Probamos el prototipo con dos pacientes, en celular y en tablet: navegaron la app por su cuenta y llegaron hasta la alerta roja.</p>
+              <p>Probamos el prototipo con una ex cuidadora de pacientes con cáncer y una paciente, en celular y en tablet: navegaron la app por su cuenta y llegaron hasta la alerta roja.</p>
               <a class="status__link" href="#videos">▶ Ver las pruebas en video</a>
             </article>
-            <article class="status status--new reveal">
-              <span class="status__badges"><span class="badge badge--ok">✓ Validado</span><span class="badge badge--new">✨ Nuevo</span></span>
+            <article class="status status--pending reveal">
+              <span class="status__badges"><span class="badge badge--pending">⏳ Pendiente</span><span class="badge badge--new">✨ Nuevo</span></span>
               <h3>Criterios clínicos</h3>
-              <p>Una profesional de la salud probó la vista del médico y revisó el panel con el semáforo de pacientes.</p>
-              <p class="status__warn">⚠️ <b>Próximo paso:</b> antes de usarla con pacientes reales, los umbrales del semáforo deben pasar por una validación formal con matronas y gineco-oncólogos.</p>
+              <p>Aún no están validados. Como avance, una médica probó la vista del profesional y dejó sugerencias sobre el semáforo.</p>
+              <p class="status__warn">⚠️ <b>Próximo paso:</b> antes de usar la app con pacientes reales, los umbrales del semáforo deben ser validados por matronas y gineco-oncólogos.</p>
               <a class="status__link" href="#videos">▶ Ver la prueba en video</a>
             </article>
           </div>
@@ -399,14 +399,14 @@
               <span class="badge badge--new">✨ Nuevo</span>
               <h3>Resultados de las pruebas en video</h3>
               <p class="results__lead">
-                Dos pacientes y una médica usaron el prototipo por su cuenta mientras comentaban en voz alta. Esto es lo que nos dijeron
+                Una ex cuidadora de pacientes con cáncer, una paciente y una médica usaron el prototipo por su cuenta mientras comentaban en voz alta. Esto es lo que nos dijeron
                 (resumido de los <a href="#videos">videos</a>):
               </p>
 
               <div class="findings">
                 <article class="finding">
-                  <span class="finding__who">📱 Paciente de 55 años, cuidadora de un adulto mayor</span>
-                  <p>Al reportar dolor intenso, la app le ofreció llamar al SAMU y le mostró las urgencias cercanas a su casa. Sintió que ayuda <b>«como primera instancia»</b> antes de consultar y que podría servir para otras enfermedades y para familias que cuidan a adultos mayores.</p>
+                  <span class="finding__who">📱 Ex cuidadora de pacientes con cáncer, 55 años</span>
+                  <p>Al reportar dolor intenso, la app le ofreció llamar al SAMU y le mostró las urgencias cercanas a su casa. Desde su experiencia cuidando, sintió que ayuda <b>«como primera instancia»</b> antes de consultar y que podría servir para otras enfermedades y para familias que cuidan a adultos mayores.</p>
                 </article>
                 <article class="finding">
                   <span class="finding__who">💻 Paciente, en tablet</span>
@@ -431,14 +431,14 @@
                 <div>
                   <h4>→ Próximos ajustes</h4>
                   <ul>
-                    <li>Separar las señales de alarma en <b>«acude a urgencias»</b> y <b>«pide hora con tu ginecólogo»</b>, en la validación clínica formal.</li>
+                    <li>Separar las señales de alarma en <b>«acude a urgencias»</b> y <b>«pide hora con tu ginecólogo»</b>, como parte de la validación clínica.</li>
                     <li><b>Avisos sonoros</b> cuando el equipo indica ir a urgencias (requiere servidor).</li>
                     <li>Incluir a <b>enfermería</b> en el seguimiento y respuestas rápidas en el chat.</li>
                     <li>Más contenido educativo (documentos y videos) y explicar que la app es parte de la atención.</li>
                   </ul>
                 </div>
               </div>
-              <p class="results__note">Son primeras pruebas cualitativas con 3 personas; las metas en números se medirán con un grupo mayor.</p>
+              <p class="results__note">Son primeras pruebas cualitativas con 3 personas; las metas en números se medirán con un grupo mayor. Los criterios clínicos del semáforo siguen pendientes de validación.</p>
             </div>
             <div>
               <h3 class="h3">Aprendizajes</h3>
@@ -475,7 +475,7 @@
           </div>
 
           <div class="reel reveal">
-            <div class="video-frame video-frame--reel" id="video-recopilacion" data-src="./video/recopilacion.mp4" data-poster="./video/recopilacion.jpg" data-reel="true" data-title="Recopilación de 20 segundos · Cérvix-B">
+            <div class="video-frame video-frame--reel" id="video-recopilacion" data-src="./video/recopilacion.mp4" data-poster="./video/recopilacion.jpg" data-duration="0:20" data-title="Recopilación de 20 segundos · Cérvix-B">
               <div class="video-frame__soon">
                 <span class="video-frame__play" aria-hidden="true">▶</span>
                 <strong>Recopilación · 20 segundos</strong>
@@ -485,18 +485,18 @@
             <div class="reel__info">
               <span class="badge badge--ok">⏱ 20 segundos</span>
               <h3 class="h3">Lo mejor de la validación</h3>
-              <p>Dos pacientes y una profesional de salud probando Cérvix-B, en un solo clip. Se reproduce sin sonido; toca el parlante para escucharlo.</p>
+              <p>Una ex cuidadora de pacientes con cáncer, una paciente y una médica probando Cérvix-B, en un solo clip. Toca ▶ para verlo desde el inicio.</p>
             </div>
           </div>
 
           <div class="video-grid">
             <article class="video-card reveal">
-              <div class="video-frame video-frame--card" data-src="./video/video-1.mp4" data-poster="./video/video-1.jpg" data-duration="3:08" data-title="Una paciente prueba la app · Cérvix-B">
+              <div class="video-frame video-frame--card" data-src="./video/video-1.mp4" data-poster="./video/video-1.jpg" data-duration="3:08" data-title="Una ex cuidadora prueba la app · Cérvix-B">
                 <div class="video-frame__soon"><span class="video-frame__play" aria-hidden="true">▶</span><span>Cargando…</span></div>
               </div>
               <span class="video-card__num">Video 1 · 3:08 min</span>
-              <h3>Una paciente prueba la app</h3>
-              <p>Recorre el inicio, el semáforo y el calendario en su celular, y llega a la alerta roja al reportar síntomas de alarma.</p>
+              <h3>Una ex cuidadora prueba la app</h3>
+              <p>Una ex cuidadora de pacientes con cáncer recorre el inicio, el semáforo y el calendario en su celular, y llega a la alerta roja al reportar síntomas de alarma.</p>
             </article>
             <article class="video-card reveal">
               <div class="video-frame video-frame--card" data-src="./video/video-2.mp4" data-poster="./video/video-2.jpg" data-duration="2:48" data-title="Prueba en tablet · Cérvix-B">
@@ -623,7 +623,7 @@
             <h2>Lo que haremos a continuación</h2>
           </div>
           <ol class="roadmap">
-            <li class="reveal"><span class="roadmap__when">Corto plazo</span><h4>Validación clínica formal</h4><p>Tras la primera revisión con una profesional, validar los umbrales del semáforo con matronas y gineco-oncólogos de Unidades de Patología Cervical.</p></li>
+            <li class="reveal"><span class="roadmap__when">Corto plazo</span><h4>Validación clínica</h4><p>Validar los umbrales del semáforo con matronas y gineco-oncólogos de Unidades de Patología Cervical, considerando las sugerencias de la médica que probó la app.</p></li>
             <li class="reveal"><span class="roadmap__when">Corto plazo</span><h4>Ampliar las pruebas</h4><p>Tras las primeras pruebas en video, medir comprensión y usabilidad con más pacientes y los cuatro escenarios, e iterar el prototipo.</p></li>
             <li class="reveal"><span class="roadmap__when">Mediano plazo</span><h4>Plataforma segura</h4><p>Un servidor con inicio de sesión seguro para compartir datos entre paciente y equipo, y avisos con la app cerrada.</p></li>
             <li class="reveal"><span class="roadmap__when">Largo plazo</span><h4>Plan piloto</h4><p>Buscar alianzas con fundaciones dedicadas al cáncer de cuello uterino en la Región Metropolitana para un piloto en un entorno clínico real.</p></li>
@@ -658,7 +658,7 @@
           <a class="brand brand--light" href="#inicio"><img src="./logo.svg" alt="" width="30" height="30" /><span>Cérvix-B</span></a>
           <p class="footer__disclaimer">
             Prototipo académico. No reemplaza la evaluación médica ni es una herramienta clínica implementada. Los criterios del
-            semáforo son referenciales: tuvieron una primera revisión profesional y están pendientes de validación formal por especialistas. Ante una urgencia, llama al 131.
+            semáforo son referenciales y están pendientes de validación por especialistas. Ante una urgencia, llama al 131.
           </p>
         </div>
         <div>

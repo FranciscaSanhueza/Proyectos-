@@ -383,7 +383,7 @@ export const ENTRIES: Entry[] = [
     keys: ['validad', 'resultados', 'prueba', 'funciona', 'evidencia', 'experimento'],
     text:
       'Validamos el **problema** con entrevistas a pacientes y profesionales, y 4 pacientes con NIE apoyaron la idea del semáforo.\n\n' +
-      'Además, **probamos el prototipo con dos pacientes y una profesional de la salud** (están en la sección Videos). El próximo paso es una validación clínica formal de los umbrales del semáforo con matronas y gineco-oncólogos.',
+      'Además, **probamos el prototipo con una ex cuidadora de pacientes con cáncer, una paciente y una médica** (están en la sección Videos). Los **criterios clínicos del semáforo aún no están validados**: es el próximo paso, con matronas y gineco-oncólogos.',
     actions: { sitio: [{ label: 'Ver validación', href: '#validacion' }, { label: 'Ver videos', href: '#videos' }] },
     only: 'sitio',
   },

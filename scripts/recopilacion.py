@@ -95,16 +95,22 @@ def miniaturas(rutas, carpeta):
 
 
 def comprimir_completo(ruta, n):
-    """Versión liviana del video completo para publicarlo en la web (720p, H.264)."""
+    """Versión liviana del video completo para publicarlo en la web (H.264, máx. 1280 px y 30 cuadros/s).
+    Si el original ya pesa menos y es compatible con la web, se usa el original."""
     os.makedirs(DESTINO, exist_ok=True)
     salida = os.path.join(DESTINO, f'video-{n}.mp4')
     correr([
         'ffmpeg', '-y', '-hide_banner', '-i', ruta,
-        # Se respeta la forma original (horizontal o vertical), con un máximo de 1280 px por lado.
-        '-vf', f"scale='min(iw,{ANCHO})':'min(ih,{ANCHO})':force_original_aspect_ratio=decrease,scale=trunc(iw/2)*2:trunc(ih/2)*2,setsar=1",
+        # Se respeta la forma original (horizontal o vertical), sin agrandar, con un máximo de 1280 px por lado.
+        '-vf', f"fps='min(source_fps,{FPS})',scale='min(iw,{ANCHO})':'min(ih,{ANCHO})':force_original_aspect_ratio=decrease,scale=trunc(iw/2)*2:trunc(ih/2)*2,setsar=1",
         '-c:v', 'libx264', '-preset', 'medium', '-crf', '28', '-pix_fmt', 'yuv420p',
         '-c:a', 'aac', '-b:a', '96k', '-movflags', '+faststart', salida,
     ])
+    r = correr(['ffprobe', '-v', 'error', '-show_entries', 'stream=codec_name', '-of', 'csv=p=0', ruta])
+    codecs = set(r.stdout.split())
+    if os.path.getsize(salida) >= os.path.getsize(ruta) and codecs <= {'h264', 'aac'}:
+        correr(['ffmpeg', '-y', '-hide_banner', '-i', ruta, '-c', 'copy', '-movflags', '+faststart', salida])
+        print(f'Video {n}: el original ya era liviano, se usa tal cual.')
     duracion, _ = info(salida)
     correr(['ffmpeg', '-y', '-hide_banner', '-ss', str(min(3, duracion / 3)), '-i', salida, '-frames:v', '1', '-q:v', '3',
             os.path.join(DESTINO, f'video-{n}.jpg')])

@@ -6,3 +6,4 @@ dist
 
 # Videos originales (pesados): solo se publican las versiones comprimidas de public/video
 videos-originales/
+scripts/__pycache__/

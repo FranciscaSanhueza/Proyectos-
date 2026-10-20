@@ -14,7 +14,7 @@ Eligiendo el segundo en que empieza cada escena y sus títulos:
         --inicios 12 30 5 41 --titulos "Entrevistas" "Semáforo" "Prototipo" "Equipo"
 
 Otras opciones:
-    --miniaturas DIR   guarda una hoja de miniaturas por video (cada 3 s) para elegir escenas.
+    --miniaturas DIR   guarda una hoja de miniaturas por video (cada 3 s, o más en videos largos) para elegir escenas.
     --completos        además comprime cada video completo a 720p como public/video/video-N.mp4 (+ .jpg).
     --sin-audio        recopilación muda.
     --duracion 20      duración total en segundos.
@@ -84,9 +84,11 @@ def miniaturas(rutas, carpeta):
     os.makedirs(carpeta, exist_ok=True)
     for i, ruta in enumerate(rutas, 1):
         salida = os.path.join(carpeta, f'miniaturas-video-{i}.jpg')
+        # Una miniatura cada 3 s (o más espaciadas en videos largos, para que quepan en 36).
+        cada = max(3, -(-int(info(ruta)[0]) // 36))
         correr([
             'ffmpeg', '-y', '-hide_banner', '-i', ruta, '-vf',
-            f"fps=1/3,scale=320:-2,drawtext=fontfile={FUENTE}:text='%{{pts\\:hms}}':x=6:y=6:fontsize=18:fontcolor=white:box=1:boxcolor=black@0.6,tile=6x6",
+            f"fps=1/{cada},scale=320:-2,drawtext=fontfile={FUENTE}:text='%{{pts\\:hms}}':x=6:y=6:fontsize=18:fontcolor=white:box=1:boxcolor=black@0.6,tile=6x6",
             '-frames:v', '1', '-q:v', '4', salida,
         ])
         print(f'Miniaturas: {salida}')
@@ -99,7 +101,7 @@ def comprimir_completo(ruta, n):
     correr([
         'ffmpeg', '-y', '-hide_banner', '-i', ruta,
         # Se respeta la forma original (horizontal o vertical), con un máximo de 1280 px por lado.
-        '-vf', f'scale={ANCHO}:{ANCHO}:force_original_aspect_ratio=decrease,scale=trunc(iw/2)*2:trunc(ih/2)*2,setsar=1',
+        '-vf', f"scale='min(iw,{ANCHO})':'min(ih,{ANCHO})':force_original_aspect_ratio=decrease,scale=trunc(iw/2)*2:trunc(ih/2)*2,setsar=1",
         '-c:v', 'libx264', '-preset', 'medium', '-crf', '28', '-pix_fmt', 'yuv420p',
         '-c:a', 'aac', '-b:a', '96k', '-movflags', '+faststart', salida,
     ])

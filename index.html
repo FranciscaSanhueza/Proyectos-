@@ -35,6 +35,7 @@
           <a href="#propuesta">Propuesta</a>
           <a href="#prototipo">Prototipo</a>
           <a href="#validacion">Validación</a>
+          <a href="#videos">Videos</a>
           <a href="#instituciones">Instituciones</a>
           <a href="#proximos">Próximos pasos</a>
           <a href="#equipo">Equipo</a>
@@ -366,27 +367,10 @@
             </article>
           </div>
 
-          <!--
-            VIDEO DE VALIDACIÓN: para mostrarlo, completa UNO de estos atributos en el div #video-validacion:
-              data-youtube="https://youtu.be/XXXXXXXXXXX"   (YouTube, puede ser «no listado»)
-              data-drive="https://drive.google.com/file/d/XXXX/view"   (Google Drive con acceso «cualquier persona con el enlace»)
-              data-src="./video/validacion.mp4"   (archivo subido a public/video/, idealmente de menos de 50 MB)
-            Si los tres están vacíos se muestra el aviso «próximamente».
-          -->
-          <div class="video-block reveal" id="video">
-            <div class="video-block__text">
-              <span class="badge badge--ok">▶ Video</span>
-              <h3 class="h3">Video de validación</h3>
-              <p>Un recorrido en video por cómo validamos el problema y la propuesta de Cérvix-B con pacientes y profesionales de salud.</p>
-            </div>
-            <div class="video-frame" id="video-validacion" data-youtube="" data-drive="" data-src="" data-title="Video de validación · Cérvix-B">
-              <div class="video-frame__soon">
-                <span class="video-frame__play" aria-hidden="true">▶</span>
-                <strong>Video de validación</strong>
-                <span>Próximamente disponible aquí</span>
-              </div>
-            </div>
-          </div>
+          <a class="video-cta reveal" href="#videos">
+            <span class="video-cta__play" aria-hidden="true">▶</span>
+            <span><strong>Mira la validación en video</strong><small>Un resumen de 20 segundos y los 4 videos completos</small></span>
+          </a>
 
           <div class="experiment reveal">
             <div>
@@ -425,11 +409,83 @@
         </div>
       </section>
 
-      <!-- ============ 5. Instituciones ============ -->
+
+      <!-- ============ 5. Videos ============
+        CÓMO EDITAR ESTA SECCIÓN
+        · Recopilación (20 s): el archivo es public/video/recopilacion.mp4 (y su portada recopilacion.jpg).
+          Se genera con:  python3 scripts/recopilacion.py  (ver scripts/README-videos.md).
+        · Cada video completo se muestra completando UNO de estos atributos en su div .video-frame:
+            data-youtube="https://youtu.be/XXXXXXXXXXX"            (YouTube, puede ser «no listado»)
+            data-drive="https://drive.google.com/file/d/XXXX/view"  (Drive, «cualquier persona con el enlace»)
+            data-src="./video/video-1.mp4"                          (archivo en public/video/)
+          y, si quieres, data-poster="./video/video-1.jpg" para la portada.
+        · Los títulos y descripciones de cada video se editan aquí mismo, en su <h3> y <p>.
+      -->
+      <section class="section section--cinema" id="videos">
+        <div class="container">
+          <div class="section__head reveal">
+            <span class="step-tag">05 · Videos</span>
+            <h2>La validación de Cérvix-B, <span class="grad">en video</span>.</h2>
+            <p class="lead">Un resumen de 20 segundos con las mejores escenas y, abajo, los cuatro videos completos.</p>
+          </div>
+
+          <div class="reel reveal">
+            <div class="video-frame video-frame--reel" id="video-recopilacion" data-src="./video/recopilacion.mp4" data-poster="./video/recopilacion.jpg" data-reel="true" data-title="Recopilación de 20 segundos · Cérvix-B">
+              <div class="video-frame__soon">
+                <span class="video-frame__play" aria-hidden="true">▶</span>
+                <strong>Recopilación · 20 segundos</strong>
+                <span>Próximamente: las mejores escenas de los 4 videos</span>
+              </div>
+            </div>
+            <div class="reel__info">
+              <span class="badge badge--ok">⏱ 20 segundos</span>
+              <h3 class="h3">Lo mejor de la validación</h3>
+              <p>Escenas seleccionadas de los cuatro videos, en un solo clip. Se reproduce sin sonido; toca el parlante para escucharlo.</p>
+            </div>
+          </div>
+
+          <div class="video-grid">
+            <article class="video-card reveal">
+              <div class="video-frame" data-youtube="" data-drive="" data-src="" data-poster="" data-title="Video 1 · Cérvix-B">
+                <div class="video-frame__soon"><span class="video-frame__play" aria-hidden="true">▶</span><span>Próximamente</span></div>
+              </div>
+              <span class="video-card__num">Video 1</span>
+              <h3>Título del video 1</h3>
+              <p>Descripción breve del video 1.</p>
+            </article>
+            <article class="video-card reveal">
+              <div class="video-frame" data-youtube="" data-drive="" data-src="" data-poster="" data-title="Video 2 · Cérvix-B">
+                <div class="video-frame__soon"><span class="video-frame__play" aria-hidden="true">▶</span><span>Próximamente</span></div>
+              </div>
+              <span class="video-card__num">Video 2</span>
+              <h3>Título del video 2</h3>
+              <p>Descripción breve del video 2.</p>
+            </article>
+            <article class="video-card reveal">
+              <div class="video-frame" data-youtube="" data-drive="" data-src="" data-poster="" data-title="Video 3 · Cérvix-B">
+                <div class="video-frame__soon"><span class="video-frame__play" aria-hidden="true">▶</span><span>Próximamente</span></div>
+              </div>
+              <span class="video-card__num">Video 3</span>
+              <h3>Título del video 3</h3>
+              <p>Descripción breve del video 3.</p>
+            </article>
+            <article class="video-card reveal">
+              <div class="video-frame" data-youtube="" data-drive="" data-src="" data-poster="" data-title="Video 4 · Cérvix-B">
+                <div class="video-frame__soon"><span class="video-frame__play" aria-hidden="true">▶</span><span>Próximamente</span></div>
+              </div>
+              <span class="video-card__num">Video 4</span>
+              <h3>Título del video 4</h3>
+              <p>Descripción breve del video 4.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 6. Instituciones ============ -->
       <section class="section" id="instituciones">
         <div class="container">
           <div class="section__head reveal">
-            <span class="step-tag">05 · Para instituciones de salud</span>
+            <span class="step-tag">06 · Para instituciones de salud</span>
             <h2>Un puente entre el hospital y el hogar, <span class="grad">en el sistema público y en el privado</span>.</h2>
             <p>Así podría integrarse Cérvix-B en el flujo de atención de cada tipo de institución. Es una propuesta: su implementación requiere validación clínica y un piloto.</p>
           </div>
@@ -522,11 +578,11 @@
         </div>
       </section>
 
-      <!-- ============ 6. Próximos pasos ============ -->
+      <!-- ============ 7. Próximos pasos ============ -->
       <section class="section section--tint" id="proximos">
         <div class="container">
           <div class="section__head reveal">
-            <span class="step-tag">06 · Próximos pasos</span>
+            <span class="step-tag">07 · Próximos pasos</span>
             <h2>Lo que haremos a continuación</h2>
           </div>
           <ol class="roadmap">
@@ -545,11 +601,11 @@
         </div>
       </section>
 
-      <!-- ============ 7. Equipo ============ -->
+      <!-- ============ 8. Equipo ============ -->
       <section class="section" id="equipo">
         <div class="container">
           <div class="section__head reveal">
-            <span class="step-tag">07 · Equipo</span>
+            <span class="step-tag">08 · Equipo</span>
             <h2>Equipo Cérvix-B</h2>
             <p>CD1201 · Sección 10 · Facultad de Ciencias Físicas y Matemáticas, Universidad de Chile</p>
           </div>

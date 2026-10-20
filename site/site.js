@@ -308,45 +308,75 @@ $$('.switch__btn').forEach((btn) =>
   ),
 )
 
-/* ---------- Video de validación ---------- */
+/* ---------- Videos ---------- */
 
-// Acepta YouTube (enlace o ID), Google Drive o un archivo propio; ver el comentario en index.html.
-const videoBox = $('#video-validacion')
-if (videoBox) {
-  const { youtube = '', drive = '', src = '', title = 'Video' } = videoBox.dataset
-  const ytId = (youtube.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/) || [])[1] || (/^[\w-]{11}$/.test(youtube) ? youtube : '')
-  const driveId = (drive.match(/\/d\/([\w-]+)/) || drive.match(/id=([\w-]+)/) || [])[1]
-  const iframe = (url) => {
-    const f = document.createElement('iframe')
-    f.src = url
-    f.title = title
-    f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen'
-    f.allowFullscreen = true
-    f.loading = 'lazy'
-    return f
+// Cada .video-frame acepta YouTube (enlace o ID), Google Drive o un archivo propio (ver comentario en index.html).
+// Si el archivo aún no existe, se mantiene el aviso «Próximamente».
+const ytIdOf = (url) => (url.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/) || [])[1] || (/^[\w-]{11}$/.test(url) ? url : '')
+const driveIdOf = (url) => (url.match(/\/d\/([\w-]+)/) || url.match(/id=([\w-]+)/) || [])[1]
+const makeIframe = (url, title) => {
+  const f = document.createElement('iframe')
+  f.src = url
+  f.title = title
+  f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen'
+  f.allowFullscreen = true
+  f.loading = 'lazy'
+  return f
+}
+const fileExists = async (src) => {
+  try {
+    const r = await fetch(src, { method: 'HEAD' })
+    return r.ok && !(r.headers.get('content-type') || '').includes('text/html')
+  } catch {
+    return false
   }
+}
+
+$$('.video-frame').forEach(async (box) => {
+  const { youtube = '', drive = '', src = '', poster = '', title = 'Video', reel } = box.dataset
+  const ytId = ytIdOf(youtube)
+  const driveId = driveIdOf(drive)
   if (ytId) {
     // Miniatura liviana: el reproductor de YouTube se carga solo al tocar «play».
-    videoBox.innerHTML = `<button class="video-frame__poster" type="button" aria-label="Reproducir: ${title}">
-        <img src="https://i.ytimg.com/vi/${ytId}/hqdefault.jpg" alt="" loading="lazy" />
+    box.innerHTML = `<button class="video-frame__poster" type="button" aria-label="Reproducir: ${title}">
+        <img src="${poster || `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`}" alt="" loading="lazy" />
         <span class="video-frame__play" aria-hidden="true">▶</span>
       </button>`
-    $('button', videoBox).addEventListener('click', () =>
-      videoBox.replaceChildren(iframe(`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0`)),
-    )
+    $('button', box).addEventListener('click', () => box.replaceChildren(makeIframe(`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0`, title)))
   } else if (driveId) {
-    videoBox.replaceChildren(iframe(`https://drive.google.com/file/d/${driveId}/preview`))
-  } else if (src) {
+    box.replaceChildren(makeIframe(`https://drive.google.com/file/d/${driveId}/preview`, title))
+  } else if (src && (await fileExists(src))) {
     const v = document.createElement('video')
     v.src = src
-    v.controls = true
+    if (poster) v.poster = poster
     v.preload = 'metadata'
     v.playsInline = true
     v.setAttribute('aria-label', title)
-    videoBox.replaceChildren(v)
-  }
-  if (ytId || driveId || src) videoBox.classList.add('has-video')
-}
+    if (reel) {
+      // La recopilación se reproduce sola, en silencio y en bucle; el parlante activa el sonido.
+      v.muted = true
+      v.loop = true
+      v.autoplay = !reduceMotion
+      const sound = document.createElement('button')
+      sound.type = 'button'
+      sound.className = 'video-frame__sound'
+      sound.setAttribute('aria-label', 'Activar sonido')
+      sound.textContent = '🔇'
+      sound.addEventListener('click', () => {
+        v.muted = !v.muted
+        if (!v.muted && v.paused) v.play()
+        sound.textContent = v.muted ? '🔇' : '🔊'
+        sound.setAttribute('aria-label', v.muted ? 'Activar sonido' : 'Silenciar')
+      })
+      v.addEventListener('click', () => (v.paused ? v.play() : v.pause()))
+      box.replaceChildren(v, sound)
+    } else {
+      v.controls = true
+      box.replaceChildren(v)
+    }
+  } else return
+  box.classList.add('has-video')
+})
 
 /* ---------- Equipo ---------- */
 

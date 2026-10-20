@@ -1132,9 +1132,11 @@ body, .app-shell, .login { transition: background-color 0.4s ease; }
   place-items: center;
   transition: background-color 0.25s ease, transform 0.3s var(--ease);
 }
-.care-item.is-done, .question-item.is-done { background: var(--primary-soft); border-color: transparent; }
-.care-item.is-done .care-item__box, .question-item.is-done .care-item__box { background: var(--primary); transform: scale(1.08); }
-.care-item.is-done .grow, .question-item.is-done .grow { text-decoration: line-through; opacity: 0.7; }
+.care-item.is-done, .question-item.is-done { background: var(--verde-soft); border-color: var(--verde); }
+/* Cuidado cumplido: ✓ verde y etiqueta «Hecho» (sin tachar el texto, que confundía en las pruebas). */
+.care-item.is-done .care-item__box, .question-item.is-done .care-item__box { background: var(--verde); border-color: var(--verde); color: #fff; transform: scale(1.08); }
+.question-item.is-done .grow { text-decoration: line-through; opacity: 0.7; }
+.care-item__done { flex: none; padding: 3px 10px; border-radius: 999px; background: var(--verde); color: #fff; font-size: 12px; font-weight: 800; }
 
 /* ---------- Celebración ---------- */
 

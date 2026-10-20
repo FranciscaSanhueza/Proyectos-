@@ -36,6 +36,7 @@ export function CareChecklist({ patientId, cares }: { patientId: string; cares: 
           }} aria-pressed={on}>
             <span className="care-item__box">{on && <Check size={16} strokeWidth={3} />}</span>
             <span className="grow">{c}</span>
+            {on && <span className="care-item__done">Hecho</span>}
           </button>
         )
       })}

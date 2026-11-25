@@ -1,14 +1,20 @@
-import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { AlertTriangle, FileDown, ShieldCheck } from 'lucide-react'
 import { Card, PageHeader, SectionTitle } from '../../components/ui'
 import { ReadAloud } from '../../components/ReadAloud'
 import { CareChecklist } from '../../components/CareChecklist'
+import { MedsCard } from '../../components/Meds'
 import { formatShortDate, recoveryWeek } from '../../utils'
 import { usePatient } from './usePatient'
 
 export function MiPlan() {
   const { plan, patientId } = usePatient()
   const navigate = useNavigate()
+  const { hash } = useLocation()
+  useEffect(() => {
+    if (hash === '#medicamentos') setTimeout(() => document.getElementById('medicamentos')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150)
+  }, [hash])
 
   return (
     <div className="page stagger">
@@ -50,6 +56,13 @@ export function MiPlan() {
       <SectionTitle>Cuidados de hoy</SectionTitle>
       <Card>
         <CareChecklist patientId={patientId} cares={plan.cares} />
+      </Card>
+
+      <div id="medicamentos" className="anchor">
+        <SectionTitle>Mis medicamentos</SectionTitle>
+      </div>
+      <Card>
+        <MedsCard patientId={patientId} meds={plan.meds ?? []} />
       </Card>
 
       <SectionTitle>Consulta si aparece</SectionTitle>

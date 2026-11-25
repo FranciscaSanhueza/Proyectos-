@@ -10,9 +10,9 @@ const DAY = 24 * 60 * 60 * 1000
 
 /** Datos de los últimos 7 días para «Tu semana» (como Spotify Wrapped). */
 export function useWeekSummary() {
-  const { patient, patientId, plan, responses, checkIns, careLogs, symptomLogs } = usePatient()
+  const { patient, patientId, plan, responses, checkIns, careLogs, symptomLogs, diary } = usePatient()
   const days = Array.from({ length: 7 }, (_, k) => toDayKey(new Date(Date.now() - k * DAY)))
-  const level = currentLevel(responses, patientId, symptomLogs)
+  const level = currentLevel(responses, patientId, symptomLogs, diary)
   const moods = checkIns.filter((c) => c.patientId === patientId && days.includes(c.date)).map((c) => c.mood)
   const moodAvg = moods.length ? moods.reduce((a, b) => a + b, 0) / moods.length : null
   const careRate = plan.cares.length

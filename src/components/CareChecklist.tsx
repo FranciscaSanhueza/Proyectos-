@@ -3,6 +3,7 @@ import { Check } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { haptic, toDayKey } from '../utils'
 import { Celebrate } from './Celebrate'
+import { playSound } from '../sound'
 
 /** Cuidados del plan para marcar cada día; celebra al completarlos todos. */
 export function CareChecklist({ patientId, cares }: { patientId: string; cares: string[] }) {
@@ -15,6 +16,7 @@ export function CareChecklist({ patientId, cares }: { patientId: string; cares: 
   const toggle = (c: string) => {
     const completes = !done.includes(c) && count + 1 === cares.length
     toggleCare(patientId, today, c)
+    playSound(completes ? 'success' : done.includes(c) ? 'tap' : 'ding')
     if (completes) setParty((n) => n + 1)
   }
 

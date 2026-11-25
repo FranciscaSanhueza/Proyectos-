@@ -1,4 +1,4 @@
-import type { Level, RecoveryPlan, SurveyQuestion, SurveyResponse, SymptomLog } from './types'
+import type { DiaryEntry, Level, RecoveryPlan, SurveyQuestion, SurveyResponse, SymptomLog } from './types'
 
 const dateFmt = new Intl.DateTimeFormat('es-CL', { weekday: 'short', day: 'numeric', month: 'short' })
 const longDateFmt = new Intl.DateTimeFormat('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' })
@@ -62,17 +62,45 @@ export const surveyStatus = (responses: SurveyResponse[], patientId: string) => 
   return { available: next.getTime() <= Date.now(), next, last }
 }
 
-/** Nivel actual del semáforo: el de la última encuesta respondida (verde si no hay). */
 /**
  * Nivel actual del semáforo: la última encuesta, empeorado por los registros rápidos
- * («Hoy noté…») de las últimas 24 horas posteriores a esa encuesta.
+ * («Mi día» y «Hoy noté…») de las últimas 24 horas posteriores a esa encuesta.
  */
-export const currentLevel = (responses: SurveyResponse[], patientId: string, logs: SymptomLog[] = []): Level => {
+export const currentLevel = (
+  responses: SurveyResponse[],
+  patientId: string,
+  logs: SymptomLog[] = [],
+  diary: DiaryEntry[] = [],
+): Level => {
   const last = latestResponse(responses, patientId)
   const since = Math.max(Date.now() - 24 * 60 * 60 * 1000, last ? new Date(last.at).getTime() : 0)
   const recent = logs.filter((l) => l.patientId === patientId && new Date(l.at).getTime() > since).map((l) => l.level)
-  return worstLevel([last?.level ?? 'verde', ...recent])
+  const recentDiary = diary.filter((e) => e.patientId === patientId && new Date(e.updatedAt).getTime() > since).map(diaryLevel)
+  return worstLevel([last?.level ?? 'verde', ...recent, ...recentDiary])
 }
+
+// ---------- Registro diario («Mi día») ----------
+// Umbrales referenciales, alineados con la encuesta: deben validarlos especialistas.
+
+export const BLEEDING_LABELS = ['Nada', 'Manchado', 'Como una regla', 'Abundante'] as const
+export const TEMP_LABELS = ['Normal', '37,5 a 38 °C', 'Sobre 38 °C'] as const
+
+/** Color del día según lo registrado (sin datos = verde). */
+export const diaryLevel = (e: Pick<DiaryEntry, 'pain' | 'bleeding' | 'temp'>): Level => {
+  if (e.bleeding === 3 || e.temp === 2 || (e.pain ?? 0) >= 8) return 'rojo'
+  if (e.bleeding === 2 || e.temp === 1 || (e.pain ?? 0) >= 5) return 'amarillo'
+  return 'verde'
+}
+
+/** Resumen corto de un registro, p. ej. «Dolor 3/10 · Sangrado manchado». */
+export const diarySummary = (e: DiaryEntry) =>
+  [
+    e.pain !== undefined && `Dolor ${e.pain}/10`,
+    e.bleeding !== undefined && `Sangrado: ${BLEEDING_LABELS[e.bleeding].toLowerCase()}`,
+    e.temp !== undefined && `Temperatura: ${TEMP_LABELS[e.temp].toLowerCase()}`,
+  ]
+    .filter(Boolean)
+    .join(' · ')
 
 /** Semana de recuperación (1, 2, …) contada desde el procedimiento. */
 export const recoveryWeek = (plan: RecoveryPlan) =>

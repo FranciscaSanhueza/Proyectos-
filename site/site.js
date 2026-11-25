@@ -1,5 +1,6 @@
 // Interactividad del sitio web de Cérvix-B (sin dependencias).
 import { mountCatBot } from '../src/bot/widget.ts'
+import { levelSound, playSound } from '../src/sound.ts'
 
 const $ = (s, el = document) => el.querySelector(s)
 const $$ = (s, el = document) => [...el.querySelectorAll(s)]
@@ -162,9 +163,36 @@ SYMPTOMS.forEach((item, i) => {
     result.classList.remove('pulse')
     void result.offsetWidth
     result.classList.add('pulse')
+    playSound(levelSound(item.l))
   })
   chips.append(b)
   if (i === 0) b.dataset.first = 'true'
+})
+
+// Sonido del semáforo: se puede silenciar y se recuerda.
+const soundBtn = $('#demo-sound')
+const readSound = () => {
+  try {
+    return localStorage.getItem('cb-site-sound') !== 'off'
+  } catch {
+    return true
+  }
+}
+const applySound = (on) => {
+  document.documentElement.dataset.sounds = on ? 'on' : 'off'
+  soundBtn.setAttribute('aria-pressed', String(on))
+  soundBtn.textContent = on ? '🔊 Sonido activado' : '🔇 Sonido silenciado'
+}
+applySound(readSound())
+soundBtn.addEventListener('click', () => {
+  const on = document.documentElement.dataset.sounds === 'off'
+  try {
+    localStorage.setItem('cb-site-sound', on ? 'on' : 'off')
+  } catch {
+    /* sin almacenamiento */
+  }
+  applySound(on)
+  if (on) playSound('ding')
 })
 
 /* ---------- Gráfico de ideas (Actividad 5.1) ---------- */
@@ -216,8 +244,10 @@ const SCREENS = {
   paciente: [
     { img: 'bienvenida', t: 'Bienvenida guiada', d: 'La primera vez, un recorrido de 5 pasos (con audio y deslizable) explica el semáforo, la encuesta, el plan y el chat.' },
     { img: 'historias', t: 'Historias del día', d: 'Como en Instagram: consejo del día, «¿mito o verdad?», Tu semana (resumen para compartir) y una frase de ánimo.' },
-    { img: 'inicio', t: 'Inicio', d: '«Tu siguiente paso», buscador «¿Qué te preocupa?», anillos del día (ánimo, cuidados y encuesta) y recordatorios con «Hecho» o «Posponer».' },
-    { img: 'registro', t: '«Hoy noté…»', d: 'Registrar un síntoma con un toque y ver al instante si es verde, amarillo o rojo; el equipo recibe un aviso si es necesario.' },
+    { img: 'inicio', t: 'Inicio', d: '«Tu siguiente paso», buscador «¿Qué te preocupa?», tarjeta «Mi día», anillos del día y accesos a evolución, camino y medicamentos. Botón «Escúchame» que lee la pantalla.' },
+    { img: 'registro', t: '«Mi día»', d: 'Registrar el día con un toque por dato: ánimo, dolor con caritas (0 a 10), sangrado y temperatura. Se guarda solo y muestra al instante si el día es verde, amarillo o rojo.' },
+    { img: 'evolucion', t: 'Mi evolución', d: 'Gráfico de dolor y sangrado de los últimos 14 días, calendario del mes en colores y promedio de dolor comparado con la semana pasada.' },
+    { img: 'medicamentos', t: 'Mis medicamentos', d: 'Cada dosis se marca con un toque; la app muestra cuántas faltan hoy y en qué día del tratamiento va.' },
     { img: 'semaforo', t: 'Semáforo de síntomas', d: 'Estado actual según la última encuesta, evolución semana a semana y buscador «¿tu síntoma es verde, amarillo o rojo?».' },
     { img: 'encuesta', t: 'Encuesta semanal', d: 'Una pregunta por pantalla, escala visual de intensidad y botón para escuchar la pregunta.' },
     { img: 'alerta', t: 'Alerta roja', d: 'Si la encuesta da rojo, la app indica acudir a urgencias, permite llamar al 131 y avisa al equipo médico.' },
@@ -227,7 +257,8 @@ const SCREENS = {
     { img: 'ayuda', t: 'Ayuda y modo simple', d: 'Botón «Ayuda» con deslizar para llamar al 131 y un modo simple de 3 botones grandes para quien recién usa el celular.' },
     { img: 'calma', t: 'Rincón de calma', d: 'Frases de ánimo, respiración guiada, ejercicio 5-4-3-2-1 y sonido relajante.' },
     { img: 'aprende', t: 'Aprende', d: 'Juego «¿Mito o verdad?» y fichas sobre VPH, lesiones, conización y controles.' },
-    { img: 'camino', t: 'Mi camino', d: 'Hitos de la recuperación y logros que se desbloquean para motivar la constancia.' },
+    { img: 'camino', t: 'Mi camino', d: 'Camino ilustrado con una figura que avanza día a día por los hitos de la recuperación, y medallas animadas que se desbloquean.' },
+    { img: 'cuerpo', t: '¿Qué pasa en mi cuerpo?', d: 'Dibujo simple de la cicatrización semana a semana, con audio. Referencial: debe revisarlo el equipo de salud.' },
     { img: 'idiomas', t: 'Otros idiomas', d: 'Semáforo, señales de alarma y cuidados en inglés y criollo haitiano, con audio. Además: modo noche, tema de alto contraste y botones «Escuchar».' },
     { img: 'resumen', t: 'Resumen en PDF', d: 'Resumen de la recuperación (plan, ánimo, cuidados, encuestas y preguntas) para llevar al control o adjuntar a la ficha.' },
   ],
@@ -434,3 +465,28 @@ addEventListener('keydown', (e) => e.key === 'Escape' && closeLb())
 /* ---------- Lía, la asistente que responde dudas ---------- */
 
 mountCatBot({ audience: 'sitio' })
+
+/* ---------- La app dentro de la página ---------- */
+
+const liveFrame = $('#live-frame')
+const liveStart = $('#live-start')
+let liveRole = 'paciente'
+const liveUrl = (reset) => `./app/#/demo/${liveRole}${reset ? '?reiniciar=1' : ''}`
+const loadLive = (reset = false) => {
+  liveFrame.hidden = false
+  liveStart.hidden = true
+  liveFrame.src = liveUrl(reset)
+}
+liveStart.addEventListener('click', () => loadLive())
+$('#live-reset').addEventListener('click', () => loadLive(true))
+$$('[data-live]').forEach((tab) =>
+  tab.addEventListener('click', () => {
+    liveRole = tab.dataset.live
+    $$('[data-live]').forEach((t) => {
+      t.classList.toggle('is-active', t === tab)
+      t.setAttribute('aria-selected', String(t === tab))
+    })
+    $('#live-open').href = liveUrl(false)
+    loadLive()
+  }),
+)

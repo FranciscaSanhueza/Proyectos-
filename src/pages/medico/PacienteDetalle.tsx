@@ -12,6 +12,7 @@ import type { RecoveryPlan, ReminderKind } from '../../types'
 import { LEVEL_INFO, currentLevel, formatDateTime, formatShortDate, recoveryWeek } from '../../utils'
 import { PerfilEditor, Resumen } from './PerfilPaciente'
 import { QrModal } from '../../components/QrCode'
+import { MedsEditor } from '../../components/Meds'
 
 const tabs = [
   { id: 'resumen', label: 'Resumen' },
@@ -27,12 +28,12 @@ export function PacienteDetalle() {
   const { id } = useParams()
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
-  const { responses, patients, plans, symptomLogs } = useApp()
+  const { responses, patients, plans, symptomLogs, diary } = useApp()
   const patient = patients.find((p) => p.id === id)
   if (!patient) return <Navigate to="/medico/pacientes" replace />
 
   const tab = (params.get('tab') as Tab) ?? 'resumen'
-  const level = currentLevel(responses, patient.id, symptomLogs)
+  const level = currentLevel(responses, patient.id, symptomLogs, diary)
   const plan = plans.find((p) => p.patientId === patient.id)!
 
   return (
@@ -211,6 +212,8 @@ function PlanEditor({ patientId, phone, code }: { patientId: string; phone: stri
         <EditableList items={draft.cares} onChange={(v) => set('cares', v)} placeholder="Agregar cuidado…" />
         <label className="form__label">Consultar si aparece</label>
         <EditableList items={draft.warnings} onChange={(v) => set('warnings', v)} placeholder="Agregar signo de alarma…" />
+        <label className="form__label">Medicamentos</label>
+        <MedsEditor meds={draft.meds ?? []} onChange={(v) => set('meds', v)} />
 
         <div className="row">
           <button className="btn btn--ghost grow" onClick={() => save(false)}>Guardar</button>

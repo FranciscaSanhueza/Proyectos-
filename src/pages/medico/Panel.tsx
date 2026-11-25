@@ -8,11 +8,11 @@ import type { Level } from '../../types'
 import { LEVEL_INFO, currentLevel, formatDateTime, surveyStatus } from '../../utils'
 
 export function Panel() {
-  const { patients, responses, messages, plans, alerts, reviewAlert, prefs, setPrefs, symptomLogs } = useApp()
+  const { patients, responses, messages, plans, alerts, reviewAlert, prefs, setPrefs, symptomLogs, diary } = useApp()
   const navigate = useNavigate()
 
   const active = patients.filter((p) => p.status === 'activa')
-  const levelOf = (id: string) => currentLevel(responses, id, symptomLogs)
+  const levelOf = (id: string) => currentLevel(responses, id, symptomLogs, diary)
   const count = (l: Level) => active.filter((p) => levelOf(p.id) === l).length
   const nameOf = (id: string) => patients.find((p) => p.id === id)?.name ?? ''
 

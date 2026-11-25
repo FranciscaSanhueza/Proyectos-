@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Bell, ChevronRight, Download, Languages, LayoutGrid, PlayCircle, LogOut, Palette, RotateCcw, Sparkles, Type } from 'lucide-react'
+import { Bell, ChevronRight, Download, Languages, LayoutGrid, PlayCircle, LogOut, Palette, RotateCcw, Sparkles, Type, Volume2, Headphones } from 'lucide-react'
 import { Card, PageHeader, SectionTitle } from '../../components/ui'
 import { notificationsSupported, requestNotificationPermission, showNotification } from '../../notifications'
 import type { TextSize, Theme } from '../../types'
 import { usePatient } from './usePatient'
+import { playSound } from '../../sound'
 
 const SIZES: { id: TextSize; label: string }[] = [
   { id: 'normal', label: 'Normal' },
@@ -110,6 +111,47 @@ export function Ajustes() {
           aria-label="Animaciones"
           className={`switch${!prefs.calmMotion ? ' is-on' : ''}`}
           onClick={() => setPrefs({ calmMotion: !prefs.calmMotion })}
+        >
+          <span />
+        </button>
+      </Card>
+
+      <Card className="setting-row">
+        <Volume2 size={22} className="accent" />
+        <div className="grow">
+          <strong>Sonidos</strong>
+          <small className="muted">Un «ding» suave al registrar, una melodía al completar tu día y un tono distinto si algo está en rojo.</small>
+        </div>
+        <button
+          role="switch"
+          aria-checked={prefs.sounds !== false}
+          aria-label="Sonidos"
+          className={`switch${prefs.sounds !== false ? ' is-on' : ''}`}
+          onClick={() => {
+            const on = prefs.sounds === false
+            setPrefs({ sounds: on })
+            if (on) {
+              document.documentElement.dataset.sounds = 'on'
+              playSound('ding')
+            }
+          }}
+        >
+          <span />
+        </button>
+      </Card>
+
+      <Card className="setting-row">
+        <Headphones size={22} className="accent" />
+        <div className="grow">
+          <strong>Guía en audio</strong>
+          <small className="muted">Lee cada pantalla en voz alta al abrirla. También puedes tocar «Escúchame» cuando quieras.</small>
+        </div>
+        <button
+          role="switch"
+          aria-checked={!!prefs.audioGuide}
+          aria-label="Guía en audio"
+          className={`switch${prefs.audioGuide ? ' is-on' : ''}`}
+          onClick={() => setPrefs({ audioGuide: !prefs.audioGuide })}
         >
           <span />
         </button>

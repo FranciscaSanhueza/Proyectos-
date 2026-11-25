@@ -278,9 +278,51 @@ export const ENTRIES: Entry[] = [
   },
   {
     id: 'registro',
-    keys: ['hoy note', 'registro rapido', 'registrar sintoma', 'anotar sintoma', 'sin esperar la encuesta'],
-    text: 'En el Inicio está **«Hoy noté…»**: toca sangrado, dolor, fiebre, flujo o «nada raro», elige cómo es y verás al instante si es verde, amarillo o rojo. Si es amarillo o rojo, tu equipo recibe un aviso 🩺.',
-    actions: { app: [{ label: 'Ir al Inicio', href: '#/paciente' }] },
+    keys: ['mi dia', 'hoy note', 'registro rapido', 'registrar sintoma', 'anotar sintoma', 'sin esperar la encuesta', 'diario', 'registrar mi dia', 'registrar dolor'],
+    text: 'En el Inicio está **«Mi día»**: con un toque registras tu ánimo, tu dolor (de 0 a 10, con caritas), el sangrado y la temperatura. Se guarda solo y ves al instante si tu día es verde, amarillo o rojo. Si es amarillo o rojo, tu equipo recibe un aviso 🩺. En **Mi evolución** ves tus días en un gráfico y un calendario de colores.',
+    actions: { app: [{ label: 'Ver mi evolución', href: '#/paciente/evolucion' }] },
+    only: 'app',
+  },
+  {
+    id: 'evolucion',
+    keys: ['mi evolucion', 'como voy', 'mi progreso', 'grafico', 'calendario de colores', 'ver mis dias', 'mejorando', 'avance'],
+    text: 'En **Mi evolución** ves cómo va tu recuperación: un gráfico de tu dolor y sangrado de los últimos 14 días, un calendario del mes pintado de verde, amarillo o rojo, y tu dolor promedio comparado con la semana pasada 📈. Toca un día para ver el detalle.',
+    actions: { app: [{ label: 'Ver mi evolución', href: APP('evolucion') }] },
+    only: 'app',
+  },
+  {
+    id: 'medicamentos',
+    keys: ['mis medicamentos', 'dosis', 'tome la pastilla', 'olvide la pastilla', 'olvide tomar', 'cuantas pastillas', 'marcar dosis', 'medicamento'],
+    text: 'En **Mi plan → Mis medicamentos** marcas cada dosis con un toque 💊. La app te dice cuántas te faltan hoy y en qué día del tratamiento vas. Si te equivocas, vuelve a tocar la dosis para desmarcarla. Sigue siempre la indicación de tu médico; si olvidaste una dosis y tienes dudas, escríbele a tu equipo.',
+    actions: { app: [{ label: 'Ver mis medicamentos', href: APP('plan#medicamentos') }] },
+    only: 'app',
+  },
+  {
+    id: 'camino',
+    keys: ['mi camino', 'medalla', 'logro', 'hitos', 'en que etapa', 'cuanto falta'],
+    text: 'En **Mi camino** una figura 🌷 avanza por tu recuperación día a día, desde el procedimiento hasta tu control. Toca cada parada para ver qué pasa. Abajo están tus **medallas**: se desbloquean al registrar tu día, tomar tus dosis o responder encuestas 🏅.',
+    actions: { app: [{ label: 'Ver mi camino', href: APP('camino') }] },
+    only: 'app',
+  },
+  {
+    id: 'cuerpo',
+    keys: ['que pasa en mi cuerpo', 'como sana', 'cicatrizacion', 'como cicatriza', 'semana a semana', 'como se cura'],
+    text: 'En **Mi camino → ¿Qué pasa en mi cuerpo esta semana?** hay un dibujo simple de cómo cicatriza la zona tratada, semana a semana, con audio. Cerca del día 10 a 14 se suelta la costra y puede aumentar un poco el sangrado. Es referencial: cada recuperación es distinta.',
+    actions: { app: [{ label: 'Ver mi cuerpo esta semana', href: APP('camino') }] },
+    only: 'app',
+  },
+  {
+    id: 'sonidos',
+    keys: ['sonido', 'silenciar', 'quitar el sonido', 'ruido', 'mute', 'ding'],
+    text: 'La app tiene **sonidos suaves**: un «ding» al registrar, una melodía al completar tu día y un tono distinto si algo está en rojo 🔔. Puedes apagarlos en **Ajustes → Sonidos**.',
+    actions: { app: [{ label: 'Ir a Ajustes', href: APP('ajustes') }] },
+    only: 'app',
+  },
+  {
+    id: 'escuchame',
+    keys: ['escuchame', 'leer la pantalla', 'leer en voz alta', 'no veo bien', 'no se leer', 'guia en audio', 'que me lea'],
+    text: 'Toca el botón **«Escúchame»** 🔊 (abajo a la izquierda) y la app lee en voz alta la pantalla que estás viendo. Si activas la **Guía en audio** en Ajustes, lee cada pantalla sola al abrirla.',
+    actions: { app: [{ label: 'Ir a Ajustes', href: APP('ajustes') }] },
     only: 'app',
   },
   {
@@ -357,11 +399,12 @@ export const ENTRIES: Entry[] = [
   {
     id: 'probar',
     keys: ['probar', 'prototipo', 'demo', 'usar la app', 'donde esta la app', 'link'],
-    text: 'Puedes probar el prototipo en tu navegador, directo en la vista que quieras. Usa **Cambiar perfil** para pasar de una a otra y **Reiniciar demo** (en el inicio de sesión) para dejar los datos como nuevos. Todo es ficticio 📱.',
+    text: 'Puedes probar el prototipo en tu navegador, directo en la vista que quieras. También puedes usarla **aquí mismo**, dentro del teléfono de la sección Prototipo. Usa **Cambiar perfil** para pasar de una a otra y **Reiniciar demo** (en el inicio de sesión) para dejar los datos como nuevos. Todo es ficticio 📱.',
     actions: {
       sitio: [
         { label: 'Probar como paciente', href: './app/#/demo/paciente' },
         { label: 'Probar como médico', href: './app/#/demo/medico' },
+        { label: 'Probarla aquí mismo', href: '#pruebala' },
       ],
     },
     only: 'sitio',

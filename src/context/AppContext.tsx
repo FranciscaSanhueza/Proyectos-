@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import type { Alert, CareLog, CheckIn, Message, Patient, PatientQuestion, Prefs, RecoveryPlan, Reminder, Role, SurveyResponse, SymptomLog } from '../types'
+import type { Alert, CareLog, CheckIn, DiaryEntry, MedLog, Message, Patient, PatientQuestion, Prefs, RecoveryPlan, Reminder, Role, SurveyResponse, SymptomLog } from '../types'
 import {
   initialAlerts,
   initialCareLogs,
+  initialDiary,
   initialCheckIns,
   initialMessages,
   initialPatients,
@@ -12,7 +13,7 @@ import {
   initialReminders,
   initialResponses,
 } from '../data/mock'
-import { toDayKey } from '../utils'
+import { diaryLevel, diarySummary, toDayKey } from '../utils'
 
 // Estado global de la app. Por ahora vive en el navegador (localStorage);
 // cuando exista un backend, estas funciones pasan a llamar a la API.
@@ -35,6 +36,8 @@ interface State {
   careLogs: CareLog[]
   questions: PatientQuestion[]
   symptomLogs: SymptomLog[]
+  diary: DiaryEntry[]
+  medLogs: MedLog[]
   prefs: Prefs
 }
 
@@ -44,6 +47,10 @@ interface AppContextValue extends State {
   sendMessage: (m: Omit<Message, 'id' | 'at' | 'read'>) => void
   /** Registro rápido «Hoy noté…»; en amarillo o rojo avisa al equipo. */
   logSymptom: (l: Omit<SymptomLog, 'id' | 'at'>) => void
+  /** «Mi día»: guarda (o completa) el registro de una fecha; si empeora a amarillo o rojo avisa al equipo. */
+  saveDiary: (patientId: string, date: string, changes: Partial<Omit<DiaryEntry, 'patientId' | 'date' | 'updatedAt'>>) => void
+  /** Suma (o resta) una dosis tomada de un medicamento en un día. */
+  takeDose: (patientId: string, medId: string, date: string, delta: 1 | -1, max: number) => void
   toggleReminderDone: (id: string) => void
   /** Pospone un recordatorio de hoy (por defecto 1 hora desde ahora). */
   snoozeReminder: (id: string, minutes?: number) => void
@@ -84,7 +91,9 @@ const initialState: State = {
   careLogs: initialCareLogs,
   questions: initialQuestions,
   symptomLogs: [],
-  prefs: { textSize: 'normal', theme: 'lavanda', calmMotion: false, simpleMode: false, notifications: false, notified: [] },
+  diary: initialDiary,
+  medLogs: [],
+  prefs: { textSize: 'normal', theme: 'lavanda', calmMotion: false, simpleMode: false, sounds: true, audioGuide: false, notifications: false, notified: [] },
 }
 
 function loadState(): State {
@@ -145,6 +154,29 @@ export function AppProvider({ children }: { children: ReactNode }) {
             ? s.alerts
             : [{ id: uid(), patientId: l.patientId, level: l.level, at, reviewed: false, source: 'registro', detail: l.label }, ...s.alerts]
         return { ...s, alerts, symptomLogs: [{ ...l, id: uid(), at }, ...s.symptomLogs].slice(0, 200) }
+      }),
+    saveDiary: (patientId, date, changes) =>
+      setState((s) => {
+        const at = new Date().toISOString()
+        const prev = s.diary.find((e) => e.patientId === patientId && e.date === date)
+        const entry: DiaryEntry = { ...(prev ?? { patientId, date }), ...changes, updatedAt: at }
+        const before = prev ? diaryLevel(prev) : 'verde'
+        const after = diaryLevel(entry)
+        const order = { verde: 0, amarillo: 1, rojo: 2 } as const
+        // Solo se avisa cuando el día empeora, para no repetir alertas.
+        const alerts: Alert[] =
+          after !== 'verde' && order[after] > order[before]
+            ? [{ id: uid(), patientId, level: after, at, reviewed: false, source: 'registro', detail: diarySummary(entry) }, ...s.alerts]
+            : s.alerts
+        const others = s.diary.filter((e) => !(e.patientId === patientId && e.date === date))
+        return { ...s, alerts, diary: [...others, entry].slice(-400) }
+      }),
+    takeDose: (patientId, medId, date, delta, max) =>
+      setState((s) => {
+        const prev = s.medLogs.find((l) => l.patientId === patientId && l.medId === medId && l.date === date)
+        const taken = Math.max(0, Math.min(max, (prev?.taken ?? 0) + delta))
+        const others = s.medLogs.filter((l) => !(l.patientId === patientId && l.medId === medId && l.date === date))
+        return { ...s, medLogs: [...others, { patientId, medId, date, taken }].slice(-600) }
       }),
     toggleReminderDone: (id) =>
       setState((s) => ({ ...s, reminders: s.reminders.map((r) => (r.id === id ? { ...r, done: !r.done } : r)) })),

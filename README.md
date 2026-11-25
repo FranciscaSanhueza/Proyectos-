@@ -90,6 +90,20 @@ Inspiradas en apps de uso diario y adaptadas al seguimiento post-procedimiento:
 
 > Los audios y registros se guardan en el dispositivo (demo). Para que lleguen a otro celular se necesita el servidor pendiente.
 
+### Mejoras (v8): registrar y ver la recuperación
+
+- **«Mi día»** en el Inicio (reemplaza «Hoy noté…»): un toque por dato para el ánimo, el **dolor de 0 a 10 con caritas**, el sangrado y la temperatura. Se guarda solo, muestra si el día es verde, amarillo o rojo y avisa al equipo solo si el día empeora.
+- **Mi evolución**: gráfico de dolor y de sangrado de los últimos 14 días (toca un día para ver el detalle, o verlo como tabla), **calendario del mes en colores** y dolor promedio comparado con la semana pasada. El médico ve el mismo gráfico en el perfil de la paciente.
+- **Mis medicamentos** (en Mi plan): el médico indica nombre, dosis, veces al día y días; la paciente marca cada dosis con un toque y ve cuántas le faltan hoy.
+- **Camino ilustrado**: una figura avanza por los hitos de la recuperación según los días desde el procedimiento.
+- **«¿Qué pasa en mi cuerpo esta semana?»**: dibujo simple de la cicatrización por semana, con audio. Es referencial y debe revisarlo el equipo de salud.
+- **Medallas animadas** que se desbloquean con brillo, lluvia de corazones y sonido.
+- **Sonidos suaves** (sin archivos, con Web Audio): «ding» al registrar, melodía al completar, tono distinto en rojo. Se apagan en Ajustes.
+- **«Escúchame»**: botón que lee en voz alta la pantalla actual, y **Guía en audio** (Ajustes) que lee cada pantalla al abrirla.
+- **Web**: la app funciona **dentro de un teléfono en la página** (sección Prototipo, vista paciente o médico) y el semáforo de ejemplo suena según el color, con botón para silenciar.
+
+> Los registros siguen guardándose solo en el dispositivo (demo) hasta que exista el servidor pendiente.
+
 ### Vista profesional de salud
 
 - **Inicio**: alertas, conteo por semáforo y tareas del día (planes por validar, dudas, encuestas pendientes).

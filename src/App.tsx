@@ -7,6 +7,7 @@ import type { Role } from './types'
 import { Layout } from './components/Layout'
 import { CatBot } from './components/CatBot'
 import { HelpFab } from './components/HelpFab'
+import { ListenFab } from './components/ListenFab'
 import { SimpleHome } from './pages/paciente/SimpleHome'
 import { DesktopModeHint } from './components/DesktopModeHint'
 import { Login } from './pages/Login'
@@ -25,6 +26,7 @@ import { Calma } from './pages/paciente/Calma'
 import { Aprende } from './pages/paciente/Aprende'
 import { Preguntas } from './pages/paciente/Preguntas'
 import { Camino } from './pages/paciente/Camino'
+import { Evolucion } from './pages/paciente/Evolucion'
 import { useReminderNotifications } from './pages/paciente/useReminderNotifications'
 import { Panel } from './pages/medico/Panel'
 import { PacienteDetalle } from './pages/medico/PacienteDetalle'
@@ -66,6 +68,7 @@ function PacienteLayout() {
     <>
       <CatBot />
       <HelpFab />
+      <ListenFab />
       <Layout
         nav={[
           { to: '/paciente', label: 'Inicio', icon: Home, end: true },
@@ -104,7 +107,8 @@ export function App() {
     root.dataset.text = prefs.textSize
     root.dataset.theme = prefs.theme
     root.dataset.motion = prefs.calmMotion ? 'calm' : 'full'
-  }, [prefs.textSize, prefs.theme, prefs.calmMotion])
+    root.dataset.sounds = prefs.sounds === false ? 'off' : 'on'
+  }, [prefs.textSize, prefs.theme, prefs.calmMotion, prefs.sounds])
 
   return (
     <HashRouter>
@@ -131,6 +135,7 @@ export function App() {
           <Route path="aprende" element={<Aprende />} />
           <Route path="preguntas" element={<Preguntas />} />
           <Route path="camino" element={<Camino />} />
+          <Route path="evolucion" element={<Evolucion />} />
         </Route>
 
         <Route path="/medico" element={<RequireRole role="medico"><MedicoLayout /></RequireRole>}>

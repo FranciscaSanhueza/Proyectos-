@@ -1,4 +1,5 @@
 import type {
+  DiaryEntry,
   Message,
   Patient,
   RecoveryPlan,
@@ -65,6 +66,10 @@ export const initialPlans: RecoveryPlan[] = [
     nextControl: daysFromNow(24, 9, 30),
     cares: defaultCares,
     warnings: defaultWarnings,
+    meds: [
+      { id: 'm-ibu', name: 'Ibuprofeno', dose: '400 mg', perDay: 3, days: 5, start: dayKey(-1) },
+      { id: 'm-para', name: 'Paracetamol', dose: '500 mg', perDay: 3, days: 0, start: dayKey(-20), asNeeded: true },
+    ],
     validated: true,
     validatedBy: 'Dra. Camila Rojas',
     updatedAt: daysFromNow(-20),
@@ -77,6 +82,7 @@ export const initialPlans: RecoveryPlan[] = [
     nextControl: daysFromNow(12, 11),
     cares: defaultCares,
     warnings: defaultWarnings,
+    meds: [{ id: 'm-para', name: 'Paracetamol', dose: '500 mg', perDay: 3, days: 0, start: dayKey(-15), asNeeded: true }],
     validated: true,
     validatedBy: 'Dra. Camila Rojas',
     updatedAt: daysFromNow(-15),
@@ -426,4 +432,32 @@ export const dailyTips: { emoji: string; title: string; text: string }[] = [
   { emoji: '🟤', title: 'Flujo café', text: 'Un flujo café o con restos es esperable las primeras semanas. Si tiene mal olor, escribe a tu equipo.' },
   { emoji: '🌡️', title: 'Fiebre = consulta', text: 'Si tienes fiebre sobre 38 °C, tu semáforo pasa a rojo: acude a urgencias o llama al 131.' },
   { emoji: '💜', title: 'No estás sola', text: 'Tratarse a tiempo es cuidarse. Tu equipo de salud te acompaña en cada paso.' },
+]
+
+/** Registros «Mi día» de ejemplo de los días anteriores (para ver la evolución). */
+export const initialDiary: DiaryEntry[] = [
+  // María: el dolor baja día a día; un día con sangrado como regla.
+  ...[4, 4, 3, 3, 3, 2, 4, 2, 2, 2, 1, 1, 1].map((pain, i) => {
+    const d = -13 + i
+    return {
+      patientId: 'p1',
+      date: dayKey(d),
+      pain,
+      bleeding: (d === -7 ? 2 : pain >= 3 ? 1 : i % 3 === 0 ? 0 : 1) as DiaryEntry['bleeding'],
+      temp: 0 as const,
+      updatedAt: daysFromNow(d, 21),
+    }
+  }),
+  // Javiera: el sangrado aumenta en los últimos días.
+  ...[3, 3, 2, 3, 4, 4].map((pain, i) => {
+    const d = -6 + i
+    return {
+      patientId: 'p2',
+      date: dayKey(d),
+      pain,
+      bleeding: (i >= 4 ? 2 : 1) as DiaryEntry['bleeding'],
+      temp: 0 as const,
+      updatedAt: daysFromNow(d, 20),
+    }
+  }),
 ]

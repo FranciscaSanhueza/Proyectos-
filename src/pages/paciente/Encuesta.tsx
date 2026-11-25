@@ -12,6 +12,7 @@ import { LEVEL_INFO, formatShortDate, haptic, levelFromAnswers, surveyStatus } f
 import { usePatient } from './usePatient'
 import { useWeekStory } from './useStories'
 import { StoryViewer } from '../../components/Stories'
+import { levelSound, playSound } from '../../sound'
 
 type Step = 'intro' | 'questions' | 'done'
 
@@ -71,6 +72,7 @@ export function Encuesta() {
     const level = levelFromAnswers(surveyQuestions, answers)
     submitSurvey({ patientId, answers, comment: comment.trim(), level })
     setResult(level)
+    playSound(level === 'verde' ? 'success' : levelSound(level))
     setShowUrgent(level === 'rojo')
     setStep('done')
   }

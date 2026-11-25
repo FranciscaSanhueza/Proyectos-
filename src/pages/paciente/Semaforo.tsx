@@ -14,10 +14,10 @@ import { usePatient } from './usePatient'
 const LEVELS: Level[] = ['verde', 'amarillo', 'rojo']
 
 export function Semaforo() {
-  const { patientId, plan, responses, symptomLogs } = usePatient()
+  const { patientId, plan, responses, symptomLogs, diary } = usePatient()
   const navigate = useNavigate()
   const [q, setQ] = useState('')
-  const level = currentLevel(responses, patientId, symptomLogs)
+  const level = currentLevel(responses, patientId, symptomLogs, diary)
   const last = latestResponse(responses, patientId)
 
   const matches = symptomGuide.filter((s) => s.symptom.toLowerCase().includes(q.trim().toLowerCase()))
@@ -28,7 +28,7 @@ export function Semaforo() {
         title="Semáforo"
         subtitle={
           level !== (last?.level ?? 'verde')
-            ? 'Según lo que registraste hoy en «Hoy noté…»'
+            ? 'Según lo que registraste hoy en «Mi día»'
             : last
               ? `Según tu encuesta del ${formatShortDate(last.at)}`
               : 'Aún no respondes tu primera encuesta'

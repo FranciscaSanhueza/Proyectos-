@@ -1,16 +1,15 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { AlarmClock, AlertTriangle, Bell, Check, BookOpen, CalendarClock, ChevronRight, ClipboardList, Flame, Flower2, HeartPulse, MessageCircle, MessageCircleQuestion, Route, Settings, ShieldCheck, Sparkles, type LucideIcon } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { AlarmClock, AlertTriangle, Bell, LineChart, Pill, Check, BookOpen, CalendarClock, ChevronRight, ClipboardList, Flame, Flower2, HeartPulse, MessageCircle, MessageCircleQuestion, Route, Settings, ShieldCheck, Sparkles, type LucideIcon } from 'lucide-react'
 import { Card, SectionTitle, SwitchProfileButton } from '../../components/ui'
 import { LevelFace } from '../../components/LevelFace'
 import { KIND_LABEL } from '../../components/CalendarMonth'
 import { SupportCard } from '../../components/Support'
-import { MOODS, MoodPicker } from '../../components/MoodPicker'
 import { ProgressRing } from '../../components/ProgressRing'
 import { Celebrate } from '../../components/Celebrate'
 import { StoriesBar, StoryViewer } from '../../components/Stories'
 import { SymptomSearch } from '../../components/SymptomSearch'
-import { QuickLog } from '../../components/QuickLog'
+import { DayCard } from '../../components/DayCard'
 import { DayRings } from '../../components/DayRings'
 import { useDailyStories } from './useStories'
 import { ReadAloud } from '../../components/ReadAloud'
@@ -27,10 +26,12 @@ const HERO_MESSAGE = {
 } as const
 
 const EXPLORE = [
+  { to: '/paciente/evolucion', icon: LineChart, title: 'Mi evolución', text: 'Gráfico y calendario', tone: 'sky' },
+  { to: '/paciente/camino', icon: Route, title: 'Mi camino', text: 'Avance, cuerpo y medallas', tone: 'peach' },
+  { to: '/paciente/plan#medicamentos', icon: Pill, title: 'Medicamentos', text: 'Marca cada dosis', tone: 'mint' },
   { to: '/paciente/calma', icon: Flower2, title: 'Rincón de calma', text: 'Respira y relájate', tone: 'pink' },
   { to: '/paciente/aprende', icon: BookOpen, title: 'Aprende', text: 'Juego mito o verdad', tone: 'lilac' },
-  { to: '/paciente/preguntas', icon: MessageCircleQuestion, title: 'Mis preguntas', text: 'Para tu control', tone: 'mint' },
-  { to: '/paciente/camino', icon: Route, title: 'Mi camino', text: 'Hitos y logros', tone: 'peach' },
+  { to: '/paciente/preguntas', icon: MessageCircleQuestion, title: 'Mis preguntas', text: 'Para tu control', tone: 'lemon' },
 ] as const
 
 interface Step {
@@ -46,18 +47,25 @@ interface Step {
 const DAY_MS = 24 * 60 * 60 * 1000
 
 export function Inicio() {
-  const { patient, patientId, plan, responses, reminders, checkIns, careLogs, messages, questions, symptomLogs, prefs, setPrefs, markNotified, checkIn, toggleReminderDone, snoozeReminder } = usePatient()
+  const { patient, patientId, plan, responses, reminders, checkIns, careLogs, messages, questions, symptomLogs, diary, prefs, setPrefs, markNotified, toggleReminderDone, snoozeReminder } = usePatient()
   const stories = useDailyStories()
   const [storyAt, setStoryAt] = useState<number | null>(null)
   const navigate = useNavigate()
+  const { hash } = useLocation()
   const [party, setParty] = useState(0)
+  // «Registrar mi día» desde otras pantallas: baja directo a la tarjeta.
+  useEffect(() => {
+    if (hash === '#mi-dia') setTimeout(() => document.getElementById('mi-dia')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150)
+  }, [hash])
 
-  const level = currentLevel(responses, patientId, symptomLogs)
+  const level = currentLevel(responses, patientId, symptomLogs, diary)
   const survey = surveyStatus(responses, patientId)
   const today = toDayKey(new Date())
   const seenKey = (id: string) => `story-${id}-${today}`
   const seen = stories.filter((st) => prefs.notified.includes(seenKey(st.id))).map((st) => st.id)
   const todayMood = checkIns.find((c) => c.patientId === patientId && c.date === today)?.mood
+  const todayEntry = diary.find((e) => e.patientId === patientId && e.date === today)
+  const dayDone = [todayMood, todayEntry?.pain, todayEntry?.bleeding, todayEntry?.temp].filter((v) => v !== undefined).length
   const careDone = careLogs.find((l) => l.patientId === patientId && l.date === today)?.done.filter((c) => plan.cares.includes(c)).length ?? 0
   const days = daysSince(plan.procedureDate)
   const upcoming = reminders
@@ -82,6 +90,8 @@ export function Inicio() {
           ? { icon: ClipboardList, tone: 'primary', eyebrow: 'Esta semana', title: 'Responde tu encuesta', text: 'Son 5 minutos. Así actualizamos tu semáforo y tu médica sigue tu evolución.', to: '/paciente/encuesta', cta: 'Responder ahora' }
           : controlIn >= 0 && controlIn <= 7
             ? { icon: CalendarClock, tone: 'calm', eyebrow: 'Se acerca tu control', title: controlIn === 0 ? 'Tu control es hoy' : `Tu control es en ${controlIn} ${controlIn === 1 ? 'día' : 'días'}`, text: pendingQuestions ? `Tienes ${pendingQuestions} ${pendingQuestions === 1 ? 'pregunta anotada' : 'preguntas anotadas'}. Llévalas junto a tu resumen.` : 'Anota tus dudas para no olvidarlas en la consulta.', to: '/paciente/preguntas', cta: 'Preparar mi control' }
+            : dayDone < 4
+              ? { icon: HeartPulse, tone: 'calm', eyebrow: 'Mi día', title: dayDone === 0 ? 'Registra cómo estás hoy' : 'Termina tu registro de hoy', text: 'Ánimo, dolor, sangrado y temperatura: un toque cada uno, menos de 10 segundos.', to: '#mi-dia', cta: 'Registrar' }
             : careDone < plan.cares.length
               ? { icon: HeartPulse, tone: 'calm', eyebrow: 'Cuidados de hoy', title: `Te ${plan.cares.length - careDone === 1 ? 'falta 1 cuidado' : `faltan ${plan.cares.length - careDone} cuidados`}`, text: 'Márcalos a medida que los cumples. ¡Cada uno suma a tu recuperación!', to: '/paciente/plan', cta: 'Ver mis cuidados' }
               : { icon: Sparkles, tone: 'done', eyebrow: '¡Todo al día! 🌸', title: affirmations[new Date().getDate() % affirmations.length], text: 'Completaste lo de hoy. Descansa y date un respiro.', to: '/paciente/calma', cta: 'Ir al Rincón de calma' }
@@ -143,7 +153,8 @@ export function Inicio() {
         className={`next-step next-step--${step.tone}`}
         onClick={() => {
           haptic()
-          if (step.to) navigate(step.to)
+          if (step.to?.startsWith('#')) document.getElementById(step.to.slice(1))?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          else if (step.to) navigate(step.to)
         }}
       >
         <span className="next-step__icon"><StepIcon size={24} /></span>
@@ -161,22 +172,7 @@ export function Inicio() {
 
       <SymptomSearch />
 
-      <Card className="checkin home-half">
-        <p className="form__label">¿Cómo te sientes hoy?</p>
-        <MoodPicker
-          value={todayMood}
-          onPick={(m) => {
-            checkIn(patientId, today, m)
-            if (m >= 4) setParty((n) => n + 1)
-          }}
-        />
-        {todayMood && <p className="checkin__reply pop-in">{MOODS[todayMood - 1].reply}</p>}
-        {todayMood && todayMood <= 2 && (
-          <button className="btn btn--ghost btn--block" onClick={() => navigate('/paciente/calma')}>Ir al Rincón de calma</button>
-        )}
-      </Card>
-
-      <QuickLog patientId={patientId} />
+      <DayCard patientId={patientId} onMood={(m) => m >= 4 && setParty((n) => n + 1)} />
 
       <Card className={`home-card home-half level-bg--${level}`} onClick={() => navigate('/paciente/semaforo')}>
         <div>
@@ -192,7 +188,7 @@ export function Inicio() {
       <DayRings
         onComplete={() => setParty((n) => n + 1)}
         rings={[
-          { key: 'animo', label: 'Ánimo de hoy', detail: todayMood ? 'Registrado hoy' : 'Cuéntanos cómo estás', value: todayMood ? 1 : 0, color: '#ec5f9b', onClick: () => document.querySelector('.checkin')?.scrollIntoView({ behavior: 'smooth', block: 'center' }) },
+          { key: 'dia', label: 'Mi día', detail: dayDone === 4 ? 'Registrado hoy' : `${dayDone} de 4 datos · toca para registrar`, value: dayDone / 4, color: '#ec5f9b', onClick: () => document.getElementById('mi-dia')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) },
           { key: 'cuidados', label: 'Cuidados de hoy', detail: `${careDone} de ${plan.cares.length} marcados · toca para verlos`, value: plan.cares.length ? careDone / plan.cares.length : 1, color: '#9a5fd0', onClick: () => navigate('/paciente/plan') },
           { key: 'encuesta', label: 'Encuesta de la semana', detail: survey.available ? 'Disponible · 5 min' : `Lista ✓ · la próxima es el ${formatShortDate(survey.next!.toISOString())}`, value: survey.available ? 0 : 1, color: '#23a6a0', onClick: () => navigate('/paciente/encuesta') },
         ]}

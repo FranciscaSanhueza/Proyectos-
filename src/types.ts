@@ -37,6 +37,8 @@ export interface RecoveryPlan {
   nextControl: string // ISO
   cares: string[] // Cuidados de hoy
   warnings: string[] // Cuándo consultar
+  /** Medicamentos indicados, con sus dosis diarias. */
+  meds?: Medication[]
   validated: boolean
   validatedBy: string
   updatedAt: string // ISO
@@ -110,7 +112,7 @@ export interface Alert {
   reviewed: boolean
   /** Cuándo el equipo la marcó como revisada (para medir tiempos de respuesta). */
   reviewedAt?: string
-  /** Origen: la encuesta semanal o un registro rápido («Hoy noté…»). */
+  /** Origen: la encuesta semanal o un registro rápido («Mi día»). */
   source?: 'encuesta' | 'registro'
   /** Detalle del registro rápido (p. ej. «Sangrado: abundante»). */
   detail?: string
@@ -161,7 +163,49 @@ export interface Prefs {
   calmMotion: boolean
   /** Modo simple: inicio con tres botones grandes. */
   simpleMode: boolean
+  /** Sonidos suaves al registrar, completar o en alertas. */
+  sounds: boolean
+  /** Guía en audio: leer cada pantalla al abrirla. */
+  audioGuide: boolean
   notifications: boolean
   /** Claves de avisos ya mostrados, para no repetirlos. */
   notified: string[]
+}
+
+/** Medicamento del plan: la paciente marca cada dosis del día. */
+export interface Medication {
+  id: string
+  name: string
+  /** Texto libre: «500 mg», «1 comprimido»… */
+  dose: string
+  /** Dosis por día (1 a 6). */
+  perDay: number
+  /** Días de tratamiento (0 = mientras lo necesite). */
+  days: number
+  /** Desde qué día (YYYY-MM-DD). */
+  start: string
+  /** Solo si hay dolor / síntomas. */
+  asNeeded?: boolean
+}
+
+/** Dosis tomadas de un medicamento en un día. */
+export interface MedLog {
+  patientId: string
+  medId: string
+  date: string // YYYY-MM-DD
+  taken: number
+}
+
+/** Registro diario rápido («Mi día»): un toque por cada dato. */
+export interface DiaryEntry {
+  patientId: string
+  date: string // YYYY-MM-DD
+  /** Dolor 0–10. */
+  pain?: number
+  /** Sangrado: 0 nada · 1 manchado · 2 como regla · 3 abundante. */
+  bleeding?: 0 | 1 | 2 | 3
+  /** Temperatura: 0 normal · 1 entre 37,5 y 38 °C · 2 sobre 38 °C. */
+  temp?: 0 | 1 | 2
+  note?: string
+  updatedAt: string // ISO
 }

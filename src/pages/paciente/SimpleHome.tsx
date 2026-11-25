@@ -9,10 +9,10 @@ import { usePatient } from './usePatient'
 
 /** Modo simple: tres botones grandes para pacientes con poca experiencia digital (como el «modo fácil» de Android). */
 export function SimpleHome() {
-  const { patient, patientId, responses, messages, setPrefs, symptomLogs } = usePatient()
+  const { patient, patientId, responses, messages, setPrefs, symptomLogs, diary } = usePatient()
   const navigate = useNavigate()
   const [help, setHelp] = useState(false)
-  const level = currentLevel(responses, patientId, symptomLogs)
+  const level = currentLevel(responses, patientId, symptomLogs, diary)
   const survey = surveyStatus(responses, patientId)
   const unread = messages.filter((m) => m.patientId === patientId && m.from === 'medico' && !m.read).length
   const go = (to: string) => {

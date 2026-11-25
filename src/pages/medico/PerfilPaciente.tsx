@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Activity, Check, ClipboardCheck, HeartPulse, MessageCircleQuestion, NotebookPen, Plus, Save, X } from 'lucide-react'
+import { Activity, Check, LineChart, ClipboardCheck, HeartPulse, MessageCircleQuestion, NotebookPen, Plus, Save, X } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { Card, Empty, SectionTitle } from '../../components/ui'
 import { EvolutionChart } from '../../components/EvolutionChart'
+import { DiaryTrend } from '../../components/DiaryCharts'
 import { MOODS } from '../../components/MoodPicker'
 import type { Patient } from '../../types'
 import { LEVEL_INFO, formatDateTime, formatShortDate, latestResponse, toDayKey } from '../../utils'
@@ -18,7 +19,7 @@ const weekdayFmt = new Intl.DateTimeFormat('es-CL', { weekday: 'narrow' })
 
 /** Vista general de la paciente para el médico. */
 export function Resumen({ patientId, onGo }: { patientId: string; onGo: (tab: 'encuestas' | 'perfil' | 'plan') => void }) {
-  const { patients, plans, responses, checkIns, careLogs, questions, symptomLogs } = useApp()
+  const { patients, plans, responses, checkIns, careLogs, questions, symptomLogs, diary } = useApp()
   const patient = patients.find((p) => p.id === patientId)!
   const plan = plans.find((p) => p.patientId === patientId)!
   const mine = responses.filter((r) => r.patientId === patientId)
@@ -76,6 +77,17 @@ export function Resumen({ patientId, onGo }: { patientId: string; onGo: (tab: 'e
       </SectionTitle>
       <Card>
         <EvolutionChart responses={mine} plan={plan} />
+      </Card>
+
+      <SectionTitle>
+        <LineChart size={18} className="accent" /> Evolución diaria («Mi día»)
+      </SectionTitle>
+      <Card>
+        {diary.some((e) => e.patientId === patientId) ? (
+          <DiaryTrend entries={diary.filter((e) => e.patientId === patientId)} checkIns={checkIns.filter((c) => c.patientId === patientId)} />
+        ) : (
+          <p className="muted">La paciente aún no registra su día.</p>
+        )}
       </Card>
 
       {symptomLogs.some((l) => l.patientId === patientId) && (

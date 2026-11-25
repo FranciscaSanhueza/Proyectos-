@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Check, ChevronRight } from 'lucide-react'
+import { playSound } from '../sound'
 
 interface Ring {
   key: string
@@ -17,7 +18,11 @@ export function DayRings({ rings, onComplete }: { rings: Ring[]; onComplete?: ()
   const allDone = rings.every((r) => r.value >= 1)
   const wasDone = useRef(allDone)
   useEffect(() => {
-    if (allDone && !wasDone.current) onComplete?.()
+    if (allDone && !wasDone.current) {
+      onComplete?.()
+      // Melodía al cerrar los anillos (después del sonido del último registro).
+      setTimeout(() => playSound('medal'), 650)
+    }
     wasDone.current = allDone
   }, [allDone, onComplete])
 

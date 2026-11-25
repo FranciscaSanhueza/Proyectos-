@@ -16,14 +16,14 @@ const COLUMN: Record<string, string> = { sangrado: 'Sangrado', dolor: 'Dolor', f
 export function Resumen() {
   const { id = '' } = useParams()
   const navigate = useNavigate()
-  const { session, patients, plans, responses, checkIns, careLogs, questions, symptomLogs } = useApp()
+  const { session, patients, plans, responses, checkIns, careLogs, questions, symptomLogs, diary } = useApp()
 
   const patient = patients.find((p) => p.id === id)
   const plan = plans.find((p) => p.patientId === id)
   const isDoctor = session?.role === 'medico'
   if (!patient || !plan || !(isDoctor || session?.patientId === id)) return <Navigate to="/" replace />
 
-  const level = currentLevel(responses, id, symptomLogs)
+  const level = currentLevel(responses, id, symptomLogs, diary)
   const surveys = responses.filter((r) => r.patientId === id).sort((a, b) => b.at.localeCompare(a.at)).slice(0, 6)
   const days = Array.from({ length: 7 }, (_, i) => toDayKey(new Date(Date.now() - (6 - i) * DAY)))
   const moodOf = (d: string) => checkIns.find((c) => c.patientId === id && c.date === d)?.mood

@@ -226,6 +226,7 @@
                 <small>Criterios referenciales, pendientes de validación clínica.</small>
               </p>
               <div class="demo__chips" role="group" aria-label="Síntomas de ejemplo"></div>
+              <button type="button" class="demo__sound" id="demo-sound" aria-pressed="true">🔊 Sonido activado</button>
             </div>
             <div class="demo__result" aria-live="polite">
               <div class="demo__light">
@@ -319,6 +320,32 @@
               </div>
             </div>
             <div class="gallery__thumbs" id="thumbs" aria-label="Pantallas"></div>
+          </div>
+
+          <!-- La app funcionando dentro de la página -->
+          <div class="live reveal" id="pruebala">
+            <div class="live__text">
+              <span class="step-tag">Pruébala aquí mismo</span>
+              <h3 class="h3">La app real, dentro de este teléfono</h3>
+              <p>No es una imagen: es la aplicación funcionando. Registra tu día con un toque, mira tu evolución, recorre tu camino o revisa la vista del equipo de salud.</p>
+              <div class="live__tabs" role="tablist" aria-label="Vista de la app">
+                <button role="tab" aria-selected="true" class="gtab is-active" data-live="paciente">👩 Paciente</button>
+                <button role="tab" aria-selected="false" class="gtab" data-live="medico">🩺 Equipo de salud</button>
+              </div>
+              <div class="live__actions">
+                <button type="button" class="btn btn--ghost" id="live-reset">↺ Reiniciar demo</button>
+                <a class="btn btn--primary" id="live-open" href="./app/#/demo/paciente" target="_blank" rel="noopener">Abrir en pantalla completa ↗</a>
+              </div>
+              <p class="tiny">Datos ficticios. Lo que registres se guarda solo en este navegador.</p>
+            </div>
+            <div class="phone phone--live">
+              <button type="button" class="live__start" id="live-start" style="background-image: url(./img/app-inicio.webp)">
+                <span class="live__play" aria-hidden="true">▶</span>
+                <b>Encender el teléfono</b>
+                <small>Carga la app aquí</small>
+              </button>
+              <iframe id="live-frame" title="Aplicación Cérvix-B funcionando" hidden></iframe>
+            </div>
           </div>
 
           <div class="artifacts reveal">

@@ -71,8 +71,8 @@ export function SymptomSearch() {
           ))}
           {results.length === 0 && !urgent && <p className="muted">No encontré ese síntoma en la guía.</p>}
           <div className="worry__more">
-            <button className="btn btn--ghost" onClick={() => window.dispatchEvent(new CustomEvent('kitty:ask', { detail: q }))}>
-              🐾 Preguntarle a Kitty
+            <button className="btn btn--ghost" onClick={() => window.dispatchEvent(new CustomEvent('asistente:ask', { detail: q }))}>
+              💬 Preguntarle a Lía
             </button>
             <button className="btn btn--ghost" onClick={() => navigate('/paciente/chat/d1')}>Escribir a mi equipo</button>
           </div>

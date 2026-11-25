@@ -1,7 +1,7 @@
-// Widget de chat de Kitty, sin frameworks: se usa igual en el sitio web
+// Widget de chat de Lía (asistente de Cérvix-B), sin frameworks: se usa igual en el sitio web
 // (JavaScript simple) y en la app (montado desde React).
 import './widget.css'
-import { catSvg } from './cat'
+import { chatIcon } from './icon'
 import { reply, type BotReply } from './engine'
 import { SUGGESTIONS, type Audience, type BotAction } from './knowledge'
 
@@ -27,15 +27,15 @@ export function mountCatBot(opts: CatBotOptions): () => void {
   const root = document.createElement('div')
   root.className = `cb-root ${opts.className ?? ''}`
   root.innerHTML = `
-    <button class="cb-launcher" type="button" aria-label="Abrir chat con Kitty" aria-expanded="false">
-      <span class="cb-launcher__cat">${catSvg(52)}</span>
-      <span class="cb-hint">¿Dudas? ¡Miau! 🐾</span>
+    <button class="cb-launcher" type="button" aria-label="Abrir chat con Lía, la asistente" aria-expanded="false">
+      ${chatIcon(60, '')}
+      <span class="cb-hint">¿Dudas? Escríbeme</span>
     </button>
-    <section class="cb-panel" role="dialog" aria-label="Chat con Kitty" hidden>
+    <section class="cb-panel" role="dialog" aria-label="Chat con Lía, la asistente" hidden>
       <header class="cb-head">
-        <span class="cb-head__cat">${catSvg(46)}</span>
+        <span class="cb-head__icon">${chatIcon(40, '')}</span>
         <div class="cb-head__text">
-          <strong>Kitty</strong>
+          <strong>Lía · asistente</strong>
           <small>Respuestas referenciales · no reemplaza a tu equipo</small>
         </div>
         <button class="cb-close" type="button" aria-label="Cerrar chat"><span aria-hidden="true">✕</span> Cerrar</button>
@@ -56,7 +56,6 @@ export function mountCatBot(opts: CatBotOptions): () => void {
   const chips = $<HTMLDivElement>('.cb-chips')
   const form = $<HTMLFormElement>('.cb-form')
   const input = $<HTMLInputElement>('.cb-input')
-  const headCat = $<HTMLElement>('.cb-head__cat')
 
   let started = false
   let busy = false
@@ -134,7 +133,7 @@ export function mountCatBot(opts: CatBotOptions): () => void {
     })
   }
 
-  /** Simula que Kitty escribe (boca abierta + puntos) antes de responder. */
+  /** Muestra «escribiendo…» (tres puntos) antes de responder. */
   function ask(q: string) {
     const text = q.trim()
     if (!text || busy) return
@@ -146,14 +145,12 @@ export function mountCatBot(opts: CatBotOptions): () => void {
     typing.className = 'cb-msg cb-msg--bot cb-typing'
     typing.innerHTML = '<span></span><span></span><span></span>'
     log.append(typing)
-    headCat.classList.add('is-talking')
     scrollDown()
     const r = reply(text, opts.audience)
     const delay = reduceMotion() ? 50 : Math.min(1400, 450 + r.text.length * 4)
     timers.push(
       window.setTimeout(() => {
         typing.remove()
-        headCat.classList.remove('is-talking')
         addBot(r)
         busy = false
         refreshChips()
@@ -172,7 +169,7 @@ export function mountCatBot(opts: CatBotOptions): () => void {
     const pending = opts.pendingQuestions?.() ?? []
     addBot({
       text:
-        '¡Miau! Soy **Kitty** 🐾, el gatito de Cérvix-B.\n\n' +
+        '¡Hola! Soy **Lía**, la asistente de Cérvix-B.\n\n' +
         (opts.audience === 'app'
           ? 'Puedo responder dudas sobre tu recuperación, el VPH y cómo usar la app. Si notas algo grave, te diré que vayas a urgencias.'
           : 'Puedo contarte de qué se trata el proyecto, cómo funciona la app y resolver dudas frecuentes.'),
@@ -216,14 +213,14 @@ export function mountCatBot(opts: CatBotOptions): () => void {
   }
   document.addEventListener('keydown', onKey)
 
-  // Otras partes de la página pueden pasarle una pregunta a Kitty (p. ej. el buscador del Inicio).
+  // Otras partes de la página pueden pasarle una pregunta a Lía (p. ej. el buscador del Inicio).
   const onAsk = (e: Event) => {
     const q = (e as CustomEvent<string>).detail
     if (!q) return
     open()
     timers.push(window.setTimeout(() => ask(q), 120))
   }
-  window.addEventListener('kitty:ask', onAsk)
+  window.addEventListener('asistente:ask', onAsk)
   // El globo «¿Dudas?» aparece una sola vez por visita para no tapar el contenido.
   const hintKey = `cb-hint-${opts.audience}`
   let hinted = false
@@ -241,7 +238,7 @@ export function mountCatBot(opts: CatBotOptions): () => void {
   return () => {
     timers.forEach(clearTimeout)
     document.removeEventListener('keydown', onKey)
-    window.removeEventListener('kitty:ask', onAsk)
+    window.removeEventListener('asistente:ask', onAsk)
     root.remove()
   }
 }

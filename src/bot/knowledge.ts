@@ -1,8 +1,8 @@
-// Base de conocimiento de Kitty.
+// Base de conocimiento de Lía, la asistente de Cérvix-B.
 //
 // Contenido referencial, coherente con la app y los informes del equipo.
 // Debe ser revisado por profesionales de salud antes de usarse con pacientes
-// reales. Kitty no diagnostica: orienta y deriva al equipo de salud.
+// reales. Lía no diagnostica: orienta y deriva al equipo de salud.
 
 export type Audience = 'sitio' | 'app'
 
@@ -10,7 +10,7 @@ export interface BotAction {
   label: string
   /** Enlace (en la app, rutas tipo «#/paciente/semaforo»). */
   href?: string
-  /** Envía esta pregunta a Kitty. */
+  /** Envía esta pregunta a Lía. */
   ask?: string
   /** Guarda la pregunta en «Mis preguntas» (solo app). */
   save?: boolean
@@ -33,27 +33,22 @@ export const ENTRIES: Entry[] = [
   {
     id: 'hola',
     keys: ['hola', 'buenas', 'buenos dias', 'buenas tardes', 'holi', 'hey', 'alo'],
-    text: '¡Miau! 🐾 Hola, soy **Kitty**. Pregúntame sobre tu recuperación, el VPH o cómo usar Cérvix-B.',
+    text: '¡Hola! Soy **Lía**, la asistente de Cérvix-B. Pregúntame sobre tu recuperación, el VPH o cómo usar la app.',
   },
   {
     id: 'quien',
-    keys: ['quien eres', 'que eres', 'como te llamas', 'tu nombre', 'eres un bot', 'eres real', 'kitty'],
-    text: 'Soy **Kitty**, el gatito de Cérvix-B 🐱. Respondo dudas frecuentes con información referencial. No soy médico: ante cualquier duda sobre tu caso, tu equipo de salud tiene la última palabra.',
+    keys: ['quien eres', 'que eres', 'como te llamas', 'tu nombre', 'eres un bot', 'eres real', 'lia', 'asistente', 'kitty'],
+    text: 'Soy **Lía**, la asistente virtual de Cérvix-B. Respondo dudas frecuentes con información referencial. No soy médico: ante cualquier duda sobre tu caso, tu equipo de salud tiene la última palabra.',
   },
   {
     id: 'gracias',
     keys: ['gracias', 'muchas gracias', 'te pasaste', 'genial', 'perfecto', 'buenisimo', 'ok gracias'],
-    text: '¡De nada! Purr… 💜 Si te surge otra duda, aquí estaré.',
+    text: '¡De nada! 💜 Si te surge otra duda, aquí estaré.',
   },
   {
     id: 'chao',
     keys: ['chao', 'adios', 'nos vemos', 'hasta luego'],
-    text: '¡Hasta pronto! Cuídate mucho 🐾',
-  },
-  {
-    id: 'miau',
-    keys: ['miau', 'gato', 'gatito', 'michi'],
-    text: '¡Miau, miau! 😺 Además de ronronear, puedo ayudarte con dudas sobre tu recuperación.',
+    text: '¡Hasta pronto! Cuídate mucho 💜',
   },
 
   // ---------- Síntomas y recuperación ----------

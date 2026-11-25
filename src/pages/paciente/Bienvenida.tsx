@@ -4,7 +4,7 @@ import { CalendarHeart, ChevronLeft, ChevronRight, ClipboardList, HeartHandshake
 import { useApp } from '../../context/AppContext'
 import { LevelFace } from '../../components/LevelFace'
 import { ReadAloud } from '../../components/ReadAloud'
-import { catSvg } from '../../bot/cat'
+import { chatIcon } from '../../bot/icon'
 import { haptic } from '../../utils'
 
 export const onboardingKey = (patientId: string) => `onboarding-${patientId}`
@@ -62,11 +62,11 @@ export function Bienvenida() {
       art: (
         <div className="onb__duo">
           <span className="onb__chat"><MessageCircle size={56} strokeWidth={1.6} /></span>
-          <span className="onb__cat" dangerouslySetInnerHTML={{ __html: catSvg(84) }} />
+          <span className="onb__lia" dangerouslySetInnerHTML={{ __html: chatIcon(72, '') }} />
         </div>
       ),
       title: '¿Dudas? Estamos aquí',
-      text: 'Escríbele a tu equipo por el chat o pregúntale a Kitty, el gatito, en cualquier momento. 🐾',
+      text: 'Escríbele a tu equipo por el chat o pregúntale a Lía, la asistente de la app, en cualquier momento.',
     },
   ]
 

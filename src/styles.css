@@ -706,9 +706,7 @@ textarea { resize: vertical; }
 .dot-l--verde { background: #3fb44a; }
 .dot-l--amarillo { background: #e6b800; }
 .dot-l--rojo { background: #e2373b; }
-.login__cat { position: absolute; left: 14px; top: 12px; opacity: 0.95; animation: cat-peek 5s ease-in-out infinite; }
-.login__cat svg { display: block; image-rendering: pixelated; }
-@keyframes cat-peek { 0%, 70%, 100% { transform: translateY(0); } 80% { transform: translateY(-8px); } }
+
 .login__form { display: flex; flex-direction: column; gap: 8px; background: var(--surface); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
 .login__form label { font-weight: 700; font-size: 14px; color: var(--navy); }
 .login__form .btn { margin-top: 8px; }
@@ -1525,7 +1523,7 @@ body, .app-shell, .login { transition: background-color 0.4s ease; }
   /* Tareas del médico en una fila */
   .quick-actions { max-width: 520px; }
 
-  /* Kitty en la esquina de la ventana */
+  /* Asistente en la esquina de la ventana */
   .cb-root.cb-in-app { --cb-bottom: 28px; --cb-right: 28px; }
 
   /* Ingreso centrado en la pantalla */
@@ -1694,7 +1692,7 @@ body, .app-shell, .login { transition: background-color 0.4s ease; }
 .onb__faces svg { width: 50px; height: 50px; }
 .onb__duo { display: flex; align-items: flex-end; gap: 6px; }
 .onb__chat { color: var(--primary); margin-bottom: 26px; }
-.onb__cat svg { display: block; image-rendering: pixelated; }
+.onb__lia svg { display: block; }
 .onb__dots { display: flex; justify-content: center; gap: 8px; }
 .onb__dots button { width: 9px; height: 9px; border-radius: 999px; border: none; padding: 0; background: var(--border); transition: width 0.3s var(--ease), background-color 0.3s ease; cursor: pointer; }
 .onb__dots button.is-active { width: 26px; background: var(--primary); }

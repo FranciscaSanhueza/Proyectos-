@@ -21,7 +21,7 @@ export const normalize = (s: string) =>
 const has = (text: string, words: string[]) => words.some((w) => text.includes(w))
 
 /**
- * Señales de alarma: ante la duda, Kitty deriva a urgencias. Es preferible
+ * Señales de alarma: ante la duda, Lía deriva a urgencias. Es preferible
  * una derivación de más que una de menos.
  */
 export function isRedFlag(t: string): boolean {
@@ -66,7 +66,7 @@ function score(text: string, tokens: string[], keys: string[]): number {
 /** Elige la mejor respuesta de la base de conocimiento. */
 export function reply(question: string, audience: Audience): BotReply {
   const t = normalize(question)
-  if (!t) return { text: '¿Me cuentas tu duda? 🐾' }
+  if (!t) return { text: '¿Me cuentas tu duda?' }
   if (isRedFlag(t)) return URGENT
 
   const tokens = t.split(' ')
@@ -82,8 +82,8 @@ export function reply(question: string, audience: Audience): BotReply {
       unknown: true,
       text:
         audience === 'app'
-          ? 'Mmm… 🐾 no tengo una respuesta segura para eso, y prefiero no adivinar sobre tu salud.\n\nPuedo guardar tu pregunta para tu próximo control o puedes escribirle a tu equipo.'
-          : 'Mmm… 🐾 todavía no sé responder eso.\n\nPrueba preguntándome por el proyecto, el semáforo o el VPH, o revisa las secciones del sitio.',
+          ? 'Mmm… no tengo una respuesta segura para eso, y prefiero no adivinar sobre tu salud.\n\nPuedo guardar tu pregunta para tu próximo control o puedes escribirle a tu equipo.'
+          : 'Mmm… todavía no sé responder eso.\n\nPrueba preguntándome por el proyecto, el semáforo o el VPH, o revisa las secciones del sitio.',
       actions:
         audience === 'app'
           ? [{ label: '📝 Guardar en Mis preguntas', save: true }, { label: '💬 Escribir a mi equipo', href: '#/paciente/chat' }]

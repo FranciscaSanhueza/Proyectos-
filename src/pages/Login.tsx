@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { Heart, Languages, RotateCcw, Stethoscope, UserRound } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { normalizeRut } from '../utils'
-import { catSvg } from '../bot/cat'
 
 export function Login() {
   const { login, patients, resetAll } = useApp()
@@ -60,7 +59,6 @@ export function Login() {
           <li><i className="dot-l dot-l--amarillo" /> Consulta</li>
           <li><i className="dot-l dot-l--rojo" /> Urgencia</li>
         </ul>
-        <span className="login__cat" aria-hidden dangerouslySetInnerHTML={{ __html: catSvg(52, '') }} />
       </div>
 
       <div className="quick-access">

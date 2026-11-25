@@ -5,9 +5,9 @@ El repositorio contiene dos partes que se publican juntas:
 - **Sitio web del proyecto** (`index.html`, `site/`): cuenta el desafío, la propuesta, el prototipo, la validación, los aprendizajes, la propuesta para instituciones públicas y privadas, y los próximos pasos. Su contenido proviene de los informes y actividades del equipo (Hito 2, Tarea 5, Hito 1 y actividades 5–7) y no inventa resultados.
 - **App** (`app/`, `src/`): el prototipo interactivo, publicado en `/app/`.
 
-### Kitty, el gatito que responde dudas 🐱
+### Lía, la asistente que responde dudas 💬
 
-Un chatbot con forma de gato blanco en pixel art, presente en el sitio y en la app (`src/bot/`).
+Un chatbot con un ícono circular simple (globo de chat con corazón), presente en el sitio y en la app (`src/bot/`).
 
 - Responde con una **base de conocimiento propia** (`src/bot/knowledge.ts`): síntomas, cuidados, VPH, controles, emociones, uso de la app y el proyecto. No usa servicios externos ni inventa respuestas.
 - **Detecta señales de alarma** (sangrado abundante, fiebre sobre 38 °C, dolor intenso, mal olor, desmayo) y deriva a urgencias / 131.
@@ -62,14 +62,14 @@ Prototipo de app móvil para acompañar a pacientes con **lesiones precancerosas
 
 ### Mejoras (v5): más llamativa, útil y cuidada
 
-- **Bienvenida guiada**: la primera vez que una paciente entra ve un recorrido de 5 pasos (semáforo, encuesta, plan, chat y Kitty), con audio y deslizable. Se repite desde Ajustes y vuelve a aparecer con «Reiniciar demo».
+- **Bienvenida guiada**: la primera vez que una paciente entra ve un recorrido de 5 pasos (semáforo, encuesta, plan, chat y la asistente Lía), con audio y deslizable. Se repite desde Ajustes y vuelve a aparecer con «Reiniciar demo».
 - **Tu siguiente paso** en el Inicio: una tarjeta muestra la acción más importante del día (semáforo rojo → mensaje nuevo del equipo → encuesta disponible → control en los próximos 7 días → cuidados pendientes → mensaje de ánimo).
 - **Racha** de días seguidos registrando el ánimo y **cuenta regresiva** al próximo control.
 - **Modo noche** (tema oscuro) en Ajustes, y botón luna/sol en el panel del médico.
-- **Pantalla de ingreso renovada** con el semáforo y Kitty.
+- **Pantalla de ingreso renovada** con el semáforo.
 - **Vibración suave** al marcar el ánimo, los cuidados y las respuestas de la encuesta (se desactiva con «Animaciones suaves»).
 - **Plantillas de plan** para el médico (conización LEEP, crioterapia, colposcopía con biopsia): completan cuidados, señales de alarma y fecha de control. Contenido referencial que debe validar el equipo clínico.
-- El globo «¿Dudas?» de Kitty aparece una sola vez por visita para no tapar el contenido.
+- El globo «¿Dudas?» de la asistente aparece una sola vez por visita para no tapar el contenido.
 
 ### Mejoras (v6): interacciones que todos conocen
 

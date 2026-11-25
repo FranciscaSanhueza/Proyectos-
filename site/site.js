@@ -431,6 +431,6 @@ const closeLb = () => (lb.hidden = true)
 lb.addEventListener('click', (e) => e.target !== $('img', lb) && closeLb())
 addEventListener('keydown', (e) => e.key === 'Escape' && closeLb())
 
-/* ---------- Kitty, el gatito que responde dudas ---------- */
+/* ---------- Lía, la asistente que responde dudas ---------- */
 
 mountCatBot({ audience: 'sitio' })

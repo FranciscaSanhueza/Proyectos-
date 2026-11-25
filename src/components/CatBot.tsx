@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { mountCatBot } from '../bot/widget'
 
-/** Kitty en la app de la paciente: responde dudas y guarda preguntas para el control. */
+/** Lía, la asistente, en la app de la paciente: responde dudas y guarda preguntas para el control. */
 export function CatBot() {
   const { session, questions, addQuestion } = useApp()
   const { pathname } = useLocation()

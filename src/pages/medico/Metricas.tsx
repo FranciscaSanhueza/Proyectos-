@@ -164,7 +164,7 @@ export function Metricas() {
         <SectionTitle>¿Qué aporta a la institución?</SectionTitle>
         <ul>
           <li><b>Detección temprana:</b> las encuestas en amarillo o rojo llegan como alerta al panel del equipo.</li>
-          <li><b>Menos consultas evitables:</b> las dudas frecuentes se resuelven con el semáforo, la guía y Kitty.</li>
+          <li><b>Menos consultas evitables:</b> las dudas frecuentes se resuelven con el semáforo, la guía y la asistente Lía.</li>
           <li><b>Trazabilidad:</b> cada duda y respuesta queda registrada en un canal oficial, no en mensajería personal.</li>
           <li><b>Gestión:</b> estos indicadores se pueden descargar (CSV) para reportes de calidad.</li>
         </ul>
